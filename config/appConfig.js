@@ -7,7 +7,8 @@ appConfig.allowedCorsOrigin="*";
 appConfig.env="dev";
 
 appConfig.db = {
-    uri: 'mongodb://127.0.0.1:27017/RestroDB'
+    localUri: 'mongodb://127.0.0.1:27017/RestroDB',
+    mainUri: 'mongodb+srv://Ankit-singh7:encyclopedia@restrodb.kmg1q.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 
 }
 
