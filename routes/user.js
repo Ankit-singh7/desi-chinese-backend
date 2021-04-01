@@ -83,7 +83,7 @@ module.exports.setRouter = (app) => {
     */
 
     // params: email.
-    app.post(`${baseUrl}/resetPassword`, userController.resetPasswordFunction);
+    // app.post(`${baseUrl}/resetPassword`, userController.resetPasswordFunction);
     /**
      * @apiGroup users
      * @apiVersion  1.0.0
@@ -103,7 +103,7 @@ module.exports.setRouter = (app) => {
     */
 
     // params: validationToken,password.
-    app.put(`${baseUrl}/updatePassword`, userController.updatePasswordFunction);
+    // app.put(`${baseUrl}/updatePassword`, userController.updatePasswordFunction);
     /**
      * @apiGroup users
      * @apiVersion  1.0.0
@@ -125,7 +125,7 @@ module.exports.setRouter = (app) => {
     */
 
     // params: userId, oldPassword,newPassword.
-    app.post(`${baseUrl}/changePassword`,userController.changePasswordFunction);
+    app.post(`${baseUrl}/resetPassword`,userController.resetPasswordFunction);
     /**
      * @apiGroup users
      * @apiVersion  1.0.0

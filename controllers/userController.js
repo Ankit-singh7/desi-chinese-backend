@@ -464,358 +464,394 @@ let logout = (req, res) => {
 /* params : email
 */
 
-let resetPasswordFunction = (req, res) => {
-    //finding user with email
-    let findUser = () => {
-        console.log("findUser");
-        return new Promise((resolve, reject) => {
-            if (req.body.email) {
-                console.log("req body email is there");
-                console.log(req.body);
-                UserModel.findOne({ email: req.body.email }, (err, userDetails) => {
-                    /* handle the error here if the User is not found */
-                    if (err) {
-                        console.log(err)
-                        logger.error('Failed To Retrieve User Data', 'userController: findUser()', 10)
-                        /* generate the error message and the api response message here */
-                        let apiResponse = response.generate(true, 'Failed To Find User Details', 500, null)
-                        reject(apiResponse)
-                        /* if Company Details is not found */
-                    } else if (check.isEmpty(userDetails)) {
-                        /* generate the response and the console error message here */
-                        logger.error('No User Found', 'userController: findUser()', 7)
-                        let apiResponse = response.generate(true, 'No User Details Found', 404, null)
-                        reject(apiResponse)
-                    } else {
-                        /* prepare the message and the api response here */
-                        logger.info('User Found', 'userController: findUser()', 10)
-                        resolve(userDetails)
-                    }
-                });
+// let resetPasswordFunction = (req, res) => {
+//     //finding user with email
+//     let findUser = () => {
+//         console.log("findUser");
+//         return new Promise((resolve, reject) => {
+//             if (req.body.email) {
+//                 console.log("req body email is there");
+//                 console.log(req.body);
+//                 UserModel.findOne({ email: req.body.email }, (err, userDetails) => {
+//                     /* handle the error here if the User is not found */
+//                     if (err) {
+//                         console.log(err)
+//                         logger.error('Failed To Retrieve User Data', 'userController: findUser()', 10)
+//                         /* generate the error message and the api response message here */
+//                         let apiResponse = response.generate(true, 'Failed To Find User Details', 500, null)
+//                         reject(apiResponse)
+//                         /* if Company Details is not found */
+//                     } else if (check.isEmpty(userDetails)) {
+//                         /* generate the response and the console error message here */
+//                         logger.error('No User Found', 'userController: findUser()', 7)
+//                         let apiResponse = response.generate(true, 'No User Details Found', 404, null)
+//                         reject(apiResponse)
+//                     } else {
+//                         /* prepare the message and the api response here */
+//                         logger.info('User Found', 'userController: findUser()', 10)
+//                         resolve(userDetails)
+//                     }
+//                 });
 
-            } else {
-                let apiResponse = response.generate(true, '"email" parameter is missing', 400, null)
-                reject(apiResponse)
-            }
-        })
-    }
-    //reset password
-    let generateToken = (userDetails) => {
-        console.log("generate token");
-        return new Promise((resolve, reject) => {
-            token.generateToken(userDetails, (err, tokenDetails) => {
-                if (err) {
-                    console.log(err)
-                    let apiResponse = response.generate(true, 'Failed To Generate Token', 500, null)
-                    reject(apiResponse)
-                } else {
-                    tokenDetails.userId = userDetails.userId
-                    tokenDetails.userDetails = userDetails
-                    resolve(tokenDetails)
-                }
-            })
-        })
-    }
+//             } else {
+//                 let apiResponse = response.generate(true, '"email" parameter is missing', 400, null)
+//                 reject(apiResponse)
+//             }
+//         })
+//     }
+//     //reset password
+//     let generateToken = (userDetails) => {
+//         console.log("generate token");
+//         return new Promise((resolve, reject) => {
+//             token.generateToken(userDetails, (err, tokenDetails) => {
+//                 if (err) {
+//                     console.log(err)
+//                     let apiResponse = response.generate(true, 'Failed To Generate Token', 500, null)
+//                     reject(apiResponse)
+//                 } else {
+//                     tokenDetails.userId = userDetails.userId
+//                     tokenDetails.userDetails = userDetails
+//                     resolve(tokenDetails)
+//                 }
+//             })
+//         })
+//     }
 
-    let resetPassword = (tokenDetails) =>{
-        return new Promise((resolve, reject) => {
+//     let resetPassword = (tokenDetails) =>{
+//         return new Promise((resolve, reject) => {
 
-            let options = {
-                validationToken: tokenDetails.token
-            }
+//             let options = {
+//                 validationToken: tokenDetails.token
+//             }
     
-            UserModel.update({ 'email': req.body.email }, options).exec((err, result) => {
-                if (err) {
-                    console.log(err)
-                    logger.error(err.message, 'User Controller:resetPasswordFunction', 10)
-                    let apiResponse = response.generate(true, 'Failed To reset user Password', 500, null)
-                    reject(apiResponse)
-                }  else {
+//             UserModel.update({ 'email': req.body.email }, options).exec((err, result) => {
+//                 if (err) {
+//                     console.log(err)
+//                     logger.error(err.message, 'User Controller:resetPasswordFunction', 10)
+//                     let apiResponse = response.generate(true, 'Failed To reset user Password', 500, null)
+//                     reject(apiResponse)
+//                 }  else {
     
-                    //let apiResponse = response.generate(false, 'Password reset successfully', 200, result)
-                    resolve(result)
-                    //Creating object for sending welcome email
-                    console.log(tokenDetails)
-                    let sendEmailOptions = {
-                        email: tokenDetails.userDetails.email,
-                        subject: 'Reset Password for Trego ',
-                        html: `<h4> Hi ${tokenDetails.userDetails.firstName}</h4>
-                            <p>
-                                We got a request to reset your password associated with this ${tokenDetails.userDetails.email} . <br>
-                                <br>Please use following link to reset your password. <br>
-                                <br> <a href="${applicationUrl}/Reset-Pass/${options.validationToken}">Click Here</a>                                 
-                            </p>
+//                     //let apiResponse = response.generate(false, 'Password reset successfully', 200, result)
+//                     resolve(result)
+//                     //Creating object for sending welcome email
+//                     console.log(tokenDetails)
+//                     let sendEmailOptions = {
+//                         email: tokenDetails.userDetails.email,
+//                         subject: 'Reset Password for Trego ',
+//                         html: `<h4> Hi ${tokenDetails.userDetails.firstName}</h4>
+//                             <p>
+//                                 We got a request to reset your password associated with this ${tokenDetails.userDetails.email} . <br>
+//                                 <br>Please use following link to reset your password. <br>
+//                                 <br> <a href="${applicationUrl}/Reset-Pass/${options.validationToken}">Click Here</a>                                 
+//                             </p>
     
-                            <br><b>Trego</b>
-                                        `
-                    }
+//                             <br><b>Trego</b>
+//                                         `
+//                     }
     
-                    setTimeout(() => {
-                        emailLib.sendEmail(sendEmailOptions);
-                    }, 2000);
+//                     setTimeout(() => {
+//                         emailLib.sendEmail(sendEmailOptions);
+//                     }, 2000);
     
-                }
-            });// end user model update
+//                 }
+//             });// end user model update
     
-        });//end promise
+//         });//end promise
     
-    }//end reset password
+//     }//end reset password
 
-    //making promise call
-    findUser(req, res)
-        .then(generateToken)
-        .then(resetPassword)
-        .then((resolve) => {
-            let apiResponse = response.generate(false, 'Password reset instructions sent successfully', 200, 'None')
-            res.status(200)
-            res.send(apiResponse)
-        })
-        .catch((err) => {
-            console.log("errorhandler");
-            console.log(err);
-            res.status(err.status)
-            res.send(err)
-        })
+//     //making promise call
+//     findUser(req, res)
+//         .then(generateToken)
+//         .then(resetPassword)
+//         .then((resolve) => {
+//             let apiResponse = response.generate(false, 'Password reset instructions sent successfully', 200, 'None')
+//             res.status(200)
+//             res.send(apiResponse)
+//         })
+//         .catch((err) => {
+//             console.log("errorhandler");
+//             console.log(err);
+//             res.status(err.status)
+//             res.send(err)
+//         })
 
 
-}// end resetPasswordFunction
+// }// end resetPasswordFunction
 
 /* Function to update password and sending email */
 /* params : recoveryPassword,paswword
 */
 
-let updatePasswordFunction = (req, res) => {
+// let updatePasswordFunction = (req, res) => {
 
-    let findUser = () => {
-        console.log("findUser");
-        return new Promise((resolve, reject) => {
-            if (req.body.validationToken) {
-                console.log("req body validationToken is there");
-                console.log(req.body);
-                UserModel.findOne({ validationToken: req.body.validationToken }, (err, userDetails) => {
-                    /* handle the error here if the User is not found */
-                    if (err) {
-                        console.log(err)
-                        logger.error('Failed To Retrieve User Data', 'userController: findUser()', 10)
-                        /* generate the error message and the api response message here */
-                        let apiResponse = response.generate(true, 'Failed To Find User Details', 500, null)
-                        reject(apiResponse)
-                        /* if Company Details is not found */
-                    } else if (check.isEmpty(userDetails)) {
-                        /* generate the response and the console error message here */
-                        logger.error('No User Found', 'userController: findUser()', 7)
-                        let apiResponse = response.generate(true, 'No User Details Found', 404, null)
-                        reject(apiResponse)
-                    } else {
-                        /* prepare the message and the api response here */
-                        logger.info('User Found', 'userController: findUser()', 10)
-                        resolve(userDetails)
-                    }
-                });
+//     let findUser = () => {
+//         console.log("findUser");
+//         return new Promise((resolve, reject) => {
+//             if (req.body.validationToken) {
+//                 console.log("req body validationToken is there");
+//                 console.log(req.body);
+//                 UserModel.findOne({ validationToken: req.body.validationToken }, (err, userDetails) => {
+//                     /* handle the error here if the User is not found */
+//                     if (err) {
+//                         console.log(err)
+//                         logger.error('Failed To Retrieve User Data', 'userController: findUser()', 10)
+//                         /* generate the error message and the api response message here */
+//                         let apiResponse = response.generate(true, 'Failed To Find User Details', 500, null)
+//                         reject(apiResponse)
+//                         /* if Company Details is not found */
+//                     } else if (check.isEmpty(userDetails)) {
+//                         /* generate the response and the console error message here */
+//                         logger.error('No User Found', 'userController: findUser()', 7)
+//                         let apiResponse = response.generate(true, 'No User Details Found', 404, null)
+//                         reject(apiResponse)
+//                     } else {
+//                         /* prepare the message and the api response here */
+//                         logger.info('User Found', 'userController: findUser()', 10)
+//                         resolve(userDetails)
+//                     }
+//                 });
 
-            } else {
-                let apiResponse = response.generate(true, '"validationToken" parameter is missing', 400, null)
-                reject(apiResponse)
-            }
-        })
-    }
+//             } else {
+//                 let apiResponse = response.generate(true, '"validationToken" parameter is missing', 400, null)
+//                 reject(apiResponse)
+//             }
+//         })
+//     }
 
-    let passwordUpdate = (userDetails) => {
-        return new Promise((resolve, reject) => {
+//     let passwordUpdate = (userDetails) => {
+//         return new Promise((resolve, reject) => {
 
-            let options = {
-                password: passwordLib.hashpassword(req.body.password),
-                validationToken:'Null'
-            }
+//             let options = {
+//                 password: passwordLib.hashpassword(req.body.password),
+//                 validationToken:'Null'
+//             }
 
-            UserModel.update({ 'userId': userDetails.userId }, options).exec((err, result) => {
-                if (err) {
-                    console.log(err)
-                    logger.error(err.message, 'User Controller:updatePasswordFunction', 10)
-                    let apiResponse = response.generate(true, 'Failed To reset user Password', 500, null)
-                    reject(apiResponse)
-                } else if (check.isEmpty(result)) {
-                    logger.info('No User Found with given Details', 'User Controller: updatePasswordFunction')
-                    let apiResponse = response.generate(true, 'No User Found', 404, null)
-                    reject(apiResponse)
-                } else {
-
-
-                    let apiResponse = response.generate(false, 'Password Updated successfully', 200, result)
-                    resolve(result)
-                    //Creating object for sending welcome email
-
-                    let sendEmailOptions = {
-                        email: userDetails.email,
-                        subject: 'Password Updated for Trego ',
-                        html: `<h4> Hi ${userDetails.firstName}</h4>
-                        <p>
-                            Password updated successfully.
-                        </p>
-                        <h3> Thanks for using Trego </h3>
-                                    `
-                    }
-
-                    setTimeout(() => {
-                        emailLib.sendEmail(sendEmailOptions);
-                    }, 2000);
+//             UserModel.update({ 'userId': userDetails.userId }, options).exec((err, result) => {
+//                 if (err) {
+//                     console.log(err)
+//                     logger.error(err.message, 'User Controller:updatePasswordFunction', 10)
+//                     let apiResponse = response.generate(true, 'Failed To reset user Password', 500, null)
+//                     reject(apiResponse)
+//                 } else if (check.isEmpty(result)) {
+//                     logger.info('No User Found with given Details', 'User Controller: updatePasswordFunction')
+//                     let apiResponse = response.generate(true, 'No User Found', 404, null)
+//                     reject(apiResponse)
+//                 } else {
 
 
-                }
-            });// end user model update
-        });
-    }//end passwordUpdate
+//                     let apiResponse = response.generate(false, 'Password Updated successfully', 200, result)
+//                     resolve(result)
+//                     //Creating object for sending welcome email
 
-    findUser(req, res)
-        .then(passwordUpdate)
-        .then((resolve) => {
-            let apiResponse = response.generate(false, 'Password Update Successfully', 200, "None")
-            res.status(200)
-            res.send(apiResponse)
-        })
-        .catch((err) => {
-            console.log("errorhandler");
-            console.log(err);
-            res.status(err.status)
-            res.send(err)
-        })
+//                     let sendEmailOptions = {
+//                         email: userDetails.email,
+//                         subject: 'Password Updated for Trego ',
+//                         html: `<h4> Hi ${userDetails.firstName}</h4>
+//                         <p>
+//                             Password updated successfully.
+//                         </p>
+//                         <h3> Thanks for using Trego </h3>
+//                                     `
+//                     }
+
+//                     setTimeout(() => {
+//                         emailLib.sendEmail(sendEmailOptions);
+//                     }, 2000);
 
 
-}// end updatePasswordFunction
+//                 }
+//             });// end user model update
+//         });
+//     }//end passwordUpdate
+
+//     findUser(req, res)
+//         .then(passwordUpdate)
+//         .then((resolve) => {
+//             let apiResponse = response.generate(false, 'Password Update Successfully', 200, "None")
+//             res.status(200)
+//             res.send(apiResponse)
+//         })
+//         .catch((err) => {
+//             console.log("errorhandler");
+//             console.log(err);
+//             res.status(err.status)
+//             res.send(err)
+//         })
+
+
+// }// end updatePasswordFunction
 
 
 /* Function to change password and sending  email */
 /* params : userId,oldPassword,newPassword
 */
-let changePasswordFunction = (req, res) => {
-    //finding user
-    let findUser = () => {
-        console.log("findUser");
-        return new Promise((resolve, reject) => {
-            if (req.body.userId != undefined && req.body.oldPassword != undefined) {
-                console.log("req body userId and oldPassword is there");
-                console.log(req.body);
-                UserModel.findOne({ userId: req.body.userId }, (err, userDetails) => {
-                    /* handle the error here if the User is not found */
-                    if (err) {
-                        console.log(err)
-                        logger.error('Failed To Retrieve User Data', 'userController: findUser()', 10)
-                        /* generate the error message and the api response message here */
-                        let apiResponse = response.generate(true, 'Failed To Find User Details', 500, null)
-                        reject(apiResponse)
-                        /* if Company Details is not found */
-                    } else if (check.isEmpty(userDetails)) {
-                        /* generate the response and the console error message here */
-                        logger.error('No User Found', 'userController: findUser()', 7)
-                        let apiResponse = response.generate(true, 'No User Details Found', 404, null)
-                        reject(apiResponse)
-                    } else {
-                        /* prepare the message and the api response here */
-                        logger.info('User Found', 'userController: findUser()', 10)
-                        resolve(userDetails)
-                    }
-                });
+// let changePasswordFunction = (req, res) => {
+//     //finding user
+//     let findUser = () => {
+//         console.log("findUser");
+//         return new Promise((resolve, reject) => {
+//             if (req.body.userId != undefined && req.body.oldPassword != undefined) {
+//                 console.log("req body userId and oldPassword is there");
+//                 console.log(req.body);
+//                 UserModel.findOne({ userId: req.body.userId }, (err, userDetails) => {
+//                     /* handle the error here if the User is not found */
+//                     if (err) {
+//                         console.log(err)
+//                         logger.error('Failed To Retrieve User Data', 'userController: findUser()', 10)
+//                         /* generate the error message and the api response message here */
+//                         let apiResponse = response.generate(true, 'Failed To Find User Details', 500, null)
+//                         reject(apiResponse)
+//                         /* if Company Details is not found */
+//                     } else if (check.isEmpty(userDetails)) {
+//                         /* generate the response and the console error message here */
+//                         logger.error('No User Found', 'userController: findUser()', 7)
+//                         let apiResponse = response.generate(true, 'No User Details Found', 404, null)
+//                         reject(apiResponse)
+//                     } else {
+//                         /* prepare the message and the api response here */
+//                         logger.info('User Found', 'userController: findUser()', 10)
+//                         resolve(userDetails)
+//                     }
+//                 });
 
-            } else {
-                let apiResponse = response.generate(true, '"userId" parameter is missing', 400, null)
-                reject(apiResponse)
+//             } else {
+//                 let apiResponse = response.generate(true, '"userId" parameter is missing', 400, null)
+//                 reject(apiResponse)
+//             }
+//         })
+//     }
+
+//     //validate old password with database 
+//     let validatePassword = (retrievedUserDetails) => {
+//         console.log("validatePassword");
+//         console.log(retrievedUserDetails);
+//         return new Promise((resolve, reject) => {
+//             passwordLib.comparePassword(req.body.oldPassword, retrievedUserDetails.password, (err, isMatch) => {
+//                 if (err) {
+//                     console.log(err)
+//                     logger.error(err.message, 'userController: validatePassword()', 10)
+//                     let apiResponse = response.generate(true, 'Validate Password Failed', 500, null)
+//                     reject(apiResponse)
+//                 } else if (isMatch) {
+//                     let retrievedUserDetailsObj = retrievedUserDetails.toObject()
+//                     delete retrievedUserDetailsObj.password
+//                     delete retrievedUserDetailsObj._id
+//                     delete retrievedUserDetailsObj.__v
+//                     delete retrievedUserDetailsObj.createdOn
+//                     delete retrievedUserDetailsObj.modifiedOn
+//                     resolve(retrievedUserDetailsObj)
+//                 } else {
+//                     logger.info('Update Failed Due To Invalid Password', 'userController: validatePassword()', 10)
+//                     let apiResponse = response.generate(true, 'Wrong Password.', 400, null)
+//                     reject(apiResponse)
+//                 }
+//             })
+//         })
+//     }
+
+//     //password update 
+//     let passwordUpdate = (userDetails) => {
+//         return new Promise((resolve, reject) => {
+
+//             let options = {
+//                 password: passwordLib.hashpassword(req.body.newPassword),
+//             }
+
+//             UserModel.update({ 'userId': userDetails.userId }, options).exec((err, result) => {
+//                 if (err) {
+//                     console.log(err)
+//                     logger.error(err.message, 'User Controller:updatePasswordFunction', 10)
+//                     let apiResponse = response.generate(true, 'Failed To update user Password', 500, null)
+//                     reject(apiResponse)
+//                 } else if (check.isEmpty(result)) {
+//                     logger.info('No User Found with given Details', 'User Controller: updatePasswordFunction')
+//                     let apiResponse = response.generate(true, 'No User Found', 404, null)
+//                     reject(apiResponse)
+//                 } else {
+
+
+//                     let apiResponse = response.generate(false, 'Password Updated successfully', 200, result)
+//                     resolve(result)
+//                     //Creating object for sending welcome email
+
+//                     let sendEmailOptions = {
+//                         email: userDetails.email,
+//                         subject: 'Password Updated for Trego',
+//                         html: `<h4> Hi ${userDetails.firstName}</h4>
+//                         <p>
+//                             Password updated successfully.
+//                         </p>
+//                         <h3> Thanks for using Trego </h3>
+//                                     `
+//                     }
+//                     console.log(sendEmailOptions)
+                    
+//                     setTimeout(() => {
+//                         emailLib.sendEmail(sendEmailOptions);
+//                     }, 2000);
+
+
+//                 }
+//             });// end user model update
+//         });
+//     }//end passwordUpdate
+
+//     //making promise call
+//     findUser(req, res)
+//         .then(validatePassword)
+//         .then(passwordUpdate)
+//         .then((resolve) => {
+//             let apiResponse = response.generate(false, 'Password Updated Successfully', 200, "None")
+//             res.status(200)
+//             res.send(apiResponse)
+//         })
+//         .catch((err) => {
+//             console.log("errorhandler");
+//             console.log(err);
+//             res.status(err.status)
+//             res.send(err)
+//         })
+
+
+// }// end updatePasswordFunction
+
+
+
+let resetPasswordFunction = (req,res) => {
+    UserModel.find({'email':req.body.email})
+    .select(' -__v -_id -password')
+    .lean()
+    .exec((err, result) => {
+        if (err) {
+            console.log(err)
+            logger.error(err.message, 'User Controller: getAllUser', 10)
+            let apiResponse = response.generate(true, 'Failed To Find User Details', 500, null)
+            res.send(apiResponse)
+        } else if (check.isEmpty(result)) {
+            logger.info('No User Found', 'User Controller: getAllUser')
+            let apiResponse = response.generate(true, 'No User Found', 404, null)
+            res.send(apiResponse)
+        } else {
+            let options = {
+                password: passwordLib.hashpassword(req.body.password)
             }
-        })
-    }
 
-    //validate old password with database 
-    let validatePassword = (retrievedUserDetails) => {
-        console.log("validatePassword");
-        console.log(retrievedUserDetails);
-        return new Promise((resolve, reject) => {
-            passwordLib.comparePassword(req.body.oldPassword, retrievedUserDetails.password, (err, isMatch) => {
-                if (err) {
+            UserModel.update({'email':req.body.email},options)
+            .select('-password')
+            .exec((err,result) => {
+                if(err) {
                     console.log(err)
-                    logger.error(err.message, 'userController: validatePassword()', 10)
-                    let apiResponse = response.generate(true, 'Validate Password Failed', 500, null)
-                    reject(apiResponse)
-                } else if (isMatch) {
-                    let retrievedUserDetailsObj = retrievedUserDetails.toObject()
-                    delete retrievedUserDetailsObj.password
-                    delete retrievedUserDetailsObj._id
-                    delete retrievedUserDetailsObj.__v
-                    delete retrievedUserDetailsObj.createdOn
-                    delete retrievedUserDetailsObj.modifiedOn
-                    resolve(retrievedUserDetailsObj)
                 } else {
-                    logger.info('Update Failed Due To Invalid Password', 'userController: validatePassword()', 10)
-                    let apiResponse = response.generate(true, 'Wrong Password.', 400, null)
-                    reject(apiResponse)
+
+                    let apiResponse = response.generate(false, 'User Details Found', 200, result)
+                    res.send(apiResponse)
                 }
             })
-        })
-    }
-
-    //password update 
-    let passwordUpdate = (userDetails) => {
-        return new Promise((resolve, reject) => {
-
-            let options = {
-                password: passwordLib.hashpassword(req.body.newPassword),
-            }
-
-            UserModel.update({ 'userId': userDetails.userId }, options).exec((err, result) => {
-                if (err) {
-                    console.log(err)
-                    logger.error(err.message, 'User Controller:updatePasswordFunction', 10)
-                    let apiResponse = response.generate(true, 'Failed To update user Password', 500, null)
-                    reject(apiResponse)
-                } else if (check.isEmpty(result)) {
-                    logger.info('No User Found with given Details', 'User Controller: updatePasswordFunction')
-                    let apiResponse = response.generate(true, 'No User Found', 404, null)
-                    reject(apiResponse)
-                } else {
-
-
-                    let apiResponse = response.generate(false, 'Password Updated successfully', 200, result)
-                    resolve(result)
-                    //Creating object for sending welcome email
-
-                    let sendEmailOptions = {
-                        email: userDetails.email,
-                        subject: 'Password Updated for Trego',
-                        html: `<h4> Hi ${userDetails.firstName}</h4>
-                        <p>
-                            Password updated successfully.
-                        </p>
-                        <h3> Thanks for using Trego </h3>
-                                    `
-                    }
-                    console.log(sendEmailOptions)
-                    
-                    setTimeout(() => {
-                        emailLib.sendEmail(sendEmailOptions);
-                    }, 2000);
-
-
-                }
-            });// end user model update
-        });
-    }//end passwordUpdate
-
-    //making promise call
-    findUser(req, res)
-        .then(validatePassword)
-        .then(passwordUpdate)
-        .then((resolve) => {
-            let apiResponse = response.generate(false, 'Password Updated Successfully', 200, "None")
-            res.status(200)
-            res.send(apiResponse)
-        })
-        .catch((err) => {
-            console.log("errorhandler");
-            console.log(err);
-            res.status(err.status)
-            res.send(err)
-        })
-
-
-}// end updatePasswordFunction
+        }
+    })
+}
 
 
 module.exports = {
@@ -829,9 +865,6 @@ module.exports = {
 
     editUser: editUser,
     deleteUser: deleteUser,
-
-    resetPasswordFunction: resetPasswordFunction,
-    updatePasswordFunction: updatePasswordFunction,
-    changePasswordFunction:changePasswordFunction,
-    getAllUser:getAllUser
+    getAllUser:getAllUser,
+    resetPasswordFunction:resetPasswordFunction
 }// end exports
