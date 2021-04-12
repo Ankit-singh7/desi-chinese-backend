@@ -59,6 +59,7 @@ let getBillDetail = (req, res) => {
 let createBill = (req,res) => {
     let newSubCategory = new billModel({
        bill_id: req.body.bill_id,
+       user_name: req.body.user_name,
        customer_name: req.body.customer_name,
        customer_phone: req.body.customer_phone,
        customer_address: req.body.customer_address,
