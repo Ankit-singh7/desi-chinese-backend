@@ -67,7 +67,7 @@ let createSession = (req,res) => {
                          console.log('here')
                      }
                  })
-           },60000)
+           },3600000)
             res.send(apiResponse)
         }
     })
