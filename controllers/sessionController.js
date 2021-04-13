@@ -11,6 +11,7 @@ const sessionModel = mongoose.model('session')
 
 
 
+
 let getAllSession = (req,res) => {
     sessionModel.find()
     .lean()
@@ -67,7 +68,7 @@ let createSession = (req,res) => {
                          console.log('here')
                      }
                  })
-           },3600000)
+           },1000 * 60 * 60 * 24)
             res.send(apiResponse)
         }
     })
@@ -142,7 +143,7 @@ let updateSession = (req,res) => {
 }
 
 let getCurrentSession = (req,res) => {
-    sessionModel.findOne({ 'session_status': 'true'})
+    sessionModel.findOne({'session_status': 'true'})
     .select('-__v -_id')
     .lean()
     .exec((err, result) => {

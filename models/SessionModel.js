@@ -11,7 +11,7 @@ const sessionSchema = new Schema({
   },
   session_status: {
     type: String,
-    default:'false'
+    default:''
   },
   session_amount: {
       type: Number,
