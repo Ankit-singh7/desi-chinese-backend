@@ -30,6 +30,11 @@ let userSchema = new Schema(
     type: String,
     default: ''
   },
+
+  status: {
+    type:String,
+    default:''
+  },
   validationToken: { //will generate automatically while resetting password
     type: String,
     default: ''

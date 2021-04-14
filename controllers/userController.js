@@ -241,6 +241,7 @@ let signUpFunction = (req, res) => {
                             mobileNumber:req.body.mobileNumber,
                             email: req.body.email.toLowerCase(),
                             password: passwordLib.hashpassword(req.body.password),
+                            status:req.body.status,
                             createdOn: time.now()
                         })
                         newUser.save((err, newUser) => {
