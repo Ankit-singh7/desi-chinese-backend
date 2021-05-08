@@ -196,39 +196,8 @@ let createBill = (req, res) => {
                                                                 }
 
                                                             }
-                                                            for (let i of ingredient) {
-                                                                if (i.ingredient_id !== reportIngrdient.ingredient_id) {
-
-                                                                  continue
-
-                                                                } else {
-                                                                                         
-                                                                    let quantity = String(item.quantity * Number(i.quantity))
-                                                                    let newObj = {
-                                                                        ingredient_id: i.ingredient_id,
-                                                                        category: i.category,
-                                                                        category_id: i.category_id,
-                                                                        ingredient: i.ingredient,
-                                                                        unit_id: i.unit_id,
-                                                                        unit: i.unit,
-                                                                        quantity_by_order: quantity,
-                                                                        quantity_by_stock: 0
-                                                                    }
-
-                                                                    let data = {
-                                                                        ingredient: report[0].ingredient.push(newObj)
-                                                                    }
-
-                                                                    ingredientReportModel.update({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
-                                                                        if (err) {
-                                                                            console.log(err)
-                                                                        } else {
-                                                                            console.log(response)
-                                                                        }
-                                                                    })
-                                                                }
-
-                                                            }
+            
+                                 
                                                             
                                                         }
                                                     }
