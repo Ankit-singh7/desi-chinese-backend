@@ -14,6 +14,7 @@ const morgan = require('morgan');
 var cors = require('cors');
 const libs = require('./libs/timeLib');
 app.use(cors());
+const time = require('./libs/timeLib');
 
 
 app.use(morgan('dev'));
@@ -73,7 +74,7 @@ console.log(appConfig);
 server.listen(process.env.PORT || appConfig.port);
 server.on('error', onError);
 server.on('listening', onListening);
-
+console.log(time.getNormalTime())
 
 // end server listening code
 
@@ -126,6 +127,7 @@ function onListening() {
     : 'port ' + addr.port;
   ('Listening on ' + bind);
   logger.info('server listening on port' + addr.port, 'serverOnListeningHandler', 10);
+  console.log()
   let db = mongoose.connect(process.env.MONGODB_URI || appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
   // let db = mongoose.connect(appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
 }

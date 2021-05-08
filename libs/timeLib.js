@@ -12,11 +12,16 @@ let getLocalTime = () => {
   return moment().tz(timeZone).format()
 }
 
+let getNormalTime = () => {
+  return moment().format('DD-MM-YYYY')
+}
+
 let convertToLocalTime = (time) => {
   return momenttz.tz(time, timeZone).format('LLLL')
 }
 module.exports = {
   now: now,
   getLocalTime: getLocalTime,
-  convertToLocalTime: convertToLocalTime
+  convertToLocalTime: convertToLocalTime,
+  getNormalTime:getNormalTime
 }
