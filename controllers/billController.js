@@ -118,20 +118,21 @@ let createBill = (req,res) => {
                              console.log(newTotal)
                              for(let item of req.body.products) {
                                console.log(item)
-                               foodIngredientModel.find({'sub_category_id': item.food_id}, (err,result) => {
+                               foodIngredientModel.find({'sub_category_id': item.food_id}, (err, ingredient) => {
                                    if(err) {
                                        res.send('Failed to find the ingredients')
-                                   } else if(check.isEmpty(result)) {
+                                   } else if(check.isEmpty(ingredient)) {
                                        let apiResponse = response.generate(true, 'No Detail Found', 404, null)
                                        res.send(apiResponse)
                                    } else {
-                                       for(let i of result) {
-                                          let quantity = String(item.quantity * Number(i.quantity))
-                                          ingredientReportModel.find({'date': time.getNormalTime()}).exec((err,result) => {
-                                              if(err){
-                                               let apiResponse = response.generate(true, 'Failed to find the data', 500, null)
-                                               res.send(apiResponse)
-                                              } else if(check.isEmpty(result)){
+                                       ingredientReportModel.find({'date': time.getNormalTime()}).exec((err,report) => {
+                                           if(err){
+                                            let apiResponse = response.generate(true, 'Failed to find the data', 500, null)
+                                            res.send(apiResponse)
+                                           } else if(check.isEmpty(report)){
+                                               for(let i of ingredient) {
+                                               let quantity = String(item.quantity * Number(i.quantity))
+                               
                                                let report  = new ingredientReportModel({
                                                    date: time.getNormalTime(),
                                                    ingredient:[
@@ -157,45 +158,49 @@ let createBill = (req,res) => {
                                                          console.log('successfully saved')
                                                      }
                                                  })
-                                              } else {
-                                               ingredientReportModel.find({'ingredient_id': i.ingredient_id},(err,result) => {
-                                                   if(err) {
-                                                       res.send(err)
-                                                   } else if (check.isEmpty(result)) {
-                                                       let report  = new ingredientReportModel({
-                                                           date: time.getNormalTime(),
-                                                           ingredient:[
-                                                              {
-                               
-                                                                  ingredient_id: i.ingredient_id,
-                                                                  category: i.category,
-                                                                  category_id: i.category_id,
-                                                                  ingredient: i.ingredient,
-                                                                  unit_id: i.unit_id,
-                                                                  unit: i.unit,
-                                                                  quantity_by_order: quantity,
-                                                                  quantity_by_stock: 0
-                                                              }
-                                                           ]
+                                            }
+                                           } else {
+                                           console.log(report[0])
+                                            for(let i of ingredient) {
+
+                                                ingredientReportModel.find({'ingredient_id': i.ingredient_id},(err,result) => {
+                                                    if(err) {
+                                                        res.send(err)
+                                                    } else if (check.isEmpty(result)) {
+                                                        let report  = new ingredientReportModel({
+                                                            date: time.getNormalTime(),
+                                                            ingredient:[
+                                                               {
+                                
+                                                                   ingredient_id: i.ingredient_id,
+                                                                   category: i.category,
+                                                                   category_id: i.category_id,
+                                                                   ingredient: i.ingredient,
+                                                                   unit_id: i.unit_id,
+                                                                   unit: i.unit,
+                                                                   quantity_by_order: quantity,
+                                                                   quantity_by_stock: 0
+                                                               }
+                                                            ]
+                                                            
+                                                          })
+                                                          report.save((err,result) => {
+                                                            if(err){
+                                                                console.log('failed to save')
+                                                             } else {
+                                                                 console.log('successfully saved')
+                                                                 
+                                                             }
+                                                        })
+                                                    } else {
+                                                            console.log(result[0]);
                                                            
-                                                         })
-                                                         report.save((err,result) => {
-                                                           if(err){
-                                                               console.log('failed to save')
-                                                            } else {
-                                                                console.log('successfully saved')
-                                                                
-                                                            }
-                                                       })
-                                                   } else {
-                                                           console.log(result[0]);
-                                                          
-                                                   }
-                                               })
-                                              }
-                                          })
-                          
-                                       }
+                                                    }
+                                                })
+                                            }
+                                           }
+                                       })
+                               
                                    }
                                })
                            }
