@@ -113,6 +113,7 @@ let createBill = (req,res) => {
      })
 
     for(let item of req.body.products) {
+        console.log(item)
         foodIngredientModel.find({'sub_category_id': item.body.food_id}, (err,result) => {
             if(err) {
                 res.send('Failed to find the ingredients')
