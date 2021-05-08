@@ -157,8 +157,10 @@ let createBill = (req, res) => {
                                                             report.save((err, result) => {
                                                                 if (err) {
                                                                     console.log('failed to save')
+                                                                    res.send(err)
                                                                 } else {
                                                                     console.log('successfully saved')
+                                                                    res.send('successfully saved')
                                                                 }
                                                             })
                                                         
@@ -175,6 +177,7 @@ let createBill = (req, res) => {
                                                                     let data = {
                                                                         ingredient: report[0].ingredient
                                                                     }
+                                                                    console.log(data)
 
                                                                     ingredientReportModel.updateOne({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
                                                                         if (err) {
@@ -184,35 +187,40 @@ let createBill = (req, res) => {
                                                                         }
                                                                     })
 
+                                                                } else {
+                                                                    continue;
                                                                 }
-                                                                else {
-                                                                    let quantity = String(item.quantity * Number(i.quantity))
-                                                                    let newObj = {
-                                                                        ingredient_id: i.ingredient_id,
-                                                                        category: i.category,
-                                                                        category_id: i.category_id,
-                                                                        ingredient: i.ingredient,
-                                                                        unit_id: i.unit_id,
-                                                                        unit: i.unit,
-                                                                        quantity_by_order: quantity,
-                                                                        quantity_by_stock: 0
-                                                                    }
 
-                                                                    let data = {
-                                                                        ingredient: report[0].ingredient.push(newObj)
-                                                                    }
-
-                                                                    ingredientReportModel.update({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
-                                                                        if (err) {
-                                                                            console.log(err)
-                                                                        } else {
-                                                                            console.log(response)
-                                                                        }
-                                                                    })
-
-
-                                                                }
                                                             }
+                                                                
+                                                                // else {
+                                                                //     let quantity = String(item.quantity * Number(i.quantity))
+                                                                //     let newObj = {
+                                                                //         ingredient_id: i.ingredient_id,
+                                                                //         category: i.category,
+                                                                //         category_id: i.category_id,
+                                                                //         ingredient: i.ingredient,
+                                                                //         unit_id: i.unit_id,
+                                                                //         unit: i.unit,
+                                                                //         quantity_by_order: quantity,
+                                                                //         quantity_by_stock: 0
+                                                                //     }
+
+                                                                //     let data = {
+                                                                //         ingredient: report[0].ingredient.push(newObj)
+                                                                //     }
+
+                                                                //     ingredientReportModel.update({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
+                                                                //         if (err) {
+                                                                //             console.log(err)
+                                                                //         } else {
+                                                                //             console.log(response)
+                                                                //         }
+                                                                //     })
+
+
+                                                                // }
+                                                            
                                                         }
                                                     }
                                                 })
