@@ -171,7 +171,7 @@ let createBill = (req, res) => {
                                                             for (let i of ingredient) {
                                                                 if (i.ingredient_id === reportIngrdient.ingredient_id) {
 
-                                                                    let quantity = String(item.quantity * Number(reportIngrdient.quantity_by_order))
+                                                                    let quantity = String((item.quantity * Number(i.quantity)) + Number(reportIngrdient.quantity_by_order))
                                                                     console.log(quantity)
                                                                     reportIngrdient.quantity_by_order = quantity;
                                                                     let data = {
