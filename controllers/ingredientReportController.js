@@ -32,6 +32,23 @@ let getAllIngredientReport = (req, res) => {
         })
 }
 
+let getIngredientReportByDate = (req,res) => {
+    ingredientReportModel.find({'date': req.params.date},(err,result) => {
+        if(err){
+            res.send(err)
+        } else if (check.isEmpty(result)) {
+            res.send('Not found')
+
+        } else {
+            let apiResponse = response.generate(false, 'Ingredient Successfuly found', 200, result)
+            res.send(apiResponse)
+        }
+    })
+}
+
+
+
 module.exports = {
-    getAllIngredientReport:getAllIngredientReport
+    getAllIngredientReport:getAllIngredientReport,
+    getIngredientReportByDate: getIngredientReportByDate
 }

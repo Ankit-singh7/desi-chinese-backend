@@ -10,5 +10,7 @@ module.exports.setRouter = (app) => {
 
     app.get(`${baseUrl}/view/all`, ingredientReportController.getAllIngredientReport);
 
+    app.get(`${baseUrl}/:date`, ingredientReportController.getIngredientReportByDate);
+
 
 }
