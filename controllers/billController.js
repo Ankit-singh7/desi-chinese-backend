@@ -74,137 +74,138 @@ let createBill = (req,res) => {
     })
 
 // for changing total sale
-     totalModel.find()
-     .lean()
-     .select('-total_id -__v -_id')
-     .exec((err,result) => {
-         if(err) {
-             console.log(err)
-         } else if (check.isEmpty(result)) {
-             let total = new totalModel({
-                 total_id: 123,
-                 total: req.body.total_price
-             })
-
-             total.save((err,result) => {
-                 if(err) {
-                     console.log('error occured while creating the total')
-                 } else {
-                     console.log('successfully added')
-                 }
-             })
-         } else {
-             let oldTotal = result[0].total
-             let newTotal = oldTotal + req.body.total_price
-             const option = {
-                 total: newTotal
-             }
-              totalModel.update({'total_id': 123}, option)
-              .lean()
-              .exec((err,result) => {
-                  if(err) {
-                      console.log(err)
-                  } else {
-                      console.log(result)
-                      console.log(newTotal)
-                  }
-              })
-         }
-     })
-
-    for(let item of req.body.products) {
-        console.log(item)
-        foodIngredientModel.find({'sub_category_id': item.food_id}, (err,result) => {
+newSubCategory.save((err,result) => {
+    if (err) {
+        console.log(err)
+        logger.error(err.message, 'Bill Controller: createBill', 10)
+        let apiResponse = response.generate(true, 'Failed To create new Bill', 500, null)
+        res.send(apiResponse)
+    } else {
+        let apiResponse = response.generate(false, 'Bill Successfully created', 200, result)
+        res.send(apiResponse)
+        totalModel.find()
+        .lean()
+        .select('-total_id -__v -_id')
+        .exec((err,result) => {
             if(err) {
-                res.send('Failed to find the ingredients')
-            } else if(check.isEmpty(result)) {
-                let apiResponse = response.generate(true, 'No Detail Found', 404, null)
-                res.send(apiResponse)
+                console.log(err)
+            } else if (check.isEmpty(result)) {
+                let total = new totalModel({
+                    total_id: 123,
+                    total: req.body.total_price
+                })
+    
+                total.save((err,result) => {
+                    if(err) {
+                        console.log('error occured while creating the total')
+                    } else {
+                        console.log('successfully added')
+                    }
+                })
             } else {
-                for(let i of result) {
-                   let quantity = String(item.quantity * Number(i.quantity))
-                   ingredientReportModel.find({'date': moment(time.now()).format('DD-MM-YYYY')}).exec((err,result) => {
-                       if(err){
-                        let apiResponse = response.generate(true, 'Failed to find the data', 500, null)
-                        res.send(apiResponse)
-                       } else if(check.isEmpty(result)){
-                        let report  = new ingredientReportModel({
-                            date: moment(time.now()).format('DD-MM-YYYY'),
-                            ingredient:[
-                               {
-
-                                   ingredient_id: i.ingredient_id,
-                                   category: i.category,
-                                   category_id: i.category_id,
-                                   ingredient: i.ingredient,
-                                   unit_id: i.unit_id,
-                                   unit: i.unit,
-                                   quantity_by_order: quantity,
-                                   quantity_by_stock: 0
-                               }
-                            ]
-                            
-                          })
-
-                          report.save((err,result) => {
-                              if(err){
-                                  res.send('failed to save')
-                              } else {
-                                  res.send('saved successfully')
-                              }
-                          })
-                       } else {
-                        ingredientReportModel.find({'ingredient_id': i.ingredient_id},(err,result) => {
-                            if(err) {
-                                res.send(err)
-                            } else if (check.isEmpty(result)) {
-                                let report  = new ingredientReportModel({
-                                    date: moment(time.now()).format('DD-MM-YYYY'),
-                                    ingredient:[
-                                       {
-        
-                                           ingredient_id: i.ingredient_id,
-                                           category: i.category,
-                                           category_id: i.category_id,
-                                           ingredient: i.ingredient,
-                                           unit_id: i.unit_id,
-                                           unit: i.unit,
-                                           quantity_by_order: quantity,
-                                           quantity_by_stock: 0
-                                       }
-                                    ]
-                                    
-                                  })
-                                  report.save((err,result) => {
-                                    if(err){
-                                        res.send('failed to save')
-                                    } else {
-                                        res.send('saved successfully')
-                                    }
-                                })
-                            } else {
-                                    console.log(result[0]);
-                            }
-                        })
-                       }
-                   })
-   
+                let oldTotal = result[0].total
+                let newTotal = oldTotal + req.body.total_price
+                const option = {
+                    total: newTotal
                 }
+                 totalModel.update({'total_id': 123}, option)
+                 .lean()
+                 .exec((err,result) => {
+                     if(err) {
+                         console.log(err)
+                     } else {
+                         console.log(result)
+                         console.log(newTotal)
+                         for(let item of req.body.products) {
+                             console.log(item)
+                             foodIngredientModel.find({'sub_category_id': item.food_id}, (err,result) => {
+                                 if(err) {
+                                     res.send('Failed to find the ingredients')
+                                 } else if(check.isEmpty(result)) {
+                                     let apiResponse = response.generate(true, 'No Detail Found', 404, null)
+                                     res.send(apiResponse)
+                                 } else {
+                                     for(let i of result) {
+                                        let quantity = String(item.quantity * Number(i.quantity))
+                                        ingredientReportModel.find({'date': moment(time.now()).format('DD-MM-YYYY')}).exec((err,result) => {
+                                            if(err){
+                                             let apiResponse = response.generate(true, 'Failed to find the data', 500, null)
+                                             res.send(apiResponse)
+                                            } else if(check.isEmpty(result)){
+                                             let report  = new ingredientReportModel({
+                                                 date: moment(time.now()).format('DD-MM-YYYY'),
+                                                 ingredient:[
+                                                    {
+                     
+                                                        ingredient_id: i.ingredient_id,
+                                                        category: i.category,
+                                                        category_id: i.category_id,
+                                                        ingredient: i.ingredient,
+                                                        unit_id: i.unit_id,
+                                                        unit: i.unit,
+                                                        quantity_by_order: quantity,
+                                                        quantity_by_stock: 0
+                                                    }
+                                                 ]
+                                                 
+                                               })
+                     
+                                               report.save((err,result) => {
+                                                   if(err){
+                                                       res.send('failed to save')
+                                                   } else {
+                                                       res.send('saved successfully')
+                                                   }
+                                               })
+                                            } else {
+                                             ingredientReportModel.find({'ingredient_id': i.ingredient_id},(err,result) => {
+                                                 if(err) {
+                                                     res.send(err)
+                                                 } else if (check.isEmpty(result)) {
+                                                     let report  = new ingredientReportModel({
+                                                         date: moment(time.now()).format('DD-MM-YYYY'),
+                                                         ingredient:[
+                                                            {
+                             
+                                                                ingredient_id: i.ingredient_id,
+                                                                category: i.category,
+                                                                category_id: i.category_id,
+                                                                ingredient: i.ingredient,
+                                                                unit_id: i.unit_id,
+                                                                unit: i.unit,
+                                                                quantity_by_order: quantity,
+                                                                quantity_by_stock: 0
+                                                            }
+                                                         ]
+                                                         
+                                                       })
+                                                       report.save((err,result) => {
+                                                         if(err){
+                                                             res.send('failed to save')
+                                                         } else {
+                                                             res.send('saved successfully')
+                                                         }
+                                                     })
+                                                 } else {
+                                                         console.log(result[0]);
+                                                 }
+                                             })
+                                            }
+                                        })
+                        
+                                     }
+                                 }
+                             })
+                         }
+                     }
+                 })
             }
         })
     }
+})
 
-    newSubCategory.save((err,result) => {
-        if (err) {
-            console.log(err)
-            logger.error(err.message, 'Bill Controller: createBill', 10)
-            let apiResponse = response.generate(true, 'Failed To create new Bill', 500, null)
-            res.send(apiResponse)
-        } else {
-            let apiResponse = response.generate(false, 'Bill Successfully created', 200, result)
-            res.send(apiResponse)
-        }
-    })
+
+ 
 }
 
 let getTotalSales = (req,res) => {
