@@ -168,7 +168,11 @@ let createBill = (req, res) => {
                                                         console.log(report[0])
                                                         for (let reportIngrdient of report[0].ingredient) {
 
+
                                                             for (let i of ingredient) {
+                                                                if(report[0].ingredient.includes(i.ingredient_id)){
+                                                                    console.log('item included')
+                                                                } 
                                                                 if (i.ingredient_id === reportIngrdient.ingredient_id) {
 
                                                                     let quantity = String((item.quantity * Number(i.quantity)) + Number(reportIngrdient.quantity_by_order))
@@ -192,34 +196,39 @@ let createBill = (req, res) => {
                                                                 }
 
                                                             }
-                                                                
-                                                                // else {
-                                                                //     let quantity = String(item.quantity * Number(i.quantity))
-                                                                //     let newObj = {
-                                                                //         ingredient_id: i.ingredient_id,
-                                                                //         category: i.category,
-                                                                //         category_id: i.category_id,
-                                                                //         ingredient: i.ingredient,
-                                                                //         unit_id: i.unit_id,
-                                                                //         unit: i.unit,
-                                                                //         quantity_by_order: quantity,
-                                                                //         quantity_by_stock: 0
-                                                                //     }
+                                                            for (let i of ingredient) {
+                                                                if (i.ingredient_id !== reportIngrdient.ingredient_id) {
 
-                                                                //     let data = {
-                                                                //         ingredient: report[0].ingredient.push(newObj)
-                                                                //     }
+                                                                  continue
 
-                                                                //     ingredientReportModel.update({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
-                                                                //         if (err) {
-                                                                //             console.log(err)
-                                                                //         } else {
-                                                                //             console.log(response)
-                                                                //         }
-                                                                //     })
+                                                                } else {
+                                                                                         
+                                                                    let quantity = String(item.quantity * Number(i.quantity))
+                                                                    let newObj = {
+                                                                        ingredient_id: i.ingredient_id,
+                                                                        category: i.category,
+                                                                        category_id: i.category_id,
+                                                                        ingredient: i.ingredient,
+                                                                        unit_id: i.unit_id,
+                                                                        unit: i.unit,
+                                                                        quantity_by_order: quantity,
+                                                                        quantity_by_stock: 0
+                                                                    }
 
+                                                                    let data = {
+                                                                        ingredient: report[0].ingredient.push(newObj)
+                                                                    }
 
-                                                                // }
+                                                                    ingredientReportModel.update({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
+                                                                        if (err) {
+                                                                            console.log(err)
+                                                                        } else {
+                                                                            console.log(response)
+                                                                        }
+                                                                    })
+                                                                }
+
+                                                            }
                                                             
                                                         }
                                                     }
