@@ -160,7 +160,7 @@ let createBill = (req, res) => {
                                                                     res.send(err)
                                                                 } else {
                                                                     console.log('successfully saved')
-                                                                    res.send('successfully saved')
+                
                                                                 }
                                                             })
                                                         
