@@ -126,7 +126,7 @@ let createBill = (req,res) => {
                                        res.send(apiResponse)
                                    } else {
                                        for(let i of result) {
-                                          let quantity = String(item.body.quantity * Number(i.quantity))
+                                          let quantity = String(item.quantity * Number(i.quantity))
                                           ingredientReportModel.find({'date': moment(time.now()).format('DD-MM-YYYY')}).exec((err,result) => {
                                               if(err){
                                                let apiResponse = response.generate(true, 'Failed to find the data', 500, null)
