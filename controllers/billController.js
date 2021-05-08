@@ -10,7 +10,7 @@ const billModel = mongoose.model('bill')
 const totalModel = mongoose.model('total')
 const foodIngredientModel = mongoose.model('foodIngredient');
 const ingredientReportModel = mongoose.model('ingredientReport');
-import * as moment from 'moment';
+const moment = require('moment')
 
 let getAllBill = (req,res) => {
     billModel.find()
