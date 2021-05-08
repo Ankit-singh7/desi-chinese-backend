@@ -73,7 +73,6 @@ console.log(appConfig);
 server.listen(process.env.PORT || appConfig.port);
 server.on('error', onError);
 server.on('listening', onListening);
-server.timeout = 240000;
 
 
 // end server listening code
