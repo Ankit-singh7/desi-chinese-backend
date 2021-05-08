@@ -129,23 +129,28 @@ let createBill = (req, res) => {
                                                         let apiResponse = response.generate(true, 'Failed to find the data', 500, null)
                                                         res.send(apiResponse)
                                                     } else if (check.isEmpty(report)) {
+                                                        let ingArray = [];
+
                                                         for (let i of ingredient) {
+
                                                             let quantity = String(item.quantity * Number(i.quantity))
+                                                            let obj = {
+
+                                                                ingredient_id: i.ingredient_id,
+                                                                category: i.category,
+                                                                category_id: i.category_id,
+                                                                ingredient: i.ingredient,
+                                                                unit_id: i.unit_id,
+                                                                unit: i.unit,
+                                                                quantity_by_order: quantity,
+                                                                quantity_by_stock: 0
+                                                            }
+                                                            ingArray.push(obj)
+                                                        
+                                                        }
                                                             let report = new ingredientReportModel({
                                                                 date: time.getNormalTime(),
-                                                                ingredient: [
-                                                                    {
-
-                                                                        ingredient_id: i.ingredient_id,
-                                                                        category: i.category,
-                                                                        category_id: i.category_id,
-                                                                        ingredient: i.ingredient,
-                                                                        unit_id: i.unit_id,
-                                                                        unit: i.unit,
-                                                                        quantity_by_order: quantity,
-                                                                        quantity_by_stock: 0
-                                                                    }
-                                                                ]
+                                                                ingredient: ingArray
 
                                                             })
 
@@ -156,7 +161,7 @@ let createBill = (req, res) => {
                                                                     console.log('successfully saved')
                                                                 }
                                                             })
-                                                        }
+                                                        
                                                     } else {
                                                         console.log(report[0])
                                                         for (let reportIngrdient of report[0].ingredient) {
@@ -165,12 +170,13 @@ let createBill = (req, res) => {
                                                                 if (i.ingredient_id === reportIngrdient.ingredient_id) {
 
                                                                     let quantity = String(item.quantity * Number(reportIngrdient.quantity_by_order))
+                                                                    console.log(quantity)
                                                                     reportIngrdient.quantity_by_order = quantity;
                                                                     let data = {
                                                                         ingredient: report[0].ingredient
                                                                     }
 
-                                                                    ingredientReportModel.update({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
+                                                                    ingredientReportModel.updateOne({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
                                                                         if (err) {
                                                                             console.log(err)
                                                                         } else {
