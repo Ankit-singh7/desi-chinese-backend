@@ -224,7 +224,7 @@ let signUpFunction = (req, res) => {
 
     let createUser = () => { 
         return new Promise((resolve, reject) => {
-            UserModel.findOne({ email: req.body.email })
+            adminModel.findOne({ email: req.body.email })
                 .exec((err, retrievedUserDetails) => {
                     if (err) {
                         logger.error(err.message, 'userController: createUser', 10)
