@@ -10,11 +10,13 @@ let foodSubCategorySchema = new Schema(
             index: true,
             unique: true
         },
+        category_name: {
+            type:String,
+            default:''
+        },
         category_id: {
             type:String,
-            default: '',
-            index: true,
-            unique: true
+            default: ''
         },
         name: {
             type:String,
@@ -23,6 +25,14 @@ let foodSubCategorySchema = new Schema(
         price: {
             type:Number,
             default:null
+        },
+        type: {
+            type: String,
+            default:''
+        },
+        status: {
+            type: String,
+            default:''
         },
         createdOn :{
             type:Date,

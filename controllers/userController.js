@@ -21,7 +21,7 @@ const applicationUrl = 'http://trego.tk' //url of frontend application
 /* Get all user Details */
 let getAllUser = (req, res) => {
     UserModel.find()
-        .select(' -__v -_id -password')
+        .select(' -__v -_id')
         .lean()
         .exec((err, result) => {
             if (err) {
@@ -47,7 +47,7 @@ let getAllUser = (req, res) => {
 */
 let getSingleUser = (req, res) => {
     UserModel.findOne({ 'userId': req.params.userId })
-        .select('-password -__v -_id')
+        .select('-__v -_id')
         .lean()
         .exec((err, result) => {
             if (err) {
@@ -240,7 +240,7 @@ let signUpFunction = (req, res) => {
                             lastName: req.body.lastName || '',
                             mobileNumber:req.body.mobileNumber,
                             email: req.body.email.toLowerCase(),
-                            password: passwordLib.hashpassword(req.body.password),
+                            password: req.body.password,
                             status:req.body.status,
                             createdOn: time.now()
                         })
@@ -323,104 +323,23 @@ let loginFunction = (req, res) => {
     }
 
     let validatePassword = (retrievedUserDetails) => {
+        console.log(retrievedUserDetails)
         console.log("validatePassword");
         return new Promise((resolve, reject) => {
-            passwordLib.comparePassword(req.body.password, retrievedUserDetails.password, (err, isMatch) => {
-                if (err) {
-                    console.log(err)
-                    logger.error(err.message, 'userController: validatePassword()', 10)
-                    let apiResponse = response.generate(true, 'Login Failed', 500, null)
-                    reject(apiResponse)
-                } else if (isMatch) {
-                    let retrievedUserDetailsObj = retrievedUserDetails.toObject()
-                    delete retrievedUserDetailsObj.password
-                    delete retrievedUserDetailsObj._id
-                    delete retrievedUserDetailsObj.__v
-                    delete retrievedUserDetailsObj.createdOn
-                    delete retrievedUserDetailsObj.modifiedOn
-                    resolve(retrievedUserDetailsObj)
-                } else {
-                    logger.info('Login Failed Due To Invalid Password', 'userController: validatePassword()', 10)
-                    let apiResponse = response.generate(true, 'Invalid password', 400, null)
-                    reject(apiResponse)
-                }
-            })
+            if(req.body.password === retrievedUserDetails.password) {
+                resolve(retrievedUserDetails)
+            } else {
+                logger.info('Login Failed Due To Invalid Password', 'userController: validatePassword()', 10)
+                let apiResponse = response.generate(true, 'Invalid password', 400, null)
+                reject(apiResponse)
+            }
         })
     }
 
-    let generateToken = (userDetails) => {
-        console.log("generate token");
-        return new Promise((resolve, reject) => {
-            token.generateToken(userDetails, (err, tokenDetails) => {
-                if (err) {
-                    console.log(err)
-                    let apiResponse = response.generate(true, 'Failed To Generate Token', 500, null)
-                    reject(apiResponse)
-                } else {
-                    tokenDetails.userId = userDetails.userId
-                    tokenDetails.userDetails = userDetails
-                    resolve(tokenDetails)
-                }
-            })
-        })
-    }
 
-    let saveToken = (tokenDetails) => {
-        console.log("save token");
-        return new Promise((resolve, reject) => {
-            AuthModel.findOne({ userId: tokenDetails.userId }, (err, retrievedTokenDetails) => {
-                if (err) {
-                    console.log(err.message, 'userController: saveToken', 10)
-                    let apiResponse = response.generate(true, 'Failed To Generate Token', 500, null)
-                    reject(apiResponse)
-                } else if (check.isEmpty(retrievedTokenDetails)) {
-                    let newAuthToken = new AuthModel({
-                        userId: tokenDetails.userId,
-                        authToken: tokenDetails.token,
-                        tokenSecret: tokenDetails.tokenSecret,
-                        tokenGenerationTime: time.now()
-                    })
-                    newAuthToken.save((err, newTokenDetails) => {
-                        if (err) {
-                            console.log(err)
-                            logger.error(err.message, 'userController: saveToken', 10)
-                            let apiResponse = response.generate(true, 'Failed To Generate Token', 500, null)
-                            reject(apiResponse)
-                        } else {
-                            let responseBody = {
-                                authToken: newTokenDetails.authToken,
-                                userDetails: tokenDetails.userDetails
-                            }
-                            resolve(responseBody)
-                        }
-                    })
-                } else {
-                    retrievedTokenDetails.authToken = tokenDetails.token
-                    retrievedTokenDetails.tokenSecret = tokenDetails.tokenSecret
-                    retrievedTokenDetails.tokenGenerationTime = time.now()
-                    retrievedTokenDetails.save((err, newTokenDetails) => {
-                        if (err) {
-                            console.log(err)
-                            logger.error(err.message, 'userController: saveToken', 10)
-                            let apiResponse = response.generate(true, 'Failed To Generate Token', 500, null)
-                            reject(apiResponse)
-                        } else {
-                            let responseBody = {
-                                authToken: newTokenDetails.authToken,
-                                userDetails: tokenDetails.userDetails
-                            }
-                            resolve(responseBody)
-                        }
-                    })
-                }
-            })
-        })
-    }
 
     findUser(req, res)
         .then(validatePassword)
-        .then(generateToken)
-        .then(saveToken)
         .then((resolve) => {
             let apiResponse = response.generate(false, 'Login Successful', 200, resolve)
             res.status(200)
@@ -836,7 +755,7 @@ let resetPasswordFunction = (req,res) => {
             res.send(apiResponse)
         } else {
             let options = {
-                password: passwordLib.hashpassword(req.body.password)
+                password: req.body.password
             }
 
             UserModel.update({'email':req.body.email},options)
@@ -854,6 +773,48 @@ let resetPasswordFunction = (req,res) => {
     })
 }
 
+let forgotPasswordFunction = (req,res) => {
+    UserModel.find({'email':req.body.email})
+    .select(' -__v -_id')
+    .lean()
+    .exec((err, result) => {
+        if (err) {
+            console.log(err)
+            logger.error(err.message, 'User Controller: getAllUser', 10)
+            let apiResponse = response.generate(true, 'Failed To Find User Details', 500, null)
+            res.send(apiResponse)
+        } else if (check.isEmpty(result)) {
+            logger.info('No User Found', 'User Controller: getAllUser')
+            let apiResponse = response.generate(true, 'No User Found', 404, null)
+            res.send(apiResponse)
+        } else {
+            console.log(result)
+            console.log(req.body.oldPassword)
+            if(req.body.oldPassword === result[0].password) {
+
+                let options = {
+                    password: req.body.newPassword
+                }
+    
+                UserModel.update({'email':req.body.email},options)
+                .select('-password')
+                .exec((err,result) => {
+                    if(err) {
+                        console.log(err)
+                    } else {
+    
+                        let apiResponse = response.generate(false, 'User Details Found', 200, result)
+                        res.send(apiResponse)
+                    }
+                })
+            } else {
+                let apiResponse = response.generate(true, 'Old Password is not correct', 500, null)
+                res.send(apiResponse)
+            }
+        }
+    })
+}
+
 
 module.exports = {
 
@@ -867,5 +828,6 @@ module.exports = {
     editUser: editUser,
     deleteUser: deleteUser,
     getAllUser:getAllUser,
-    resetPasswordFunction:resetPasswordFunction
+    resetPasswordFunction:resetPasswordFunction,
+    forgotPasswordFunction: forgotPasswordFunction
 }// end exports

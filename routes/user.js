@@ -126,6 +126,7 @@ module.exports.setRouter = (app) => {
 
     // params: userId, oldPassword,newPassword.
     app.post(`${baseUrl}/resetPassword`,userController.resetPasswordFunction);
+    app.post(`${baseUrl}/forgotPassword`,userController.forgotPasswordFunction);
     /**
      * @apiGroup users
      * @apiVersion  1.0.0

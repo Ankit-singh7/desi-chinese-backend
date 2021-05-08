@@ -7,25 +7,26 @@ const logger = require('./../libs/loggerLib');
 const check = require('../libs/checkLib')
 /* Models */
 const foodSubCategoryModel = mongoose.model('foodSubCategory')
+const foodCategoryModel = mongoose.model('foodCategory');
 
-let getAllFoodSubCategory = (req,res) => {
+let getAllFoodSubCategory = (req, res) => {
     foodSubCategoryModel.find()
-    .lean()
-    .exec((err,result) => {
-        if(err) {
-            console.log(err)
-            logger.error(err.message, 'FoodSubCategory Controller: getAllFoodSubCategory', 10)
-            let apiResponse = response.generate(true, 'Failed To Find Food Sub-Category Details', 500, null)
-            res.send(apiResponse)
-        }  else if (check.isEmpty(result)) {
-            logger.info('No Data Found', 'FoodCategory Controller: getAllFoodSubCategory')
-            let apiResponse = response.generate(true, 'No Data Found', 404, null)
-            res.send(apiResponse)
-        }  else {
-            let apiResponse = response.generate(false, 'All Food SubCategory Found', 200, result)
-            res.send(apiResponse)
-        }
-    })
+        .lean()
+        .exec((err, result) => {
+            if (err) {
+                console.log(err)
+                logger.error(err.message, 'FoodSubCategory Controller: getAllFoodSubCategory', 10)
+                let apiResponse = response.generate(true, 'Failed To Find Food Sub-Category Details', 500, null)
+                res.send(apiResponse)
+            } else if (check.isEmpty(result)) {
+                logger.info('No Data Found', 'FoodCategory Controller: getAllFoodSubCategory')
+                let apiResponse = response.generate(true, 'No Data Found', 404, null)
+                res.send(apiResponse)
+            } else {
+                let apiResponse = response.generate(false, 'All Food SubCategory Found', 200, result)
+                res.send(apiResponse)
+            }
+        })
 }
 
 
@@ -55,68 +56,96 @@ let getSingleSubCategoryDetail = (req, res) => {
 }// end get single category
 
 
-let createSubCategory = (req,res) => {
+let createSubCategory = (req, res) => {
     console.log(req.body)
-    let newSubCategory = new foodSubCategoryModel({
-        sub_category_id: shortid.generate(),
-        category_id: req.body.category_id,
-        name: req.body.name,
-        price: req.body.price,
-        createdOn: time.now()
-    })
-
-    newSubCategory.save((err,result) => {
+    let catName;
+    foodCategoryModel.find({ 'category_id': req.body.category_id }, (err, result) => {
         if (err) {
             console.log(err)
-            logger.error(err.message, 'FoodSubCategory Controller: createSubCategory', 10)
-            let apiResponse = response.generate(true, 'Failed To create new food category', 500, null)
-            res.send(apiResponse)
         } else {
-            let apiResponse = response.generate(false, 'food Sub Category Successfully created', 200, result)
-            res.send(apiResponse)
+            console.log(result)
+            catName = result[0].name
+
+            let newSubCategory = new foodSubCategoryModel({
+                sub_category_id: shortid.generate(),
+                category_id: req.body.category_id,
+                category_name: catName,
+                name: req.body.name,
+                price: req.body.price,
+                type: req.body.type,
+                status: req.body.status,
+                createdOn: time.now()
+            })
+
+            newSubCategory.save((err, result) => {
+                if (err) {
+                    console.log(err)
+                    logger.error(err.message, 'FoodSubCategory Controller: createSubCategory', 10)
+                    let apiResponse = response.generate(true, 'Failed To create new food category', 500, null)
+                    res.send(apiResponse)
+                } else {
+                    let apiResponse = response.generate(false, 'food Sub Category Successfully created', 200, result)
+                    res.send(apiResponse)
+                }
+            })
         }
     })
+
+
 }
 
 
-let deleteSubCategory = (req,res) => {
-    foodSubCategoryModel.findOneAndRemove({'sub_category_id':req.params.id})
-    .exec((err,result) => {
-        if (err) {
-            console.log(err)
-            logger.error(err.message, 'FoodSubCategory Controller: deleteSubCatergory', 10)
-            let apiResponse = response.generate(true, 'Failed To delete food sub category', 500, null)
-            res.send(apiResponse)
-        } else if (check.isEmpty(result)) {
-            logger.info('No Category Found', 'FoodSubCategory Controller: deleteSubCategory')
-            let apiResponse = response.generate(true, 'No Detail Found', 404, null)
-            res.send(apiResponse)
-        } else {
-            let apiResponse = response.generate(false, 'Food Sub Category Successfully deleted', 200, result)
-            res.send(apiResponse)
-        }
-    })
+
+
+let deleteSubCategory = (req, res) => {
+    foodSubCategoryModel.findOneAndRemove({ 'sub_category_id': req.params.id })
+        .exec((err, result) => {
+            if (err) {
+                console.log(err)
+                logger.error(err.message, 'FoodSubCategory Controller: deleteSubCatergory', 10)
+                let apiResponse = response.generate(true, 'Failed To delete food sub category', 500, null)
+                res.send(apiResponse)
+            } else if (check.isEmpty(result)) {
+                logger.info('No Category Found', 'FoodSubCategory Controller: deleteSubCategory')
+                let apiResponse = response.generate(true, 'No Detail Found', 404, null)
+                res.send(apiResponse)
+            } else {
+                let apiResponse = response.generate(false, 'Food Sub Category Successfully deleted', 200, result)
+                res.send(apiResponse)
+            }
+        })
 }
 
 
-let updateSubCategory = (req,res) => {
-    let option = req.body
-    foodCategoryModel.update({'sub_category_id':req.params.id},option,{multi:true})
-    .exec((err,result) => {
+let updateSubCategory = (req, res) => {
+    let catName;
+    foodCategoryModel.find({ 'category_id': req.body.category_id }, (err, result) => {
         if (err) {
             console.log(err)
-            logger.error(err.message, 'FoodSubCategory Controller: updateSubCatergory', 10)
-            let apiResponse = response.generate(true, 'Failed To delete food sub category', 500, null)
-            res.send(apiResponse)
-        } else if (check.isEmpty(result)) {
-            logger.info('No Category Found', 'FoodSubCategory Controller: updateSubCategory')
-            let apiResponse = response.generate(true, 'No Detail Found', 404, null)
-            res.send(apiResponse)
         } else {
-            let apiResponse = response.generate(false, 'Food Sub Category Successfully updated', 200, result)
-            res.send(apiResponse)
+            console.log(result)
+            catName = result[0].name
+            let option = req.body
+            option.category_name = catName
+            foodSubCategoryModel.update({ 'sub_category_id': req.params.id }, option, { multi: true })
+                .exec((err, result) => {
+                    if (err) {
+                        console.log(err)
+                        logger.error(err.message, 'FoodSubCategory Controller: updateSubCatergory', 10)
+                        let apiResponse = response.generate(true, 'Failed To delete food sub category', 500, null)
+                        res.send(apiResponse)
+                    } else if (check.isEmpty(result)) {
+                        logger.info('No Category Found', 'FoodSubCategory Controller: updateSubCategory')
+                        let apiResponse = response.generate(true, 'No Detail Found', 404, null)
+                        res.send(apiResponse)
+                    } else {
+                        let apiResponse = response.generate(false, 'Food Sub Category Successfully updated', 200, result)
+                        res.send(apiResponse)
+                    }
+                })
         }
     })
+
 }
 
 
