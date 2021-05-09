@@ -34,13 +34,13 @@ let ingredientReportSchema = new Schema(
                     default: ''
                 },
                 quantity_by_order: {
-                    type: String,
-                    default: ''
+                    type: Number,
+                    default: null
                 }
                 ,
                 quantity_by_stock: {
-                    type: String,
-                    default: ''
+                    type: Number,
+                    default: null
                 }
             }
         ]

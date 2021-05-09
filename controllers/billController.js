@@ -181,7 +181,7 @@ let createBill = (req, res) => {
                                                                 console.log('edited obj')
                                                                 console.log('item quantity',item.quantity)
                                                                 console.log('ingredient quantity', i.quantity)
-                                                                obj.quantity_by_order = String((item.quantity * Number(i.quantity)) + Number(obj.quantity_by_order))
+                                                                obj.quantity_by_order = String((item.quantity * Number(i.quantity)) + obj.quantity_by_order)
                                                                 console.log('obj quantity',  obj.quantity_by_order)
                                                                 console.log(obj)
                                                                 let data = {
