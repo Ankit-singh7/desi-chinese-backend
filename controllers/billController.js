@@ -181,11 +181,11 @@ let createBill = (req, res) => {
                                                                 console.log('edited obj')
                                                                 console.log('item quantity',item.quantity)
                                                                 console.log('ingredient quantity', i.quantity)
-                                                                obj.quantity_by_order = String((item.quantity * Number(i.quantity)) + obj.quantity_by_order)
-                                                                console.log('obj quantity',  obj.quantity_by_order)
+                                                                obj[0].quantity_by_order = String((item.quantity * Number(i.quantity)) + obj[0].quantity_by_order)
+                                                                console.log('obj quantity',  obj[0].quantity_by_order)
                                                                 console.log(obj)
                                                                 let data = {
-                                                                    ingredient: report[0].ingredient.push(obj)
+                                                                    ingredient: report[0].ingredient.push(obj[0])
                                                                 }
                                                                 ingredientReportModel.update({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
                                                                     if (err) {
