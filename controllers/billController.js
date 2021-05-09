@@ -124,68 +124,83 @@ let createBill = (req, res) => {
                                             let ingArray = []
                                             let product;
                                             let i = 0
-                                            let length = req.body.products.length
-                                            for (i = 0;i<req.body.products.length;i++) {
-                                                console.log('inside product')
-                                                product = req.body.products[i]
-                                                console.log(req.body.products[i].quantity)
-                                                foodIngredientModel.find({ 'sub_category_id': req.body.products[i].food_id }, (err, ingredient) => {
-                                                    if (err) {
-                                                        res.send('Failed to find the ingredients')
-                                                    } else if (check.isEmpty(ingredient)) {
-                                                        let apiResponse = response.generate(true, 'No Detail Found', 404, null)
-                                                        res.send(apiResponse)
-                                                    } else {
-                                                        console.log('here')
-                                                        console.log(product.quantity)
-                                                        console.log(ingredient)
-                                                        for (let j of ingredient) {
-                                                             console.log('product', product)
-                                                             console.log('ingredient',j.quantity)
-                                                            let quantity = String(product.quantity * Number(j.quantity))
-                                                            let obj = {
-
-                                                                ingredient_id: j.ingredient_id,
-                                                                category: j.category,
-                                                                category_id: j.category_id,
-                                                                ingredient: j.ingredient,
-                                                                unit_id: j.unit_id,
-                                                                unit: j.unit,
-                                                                quantity_by_order: quantity,
-                                                                quantity_by_stock: 0
+                                            let createObj = () => {
+                                                return new Promise((resolve,reject) => {
+                                                    for (i = 0;i<req.body.products.length;i++) {
+                                                        console.log('inside product')
+                                                        product = req.body.products[i]
+                                                        console.log(req.body.products[i].quantity)
+                                                        foodIngredientModel.find({ 'sub_category_id': req.body.products[i].food_id }, (err, ingredient) => {
+                                                            if (err) {
+                                                                reject('Failed to find the ingredients')
+                                                            } else if (check.isEmpty(ingredient)) {
+                                                                let apiResponse = response.generate(true, 'No Detail Found', 404, null)
+                                                                 console.log(apiResponse)
+                                                            } else {
+                                                                console.log('here')
+                                                                console.log(product.quantity)
+                                                                console.log(ingredient)
+                                                                for (let j of ingredient) {
+                                                                     console.log('product', product)
+                                                                     console.log('ingredient',j.quantity)
+                                                                    let quantity = String(product.quantity * Number(j.quantity))
+                                                                    let obj = {
+        
+                                                                        ingredient_id: j.ingredient_id,
+                                                                        category: j.category,
+                                                                        category_id: j.category_id,
+                                                                        ingredient: j.ingredient,
+                                                                        unit_id: j.unit_id,
+                                                                        unit: j.unit,
+                                                                        quantity_by_order: quantity,
+                                                                        quantity_by_stock: 0
+                                                                    }
+                                                                    console.log(obj)
+                                                                    ingArray.push(obj)
+                                                                    resolve(ingArray)
+        
+                                                                }
+                                         
                                                             }
-                                                            console.log(obj)
-                                                            ingArray.push(obj)
-                                                            if(i === length) {
-                                                                console.log(i)
-                                                                console.log(length)
-                                                                console.log('inside function')
-                                                              let report = new ingredientReportModel({
-                                                                  date: time.getNormalTime(),
-                                                                  ingredient: ingArray
-          
-                                                              })
-          
-                                                              report.save((err, result) => {
-                                                                  if (err) {
-                                                                      console.log('failed to save')
-                                                                      res.send(err)
-                                                                  } else {
-                                                                      console.log('successfully saved')
-          
-                                                                  }
-                                                              })
-                                                          }
-
-                                                        }
-                                 
+        
+                                                        })
+                           
+                                                       
+                                                    
                                                     }
-
                                                 })
-                   
-                                               
-                                            
                                             }
+
+                                            let saveIng = (arr) => {
+                                               return new Promise((resolve,reject) => {
+                                                let report = new ingredientReportModel({
+                                                    date: time.getNormalTime(),
+                                                    ingredient: arr
+  
+                                                })
+  
+                                                report.save((err, result) => {
+                                                    if (err) {
+                                                        console.log('failed to save')
+                                                        res.send(err)
+                                                    } else {
+                                                        console.log('successfully saved')
+  
+                                                    }
+                                                })
+                                               })
+                                            }
+
+                                
+   
+                                            createObj(req,res).then(saveIng).then((resolve)=> {
+                                                console.log('successfully saved')
+                                            }).catch((err) => {
+                                                console.log("errorhandler");
+                                                console.log(err);
+                                            })
+           
+
 
 
 
