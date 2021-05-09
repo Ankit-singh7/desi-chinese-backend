@@ -183,8 +183,9 @@ let createBill = (req, res) => {
                                                                 console.log('ingredient quantity', i.quantity)
                                                                 obj[0].quantity_by_order = String((item.quantity * Number(i.quantity)) + obj[0].quantity_by_order)
                                                                 console.log('obj quantity',  obj[0].quantity_by_order)
-                                                                console.log(obj)
-                                                                let newArr = report[0].ingredient.push(obj[0])
+                                                                let newObj = obj[0]
+                                                                console.log('newObj',newObj)
+                                                                let newArr = report[0].ingredient.push(newObj)
                                                                 console.log(newArr)
                                                                 let data = {
                                                                     ingredient: newArr
