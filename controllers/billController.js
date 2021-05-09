@@ -132,17 +132,17 @@ let createBill = (req, res) => {
                                                         let apiResponse = response.generate(true, 'No Detail Found', 404, null)
                                                         res.send(apiResponse)
                                                     } else {
-                                                        for (let i of ingredient) {
+                                                        for (let j of ingredient) {
 
-                                                            let quantity = String(req.body.products[i].quantity * Number(i.quantity))
+                                                            let quantity = String(req.body.products[i].quantity * Number(j.quantity))
                                                             let obj = {
 
-                                                                ingredient_id: i.ingredient_id,
-                                                                category: i.category,
-                                                                category_id: i.category_id,
-                                                                ingredient: i.ingredient,
-                                                                unit_id: i.unit_id,
-                                                                unit: i.unit,
+                                                                ingredient_id: j.ingredient_id,
+                                                                category: j.category,
+                                                                category_id: j.category_id,
+                                                                ingredient: j.ingredient,
+                                                                unit_id: j.unit_id,
+                                                                unit: j.unit,
                                                                 quantity_by_order: quantity,
                                                                 quantity_by_stock: 0
                                                             }
