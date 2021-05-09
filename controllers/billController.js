@@ -229,12 +229,12 @@ let createBill = (req, res) => {
                                                                         let data = {
                                                                             ingredient: report[0].ingredient
                                                                         }
-                                                                        ingredientReportModel.updateOne({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
+                                                                        ingredientReportModel.update({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
                                                                             if (err) {
                                                                                 console.log(err)
                                                                             } else {
                                                                                 console.log(response)
-                                                                                console.log('aftereachuptate', report[0].ingredient)
+                                                                                console.log('successfully updated')
                                                                             }
                                                                         })
                                                                     }
@@ -263,7 +263,7 @@ let createBill = (req, res) => {
                                                                     if (err) {
                                                                         console.log(err)
                                                                     } else {
-                                                                        console.log(response)
+                                                                        console.log('successfully updated')
                                                                     }
                                                                 })
                                                             }
