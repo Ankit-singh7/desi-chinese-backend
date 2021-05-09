@@ -93,7 +93,7 @@ let createBill = (req, res) => {
                             total_id: 123,
                             total: req.body.total_price
                         })
-    
+
                         total.save((err, result) => {
                             if (err) {
                                 console.log('error occured while creating the total')
@@ -115,27 +115,26 @@ let createBill = (req, res) => {
                                 } else {
                                     console.log(result)
                                     console.log(newTotal)
-                                    for (let item of req.body.products) {
-                                        console.log('item',item)
-                                        foodIngredientModel.find({ 'sub_category_id': item.food_id }, (err, ingredient) => {
-                                            if (err) {
-                                                res.send('Failed to find the ingredients')
-                                            } else if (check.isEmpty(ingredient)) {
-                                                let apiResponse = response.generate(true, 'No Detail Found', 404, null)
-                                                res.send(apiResponse)
-                                            } else {
-                                                ingredientReportModel.find({ 'date': time.getNormalTime() }).exec((err, report) => {
+
+                                    ingredientReportModel.find({ 'date': time.getNormalTime() }).exec((err, report) => {
+                                        if (err) {
+                                            let apiResponse = response.generate(true, 'Failed to find the data', 500, null)
+                                            res.send(apiResponse)
+                                        } else if (check.isEmpty(report)) {
+                                            for (let item of req.body.products) {
+                                                console.log('item', item)
+                                                foodIngredientModel.find({ 'sub_category_id': item.food_id }, (err, ingredient) => {
                                                     if (err) {
-                                                        let apiResponse = response.generate(true, 'Failed to find the data', 500, null)
+                                                        res.send('Failed to find the ingredients')
+                                                    } else if (check.isEmpty(ingredient)) {
+                                                        let apiResponse = response.generate(true, 'No Detail Found', 404, null)
                                                         res.send(apiResponse)
-                                                    } else if (check.isEmpty(report)) {
-                                                        let ingArray = [];
-    
+                                                    } else {
                                                         for (let i of ingredient) {
-    
+
                                                             let quantity = String(item.quantity * Number(i.quantity))
                                                             let obj = {
-    
+
                                                                 ingredient_id: i.ingredient_id,
                                                                 category: i.category,
                                                                 category_id: i.category_id,
@@ -146,35 +145,50 @@ let createBill = (req, res) => {
                                                                 quantity_by_stock: 0
                                                             }
                                                             ingArray.push(obj)
-    
+
                                                         }
                                                         let report = new ingredientReportModel({
                                                             date: time.getNormalTime(),
                                                             ingredient: ingArray
-    
+
                                                         })
-    
+
                                                         report.save((err, result) => {
                                                             if (err) {
                                                                 console.log('failed to save')
                                                                 res.send(err)
                                                             } else {
                                                                 console.log('successfully saved')
-    
+
                                                             }
                                                         })
-    
-                                                    } else {
-                                                        let payloadArr = []
-                                                        for (let i of ingredient) {
-    
-                                                            let isThere = report[0].ingredient.some((item => item.ingredient_id === i.ingredient_id))
-    
-    
-                                                            if (isThere) {
+                                                    }
 
-                                                                for(let ri of report[0].ingredient) {
-                                                                    if(ri.ingredient_id === i.ingredient_id) {
+                                                })
+                                            }
+
+
+
+                                        } else {
+                                            for (let item of req.body.products) {
+                                                console.log('item', item)
+                                                foodIngredientModel.find({ 'sub_category_id': item.food_id }, (err, ingredient) => {
+                                                    if (err) {
+                                                        res.send('Failed to find the ingredients')
+                                                    } else if (check.isEmpty(ingredient)) {
+                                                        let apiResponse = response.generate(true, 'No Detail Found', 404, null)
+                                                        res.send(apiResponse)
+                                                    } else {
+
+                                                        for (let i of ingredient) {
+            
+                                                            let isThere = report[0].ingredient.some((item => item.ingredient_id === i.ingredient_id))
+            
+            
+                                                            if (isThere) {
+            
+                                                                for (let ri of report[0].ingredient) {
+                                                                    if (ri.ingredient_id === i.ingredient_id) {
                                                                         ri.quantity_by_order = String((item.quantity * Number(i.quantity)) + ri.quantity_by_order)
                                                                         let data = {
                                                                             ingredient: report[0].ingredient
@@ -184,38 +198,12 @@ let createBill = (req, res) => {
                                                                                 console.log(err)
                                                                             } else {
                                                                                 console.log(response)
-                                                                                console.log('aftereachuptate',report[0].ingredient)
+                                                                                console.log('aftereachuptate', report[0].ingredient)
                                                                             }
                                                                         })
                                                                     }
                                                                 }
-                                                        
-                                                                // let obj = report[0].ingredient.filter((item) => item.ingredient_id === i.ingredient_id)
-                                                                // console.log(obj)
-                                                                // console.log('all ingredient except obj')
-                                                                // report[0].ingredient = report[0].ingredient.filter((item) => item.ingredient_id !== i.ingredient_id)
-                                                                // console.log(report[0].ingredient)
-                                                                // console.log('edited obj')
-                                                                // console.log('item quantity',item.quantity)
-                                                                // console.log('ingredient quantity', i.quantity)
-                                                                // obj[0].quantity_by_order = String((item.quantity * Number(i.quantity)) + obj[0].quantity_by_order)
-                                                                // delete obj[0]._id
-                                                                // console.log('obj quantity',  obj[0].quantity_by_order)
-                                                                // let newObj = obj[0]
-                                                                // console.log('newObj',newObj)
-                                                                // report[0].ingredient = [newObj,...report[0].ingredient]
-                                                                // console.log(newArr)
-                                                                // let data = {
-                                                                //     ingredient: report[0].ingredient
-                                                                // }
-                                                                // console.log('data',data.ingredient)
-                                                                // ingredientReportModel.updateOne({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
-                                                                //     if (err) {
-                                                                //         console.log(err)
-                                                                //     } else {
-                                                                //         console.log(response)
-                                                                //     }
-                                                                // })
+            
                                                             } else {
                                                                 let quantity = String(item.quantity * Number(i.quantity))
                                                                 let newObj = {
@@ -228,13 +216,13 @@ let createBill = (req, res) => {
                                                                     quantity_by_order: quantity,
                                                                     quantity_by_stock: 0
                                                                 }
-
+            
                                                                 let newArr = [...report[0].ingredient, newObj]
-    
+            
                                                                 let data = {
                                                                     ingredient: newArr
                                                                 }
-    
+            
                                                                 ingredientReportModel.update({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
                                                                     if (err) {
                                                                         console.log(err)
@@ -243,15 +231,17 @@ let createBill = (req, res) => {
                                                                     }
                                                                 })
                                                             }
-    
+            
                                                         }
                                                     }
                                                 })
-                                             console.log('item end')
                                             }
-                                        })
-                                        continue;
-                                    }
+                                        }
+                                    })
+                                    console.log('item end')
+
+
+
                                     res.send('bill Created')
                                 }
                             })
