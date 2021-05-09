@@ -122,9 +122,11 @@ let createBill = (req, res) => {
                                             res.send(apiResponse)
                                         } else if (check.isEmpty(report)) {
                                             let ingArray = []
+                                            let product;
                                             let i;
                                             for (i = 0;i<req.body.products.length;i++) {
                                                 console.log('inside product')
+                                                product = req.body.products[i]
                                                 console.log(req.body.products[i].quantity)
                                                 foodIngredientModel.find({ 'sub_category_id': req.body.products[i].food_id }, (err, ingredient) => {
                                                     if (err) {
@@ -134,12 +136,12 @@ let createBill = (req, res) => {
                                                         res.send(apiResponse)
                                                     } else {
                                                         console.log('here')
-                                                        console.log(req.body.products[i].quantity)
+                                                        console.log(product.quantity)
                                                         console.log(ingredient)
                                                         for (let j of ingredient) {
-                                                             console.log('product',req.body.products[i].quantity)
+                                                             console.log('product', product)
                                                              console.log('ingredient',j.quantity)
-                                                            let quantity = String(req.body.products[i].quantity * Number(j.quantity))
+                                                            let quantity = String(product.quantity * Number(j.quantity))
                                                             let obj = {
 
                                                                 ingredient_id: j.ingredient_id,
