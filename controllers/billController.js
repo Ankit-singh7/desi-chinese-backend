@@ -134,6 +134,8 @@ let createBill = (req, res) => {
                                                         res.send(apiResponse)
                                                     } else {
                                                         console.log('here')
+                                                        console.log(req.body.products[i].quantity)
+                                                        console.log(ingredient)
                                                         for (let j of ingredient) {
                                                              console.log('product',req.body.products[i].quantity)
                                                              console.log('ingredient',j.quantity)
