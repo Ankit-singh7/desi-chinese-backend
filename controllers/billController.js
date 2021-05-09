@@ -124,8 +124,8 @@ let createBill = (req, res) => {
                                             let ingArray = []
                                             let i;
                                             for (i = 0;i<req.body.products.length;i++) {
-                                                console.log('item', item)
-                                                foodIngredientModel.find({ 'sub_category_id': item.food_id }, (err, ingredient) => {
+                                                console.log(req.body.products[i])
+                                                foodIngredientModel.find({ 'sub_category_id': req.body.products[i].food_id }, (err, ingredient) => {
                                                     if (err) {
                                                         res.send('Failed to find the ingredients')
                                                     } else if (check.isEmpty(ingredient)) {
@@ -134,7 +134,7 @@ let createBill = (req, res) => {
                                                     } else {
                                                         for (let i of ingredient) {
 
-                                                            let quantity = String(item.quantity * Number(i.quantity))
+                                                            let quantity = String(req.body.products[i].quantity * Number(i.quantity))
                                                             let obj = {
 
                                                                 ingredient_id: i.ingredient_id,
