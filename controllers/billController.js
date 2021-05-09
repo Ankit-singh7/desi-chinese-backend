@@ -122,7 +122,8 @@ let createBill = (req, res) => {
                                             res.send(apiResponse)
                                         } else if (check.isEmpty(report)) {
                                             let ingArray = []
-                                            for (let item of req.body.products) {
+                                            let i;
+                                            for (i = 0;i<req.body.products.length;i++) {
                                                 console.log('item', item)
                                                 foodIngredientModel.find({ 'sub_category_id': item.food_id }, (err, ingredient) => {
                                                     if (err) {
@@ -152,23 +153,28 @@ let createBill = (req, res) => {
                                                     }
 
                                                 })
+                                                   if(i === req.body.products.length) {
+   
+                                                       let report = new ingredientReportModel({
+                                                           date: time.getNormalTime(),
+                                                           ingredient: ingArray
+   
+                                                       })
+   
+                                                       report.save((err, result) => {
+                                                           if (err) {
+                                                               console.log('failed to save')
+                                                               res.send(err)
+                                                           } else {
+                                                               console.log('successfully saved')
+   
+                                                           }
+                                                       })
+                                                   }
+                                               
+                                            
                                             }
 
-                                            let report = new ingredientReportModel({
-                                                date: time.getNormalTime(),
-                                                ingredient: ingArray
-
-                                            })
-
-                                            report.save((err, result) => {
-                                                if (err) {
-                                                    console.log('failed to save')
-                                                    res.send(err)
-                                                } else {
-                                                    console.log('successfully saved')
-
-                                                }
-                                            })
 
 
 
