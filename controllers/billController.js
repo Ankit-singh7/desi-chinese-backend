@@ -116,7 +116,7 @@ let createBill = (req, res) => {
                                     console.log(result)
                                     console.log(newTotal)
                                     for (let item of req.body.products) {
-                                        console.log(item)
+                                        console.log('item',item)
                                         foodIngredientModel.find({ 'sub_category_id': item.food_id }, (err, ingredient) => {
                                             if (err) {
                                                 res.send('Failed to find the ingredients')
@@ -184,6 +184,7 @@ let createBill = (req, res) => {
                                                                                 console.log(err)
                                                                             } else {
                                                                                 console.log(response)
+                                                                                console.log('aftereachuptate',report[0].ingredient)
                                                                             }
                                                                         })
                                                                     }
@@ -246,7 +247,7 @@ let createBill = (req, res) => {
                                                         }
                                                     }
                                                 })
-    
+                                             console.log('item end')
                                             }
                                         })
                                         continue;
