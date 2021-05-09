@@ -166,13 +166,14 @@ let createBill = (req, res) => {
     
                                                     } else {
                                                         console.log(report[0])
-                                                        let newArr;
+                                                        let newArr = [];
                                                         for (let i of ingredient) {
     
                                                             let isThere = report[0].ingredient.some((item => item.ingredient_id === i.ingredient_id))
     
     
                                                             if (isThere) {
+                                                        
                                                                 let obj = report[0].ingredient.filter((item) => item.ingredient_id === i.ingredient_id)
                                                                 console.log(obj)
                                                                 console.log('all ingredient except obj')
@@ -186,7 +187,7 @@ let createBill = (req, res) => {
                                                                 console.log('obj quantity',  obj[0].quantity_by_order)
                                                                 let newObj = obj[0]
                                                                 console.log('newObj',newObj)
-                                                                let newArr = report[0].ingredient.push(newObj)
+                                                                let newArr = [newObj,...report[0].ingredient]
                                                                 console.log(newArr)
                                                                 let data = {
                                                                     ingredient: newArr
