@@ -93,7 +93,7 @@ let createBill = (req, res) => {
                             total_id: 123,
                             total: req.body.total_price
                         })
-
+    
                         total.save((err, result) => {
                             if (err) {
                                 console.log('error occured while creating the total')
@@ -130,12 +130,12 @@ let createBill = (req, res) => {
                                                         res.send(apiResponse)
                                                     } else if (check.isEmpty(report)) {
                                                         let ingArray = [];
-
+    
                                                         for (let i of ingredient) {
-
+    
                                                             let quantity = String(item.quantity * Number(i.quantity))
                                                             let obj = {
-
+    
                                                                 ingredient_id: i.ingredient_id,
                                                                 category: i.category,
                                                                 category_id: i.category_id,
@@ -146,32 +146,32 @@ let createBill = (req, res) => {
                                                                 quantity_by_stock: 0
                                                             }
                                                             ingArray.push(obj)
-
+    
                                                         }
                                                         let report = new ingredientReportModel({
                                                             date: time.getNormalTime(),
                                                             ingredient: ingArray
-
+    
                                                         })
-
+    
                                                         report.save((err, result) => {
                                                             if (err) {
                                                                 console.log('failed to save')
                                                                 res.send(err)
                                                             } else {
                                                                 console.log('successfully saved')
-
+    
                                                             }
                                                         })
-
+    
                                                     } else {
                                                         console.log(report[0])
-
+                                                        let newArr;
                                                         for (let i of ingredient) {
-
+    
                                                             let isThere = report[0].ingredient.some((item => item.ingredient_id === i.ingredient_id))
-
-
+    
+    
                                                             if (isThere) {
                                                                 let obj = report[0].ingredient.filter((item) => item.ingredient_id === i.ingredient_id)
                                                                 console.log(obj)
@@ -182,6 +182,7 @@ let createBill = (req, res) => {
                                                                 console.log('item quantity',item.quantity)
                                                                 console.log('ingredient quantity', i.quantity)
                                                                 obj[0].quantity_by_order = String((item.quantity * Number(i.quantity)) + obj[0].quantity_by_order)
+                                                                delete obj._id
                                                                 console.log('obj quantity',  obj[0].quantity_by_order)
                                                                 let newObj = obj[0]
                                                                 console.log('newObj',newObj)
@@ -191,7 +192,7 @@ let createBill = (req, res) => {
                                                                     ingredient: newArr
                                                                 }
                                                                 console.log('data',data.ingredient)
-                                                                ingredientReportModel.update({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
+                                                                ingredientReportModel.updateOne({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
                                                                     if (err) {
                                                                         console.log(err)
                                                                     } else {
@@ -210,11 +211,11 @@ let createBill = (req, res) => {
                                                                     quantity_by_order: quantity,
                                                                     quantity_by_stock: 0
                                                                 }
-
+    
                                                                 let data = {
                                                                     ingredient: report[0].ingredient.push(newObj)
                                                                 }
-
+    
                                                                 ingredientReportModel.update({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
                                                                     if (err) {
                                                                         console.log(err)
@@ -223,11 +224,11 @@ let createBill = (req, res) => {
                                                                     }
                                                                 })
                                                             }
-
+    
                                                         }
                                                     }
                                                 })
-
+    
                                             }
                                         })
                                     }
