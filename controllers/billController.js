@@ -157,14 +157,14 @@ let createBill = (req, res) => {
                                                                     }
                                                                     console.log(obj)
                                                                     ingArray.push(obj)
-                                                                    resolve(ingArray)
-        
+                                                                    
                                                                 }
-                                         
+                                                                
                                                             }
-        
+                                                            
                                                         })
-                           
+                                                        
+                                                        resolve(ingArray)
                                                        
                                                     
                                                     }
