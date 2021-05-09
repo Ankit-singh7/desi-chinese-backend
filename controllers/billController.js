@@ -123,7 +123,8 @@ let createBill = (req, res) => {
                                         } else if (check.isEmpty(report)) {
                                             let ingArray = []
                                             let product;
-                                            let i;
+                                            let i = 0
+                                            let length = req.body.products.length
                                             for (i = 0;i<req.body.products.length;i++) {
                                                 console.log('inside product')
                                                 product = req.body.products[i]
@@ -155,7 +156,9 @@ let createBill = (req, res) => {
                                                             }
                                                             console.log(obj)
                                                             ingArray.push(obj)
-                                                            if(i === req.body.products.length) {
+                                                            if(i === length) {
+                                                                console.log(i)
+                                                                console.log(length)
                                                                 console.log('inside function')
                                                               let report = new ingredientReportModel({
                                                                   date: time.getNormalTime(),
