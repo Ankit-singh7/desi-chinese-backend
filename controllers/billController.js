@@ -153,6 +153,7 @@ let createBill = (req, res) => {
                                                                 quantity_by_order: quantity,
                                                                 quantity_by_stock: 0
                                                             }
+                                                            console.log(obj)
                                                             ingArray.push(obj)
 
                                                         }
@@ -161,7 +162,7 @@ let createBill = (req, res) => {
 
                                                 })
                                                    if(i === req.body.products.length) {
-   
+                                                         console.log('inside function')
                                                        let report = new ingredientReportModel({
                                                            date: time.getNormalTime(),
                                                            ingredient: ingArray
