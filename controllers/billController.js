@@ -249,6 +249,7 @@ let createBill = (req, res) => {
     
                                             }
                                         })
+                                        continue;
                                     }
                                     res.send('bill Created')
                                 }
