@@ -121,6 +121,7 @@ let createBill = (req, res) => {
                                             let apiResponse = response.generate(true, 'Failed to find the data', 500, null)
                                             res.send(apiResponse)
                                         } else if (check.isEmpty(report)) {
+                                            let ingArray = []
                                             for (let item of req.body.products) {
                                                 console.log('item', item)
                                                 foodIngredientModel.find({ 'sub_category_id': item.food_id }, (err, ingredient) => {
@@ -177,7 +178,7 @@ let createBill = (req, res) => {
                                                         res.send('Failed to find the ingredients')
                                                     } else if (check.isEmpty(ingredient)) {
                                                         let apiResponse = response.generate(true, 'No Detail Found', 404, null)
-                                                        res.send(apiResponse)
+                                                        console.log('No ingredient')
                                                     } else {
 
                                                         for (let i of ingredient) {
