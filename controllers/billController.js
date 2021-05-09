@@ -166,72 +166,113 @@ let createBill = (req, res) => {
                                                         
                                                     } else {
                                                         console.log(report[0])
-                                                        for (let reportIngrdient of report[0].ingredient) {
-
 
                                                             for (let i of ingredient) {
-                                                                if(report[0].ingredient.includes(i.ingredient_id)){
-                                                                    console.log('item included')
-                                                                } 
-                                                                if (i.ingredient_id === reportIngrdient.ingredient_id) {
+                                                                 
+                                                              let isThere =  report[0].ingredient.some((item => item.ingredient_id === i.ingredient_id))
 
-                                                                    let quantity = String((item.quantity * Number(i.quantity)) + Number(reportIngrdient.quantity_by_order))
-                                                                    console.log(quantity)
-                                                                    reportIngrdient.quantity_by_order = quantity;
-                                                                    let data = {
-                                                                        ingredient: report[0].ingredient
-                                                                    }
-                                                                    console.log(data)
-
-                                                                    ingredientReportModel.updateOne({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
-                                                                        if (err) {
-                                                                            console.log(err)
-                                                                        } else {
-                                                                            console.log(response)
-                                                                        }
-                                                                    })
-
-                                                                } else {
-                                                                    continue;
+                                                              
+                                                              if(isThere) {
+                                                                  let obj = report[0].ingredient.filter((item) =>item.ingredient_id === i.ingredient_id)
+                                                                  report[0].ingredient = report[0].ingredient.filter((item) =>item.ingredient_id !== i.ingredient_id)
+                                                                  let quantity = String((item.quantity * Number(i.quantity)) + Number(obj.quantity_by_order))
+                                                                  obj.quantity_by_order = quantity
+                                                                  let data = {
+                                                                    ingredient: report[0].ingredient.push(obj)
                                                                 }
+                                                                ingredientReportModel.update({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
+                                                                    if (err) {
+                                                                        console.log(err)
+                                                                    } else {
+                                                                        console.log(response)
+                                                                    }
+                                                                })
+                                                              } else {
+                                                                let quantity = String(item.quantity * Number(i.quantity))
+                                                                        let newObj = {
+                                                                            ingredient_id: i.ingredient_id,
+                                                                            category: i.category,
+                                                                            category_id: i.category_id,
+                                                                            ingredient: i.ingredient,
+                                                                            unit_id: i.unit_id,
+                                                                            unit: i.unit,
+                                                                            quantity_by_order: quantity,
+                                                                            quantity_by_stock: 0
+                                                                        }
+    
+                                                                        let data = {
+                                                                            ingredient: report[0].ingredient.push(newObj)
+                                                                        }
+    
+                                                                        ingredientReportModel.update({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
+                                                                            if (err) {
+                                                                                console.log(err)
+                                                                            } else {
+                                                                                console.log(response)
+                                                                            }
+                                                                        })
+                                                              }
+                                                                 
+                                                            //     if (i.ingredient_id === reportIngrdient.ingredient_id) {
 
-                                                            }
-                                                            for (let i of ingredient) {
-                                                                if (i.ingredient_id !== reportIngrdient.ingredient_id) {
+                                                            //         let quantity = String((item.quantity * Number(i.quantity)) + Number(reportIngrdient.quantity_by_order))
+                                                            //         console.log(quantity)
+                                                            //         reportIngrdient.quantity_by_order = quantity;
+                                                            //         let data = {
+                                                            //             ingredient: report[0].ingredient
+                                                            //         }
+                                                            //         console.log(data)
 
-                                                                  continue
+                                                            //         ingredientReportModel.updateOne({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
+                                                            //             if (err) {
+                                                            //                 console.log(err)
+                                                            //             } else {
+                                                            //                 console.log(response)
+                                                            //             }
+                                                            //         })
 
-                                                                } else {
+                                                            //     } else {
+                                                            //         continue;
+                                                            //     }
+
+                                                            // }
+                                                            // for (let i of ingredient) {
+                                                            //     if (i.ingredient_id !== reportIngrdient.ingredient_id) {
+
+                                                            //       continue
+
+                                                            //     } else {
                                                                                          
-                                                                    let quantity = String(item.quantity * Number(i.quantity))
-                                                                    let newObj = {
-                                                                        ingredient_id: i.ingredient_id,
-                                                                        category: i.category,
-                                                                        category_id: i.category_id,
-                                                                        ingredient: i.ingredient,
-                                                                        unit_id: i.unit_id,
-                                                                        unit: i.unit,
-                                                                        quantity_by_order: quantity,
-                                                                        quantity_by_stock: 0
-                                                                    }
+                                                            //         let quantity = String(item.quantity * Number(i.quantity))
+                                                            //         let newObj = {
+                                                            //             ingredient_id: i.ingredient_id,
+                                                            //             category: i.category,
+                                                            //             category_id: i.category_id,
+                                                            //             ingredient: i.ingredient,
+                                                            //             unit_id: i.unit_id,
+                                                            //             unit: i.unit,
+                                                            //             quantity_by_order: quantity,
+                                                            //             quantity_by_stock: 0
+                                                            //         }
 
-                                                                    let data = {
-                                                                        ingredient: report[0].ingredient.push(newObj)
-                                                                    }
+                                                            //         let data = {
+                                                            //             ingredient: report[0].ingredient.push(newObj)
+                                                            //         }
 
-                                                                    ingredientReportModel.update({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
-                                                                        if (err) {
-                                                                            console.log(err)
-                                                                        } else {
-                                                                            console.log(response)
-                                                                        }
-                                                                    })
-                                                                }
+                                                            //         ingredientReportModel.update({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
+                                                            //             if (err) {
+                                                            //                 console.log(err)
+                                                            //             } else {
+                                                            //                 console.log(response)
+                                                            //             }
+                                                            //         })
+                                                            //     }
 
-                                                            }
+                                                            // }
                                                             
-                                                        }
+                                                        
                                                     }
+                                                }
                                                 })
 
                                             }
