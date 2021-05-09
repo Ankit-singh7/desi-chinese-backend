@@ -182,7 +182,7 @@ let createBill = (req, res) => {
                                                                 console.log('item quantity',item.quantity)
                                                                 console.log('ingredient quantity', i.quantity)
                                                                 obj[0].quantity_by_order = String((item.quantity * Number(i.quantity)) + obj[0].quantity_by_order)
-                                                                delete obj._id
+                                                                delete obj[0]._id
                                                                 console.log('obj quantity',  obj[0].quantity_by_order)
                                                                 let newObj = obj[0]
                                                                 console.log('newObj',newObj)
