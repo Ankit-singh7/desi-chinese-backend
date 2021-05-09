@@ -148,25 +148,27 @@ let createBill = (req, res) => {
                                                             ingArray.push(obj)
 
                                                         }
-                                                        let report = new ingredientReportModel({
-                                                            date: time.getNormalTime(),
-                                                            ingredient: ingArray
-
-                                                        })
-
-                                                        report.save((err, result) => {
-                                                            if (err) {
-                                                                console.log('failed to save')
-                                                                res.send(err)
-                                                            } else {
-                                                                console.log('successfully saved')
-
-                                                            }
-                                                        })
+                                 
                                                     }
 
                                                 })
                                             }
+
+                                            let report = new ingredientReportModel({
+                                                date: time.getNormalTime(),
+                                                ingredient: ingArray
+
+                                            })
+
+                                            report.save((err, result) => {
+                                                if (err) {
+                                                    console.log('failed to save')
+                                                    res.send(err)
+                                                } else {
+                                                    console.log('successfully saved')
+
+                                                }
+                                            })
 
 
 
