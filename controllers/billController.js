@@ -174,9 +174,14 @@ let createBill = (req, res) => {
                                                               
                                                               if(isThere) {
                                                                   let obj = report[0].ingredient.filter((item) =>item.ingredient_id === i.ingredient_id)
+                                                                  console.log(obj)
+                                                                  console.log('all ingredient except obj')
                                                                   report[0].ingredient = report[0].ingredient.filter((item) =>item.ingredient_id !== i.ingredient_id)
+                                                                  console.log(report[0].ingredient)
+                                                                  console.log('edited obj')
                                                                   let quantity = String((item.quantity * Number(i.quantity)) + Number(obj.quantity_by_order))
                                                                   obj.quantity_by_order = quantity
+                                                                  console.log(obj)
                                                                   let data = {
                                                                     ingredient: report[0].ingredient.push(obj)
                                                                 }
