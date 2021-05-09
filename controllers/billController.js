@@ -133,6 +133,7 @@ let createBill = (req, res) => {
                                                         let apiResponse = response.generate(true, 'No Detail Found', 404, null)
                                                         res.send(apiResponse)
                                                     } else {
+                                                        console.log('here')
                                                         for (let j of ingredient) {
                                                              console.log('product',req.body.products[i].quantity)
                                                              console.log('ingredient',j.quantity)
