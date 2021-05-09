@@ -124,7 +124,8 @@ let createBill = (req, res) => {
                                             let ingArray = []
                                             let product;
                                             let i;
-                                            for (i = 0;i<req.body.products.length;i++) {
+                                            for (i = 1;i<=req.body.products.length;i++) {
+                                                console.log('length',req.body.products.length)
                                                 console.log('inside product')
                                                 product = req.body.products[i]
                                                 console.log(req.body.products[i].quantity)
@@ -155,6 +156,7 @@ let createBill = (req, res) => {
                                                             }
                                                             console.log(obj)
                                                             ingArray.push(obj)
+                                                            console.log('i',i)
                                                             if(i === req.body.products.length) {
                                                                 console.log('inside function')
                                                               let report = new ingredientReportModel({
