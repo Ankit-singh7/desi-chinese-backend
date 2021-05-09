@@ -124,7 +124,8 @@ let createBill = (req, res) => {
                                             let ingArray = []
                                             let i;
                                             for (i = 0;i<req.body.products.length;i++) {
-                                                console.log(req.body.products[i])
+                                                console.log('inside product')
+                                                console.log(req.body.products[i].quantity)
                                                 foodIngredientModel.find({ 'sub_category_id': req.body.products[i].food_id }, (err, ingredient) => {
                                                     if (err) {
                                                         res.send('Failed to find the ingredients')
