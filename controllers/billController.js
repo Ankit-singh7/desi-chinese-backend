@@ -165,8 +165,6 @@ let createBill = (req, res) => {
                                                         })
     
                                                     } else {
-                                                        console.log(report[0])
-                                                        let newArr = [];
                                                         for (let i of ingredient) {
     
                                                             let isThere = report[0].ingredient.some((item => item.ingredient_id === i.ingredient_id))
@@ -212,9 +210,11 @@ let createBill = (req, res) => {
                                                                     quantity_by_order: quantity,
                                                                     quantity_by_stock: 0
                                                                 }
+
+                                                                let newArr = [...report[0].ingredient, newObj]
     
                                                                 let data = {
-                                                                    ingredient: report[0].ingredient.push(newObj)
+                                                                    ingredient: newArr
                                                                 }
     
                                                                 ingredientReportModel.update({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
