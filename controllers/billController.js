@@ -187,7 +187,7 @@ let createBill = (req, res) => {
                                                                 let data = {
                                                                     ingredient: report[0].ingredient.push(obj[0])
                                                                 }
-                                                                console.log('data',data)
+                                                                console.log('data',data.ingredient)
                                                                 ingredientReportModel.update({ 'date': time.getNormalTime() }, data, { multi: true }).exec((err, response) => {
                                                                     if (err) {
                                                                         console.log(err)
