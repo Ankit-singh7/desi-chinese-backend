@@ -155,8 +155,9 @@ let createBill = (req, res) => {
                                                                     }
 
                                                                     ingArray.push(obj)
-                                                                    if(i===req.body.products.length) {
-
+                                                                    if(i=== (req.body.products.length-1)) {
+                                                                         console.log('i',i)
+                                                                         console.log(req.body.products.length-1)
                                                                         console.log(ingArray)
                                                                         resolve(ingArray)
                                                                     }
