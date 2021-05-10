@@ -3,12 +3,10 @@ const Schema = mongoose.Schema;
 
 let ingredientReportSchema = new Schema(
     {
-        date: {
-            type: Date,
-            default: ''
-        },
-        ingredient: [
-            {
+                date: {
+                    type: Date,
+                    default: ''
+                },
                 ingredient_id: {
                     type: String,
                     default: ''
@@ -42,8 +40,8 @@ let ingredientReportSchema = new Schema(
                     type: Number,
                     default: null
                 }
-            }
-        ]
+            
+        
     }
 )
 
