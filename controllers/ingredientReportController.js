@@ -46,9 +46,24 @@ let getIngredientReportByDate = (req,res) => {
     })
 }
 
+let getReportBetweenDates = (req,res) => {
+    ingredientReportModel.find({'date':{ $gte:ISODate(req.params.startDate), $lt:ISODate(req.params.endDate)}}).exec((res) => {
+        if(err) {
+            res.send(err)
+        } else if (check.isEmpty(result)) {
+            res.send('Not found')
+
+        } else {
+            let apiResponse = response.generate(false, 'Ingredient Successfuly found', 200, result)
+            res.send(apiResponse)
+        }
+    })
+}
+
 
 
 module.exports = {
     getAllIngredientReport:getAllIngredientReport,
-    getIngredientReportByDate: getIngredientReportByDate
+    getIngredientReportByDate: getIngredientReportByDate,
+    getReportBetweenDates:getReportBetweenDates
 }
