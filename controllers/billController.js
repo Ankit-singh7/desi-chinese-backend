@@ -153,8 +153,14 @@ let createBill = (req, res) => {
                                                                         quantity_by_order: quantity,
                                                                         quantity_by_stock: 0
                                                                     }
-                                                                 
+
                                                                     ingArray.push(obj)
+                                                                    if(i===req.body.products.length) {
+
+                                                                        console.log(ingArray)
+                                                                        resolve(ingArray)
+                                                                    }
+                                                                 
                                                                  
                                                                     
                                                                 }
@@ -166,11 +172,7 @@ let createBill = (req, res) => {
                                                         
                                                         
                                                     }
-                                                    if(i===req.body.products.length) {
-
-                                                        console.log(ingArray)
-                                                        resolve(ingArray)
-                                                    }
+                      
                                                 })
                                             }
 
