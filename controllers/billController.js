@@ -138,11 +138,9 @@ let createBill = (req, res) => {
                                                                  console.log(apiResponse)
                                                             } else {
                                                                 console.log('here')
-                                                                console.log(product.quantity)
-                                                                console.log(ingredient)
+                                                             
                                                                 for (let j of ingredient) {
-                                                                     console.log('product', product)
-                                                                     console.log('ingredient',j.quantity)
+    
                                                                     let quantity = String(product.quantity * Number(j.quantity))
                                                                     let obj = {
         
@@ -155,8 +153,9 @@ let createBill = (req, res) => {
                                                                         quantity_by_order: quantity,
                                                                         quantity_by_stock: 0
                                                                     }
-                                                                    console.log(obj)
+                                                                 
                                                                     ingArray.push(obj)
+                                                                 
                                                                     
                                                                 }
                                                                 
@@ -167,8 +166,11 @@ let createBill = (req, res) => {
                                                         
                                                         
                                                     }
-                                                    console.log(ingArray)
-                                                    resolve(ingArray)
+                                                    if(i===req.body.products.length) {
+
+                                                        console.log(ingArray)
+                                                        resolve(ingArray)
+                                                    }
                                                 })
                                             }
 
