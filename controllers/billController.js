@@ -164,10 +164,11 @@ let createBill = (req, res) => {
                                                             
                                                         })
                                                         
-                                                        // resolve(ingArray)
-                                                       
-                                                    
+                                                        
+                                                        
                                                     }
+                                                    console.log(ingArray)
+                                                    resolve(ingArray)
                                                 })
                                             }
 
