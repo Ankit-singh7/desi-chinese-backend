@@ -164,7 +164,7 @@ let createBill = (req, res) => {
                                                             
                                                         })
                                                         
-                                                        resolve(ingArray)
+                                                        // resolve(ingArray)
                                                        
                                                     
                                                     }
