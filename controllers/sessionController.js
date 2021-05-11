@@ -68,7 +68,7 @@ let createSession = (req,res) => {
                          console.log('here')
                      }
                  })
-           },1000 * 60 * 60 * 24)
+           },1000 * 60 * 1)
             console.log('session created successfully')
         }
     })
