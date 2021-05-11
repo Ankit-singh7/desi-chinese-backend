@@ -96,7 +96,7 @@ let createSubCategory = (req, res) => {
 }
 
 let getMostlyUsedFood =(req,res) => {
-    foodCategoryModel.find({'mostly_used': 'Yes'}).exec((err,result) => {
+    foodSubCategoryModel.find({'mostly_used': 'Yes'}).exec((err,result) => {
         if (err) {
             console.log(err)
             logger.error(err.message, 'FoodSubCategory Controller: getSingleSubCategoryDetail', 10)
