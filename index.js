@@ -12,9 +12,13 @@ const globalErrorMiddleware = require('./middlewares/appErrorHandler');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 var cors = require('cors');
+const cron = require('node-cron');
 const libs = require('./libs/timeLib');
 app.use(cors());
 const time = require('./libs/timeLib');
+const check = require('./libs/checkLib')
+const model = require('./models/SessionModel')
+const sessionModel = mongoose.model('session')
 
 
 app.use(morgan('dev'));
@@ -26,6 +30,31 @@ app.use(routeLoggerMiddleware.logIp);
 app.use(globalErrorMiddleware.globalErrorHandler);
 
 app.use(express.static(path.join(__dirname, 'client')));
+
+
+
+cron.schedule('55 02 * * *', function() {
+  console.log('running a task every minute');
+  sessionModel.find({session_status:'true'}).exec((err,result) => {
+    if(err) {
+      console.log(err)
+    }else if (check.isEmpty(result)) {
+      console.log('No active session')
+    } else {
+      let option = {
+        session_status: 'false'
+      }
+
+      sessionModel.update({'session_id':result[0].session_id},option,{multi:true}).exec((err,result) => {
+        if(err) {
+          console.log(err)
+        }else {
+          console.log('updated successfully')
+        }
+      })
+    }
+  })
+});
 
 
 
@@ -43,9 +72,12 @@ app.all('*', function(req, res, next) {
     next();
 });
 
+
+
 //Bootstrap models
 fs.readdirSync(modelsPath).forEach(function (file) {
   if (~file.indexOf('.js')) require(modelsPath + '/' + file)
+
 });
 // end Bootstrap models
 
@@ -57,6 +89,7 @@ fs.readdirSync(routesPath).forEach(function (file) {
   }
 });
 // end bootstrap route
+
 
 // calling global 404 handler after route
 
@@ -128,8 +161,8 @@ function onListening() {
   ('Listening on ' + bind);
   logger.info('server listening on port' + addr.port, 'serverOnListeningHandler', 10);
   console.log()
-  let db = mongoose.connect(process.env.MONGODB_URI || appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
-  // let db = mongoose.connect(appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
+  // let db = mongoose.connect(process.env.MONGODB_URI || appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
+  let db = mongoose.connect(appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
 }
 
 process.on('unhandledRejection', (reason, p) => {

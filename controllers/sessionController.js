@@ -54,22 +54,7 @@ let createSession = (req,res) => {
             res.send(apiResponse)
         } else {
             let apiResponse = response.generate(false, 'session Successfully created', 200, result)
-            setTimeout(() => {
-                let option = {
-                   session_status: 'false' 
-                }
-       
-                 sessionModel.update({'session_id':id},option)
-                 .exec((err,result) => {
-                     if(err) {
-                         console.log(err)
-                     } else {
-                         console.log(result)
-                         console.log('here')
-                     }
-                 })
-           },1000 * 60 * 1)
-            console.log('session created successfully')
+            res.send(apiResponse)
         }
     })
 
@@ -143,6 +128,7 @@ let updateSession = (req,res) => {
 }
 
 let getCurrentSession = (req,res) => {
+
     sessionModel.findOne({'session_status': 'true'})
     .select('-__v -_id')
     .lean()

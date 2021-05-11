@@ -239,8 +239,8 @@ let createBill = (req, res) => {
                                     console.log('item end')
 
 
-
-                                    res.send('bill Created')
+                                    let apiResponse = response.generate(false, 'Bill Created', 200, null)
+                                    res.send(apiResponse)
                                 }
                             })
                     }
