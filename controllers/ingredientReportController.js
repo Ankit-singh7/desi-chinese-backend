@@ -47,7 +47,7 @@ let getIngredientReportByDate = (req,res) => {
 }
 
 let getReportBetweenDates = (req,res) => {
-    ingredientReportModel.find({'date':{ $gte:ISODate(req.params.startDate), $lt:ISODate(req.params.endDate)}}).exec((err,result) => {
+    ingredientReportModel.find({'date':{ $gte:req.params.startDate, $lt:req.params.endDate}}).exec((err,result) => {
         if(err) {
             res.send(err)
         } else if (check.isEmpty(result)) {
