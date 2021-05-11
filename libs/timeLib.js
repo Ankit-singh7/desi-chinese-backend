@@ -13,7 +13,7 @@ let getLocalTime = () => {
 }
 
 let getNormalTime = () => {
-  return moment(new Date()).format("DD-MM-YYYY")
+  return moment().format("DD-MM-YYYY")
 }
 
 let convertToLocalTime = (time) => {
