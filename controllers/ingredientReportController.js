@@ -51,7 +51,8 @@ let getReportBetweenDates = (req,res) => {
         if(err) {
             res.send(err)
         } else if (check.isEmpty(result)) {
-            res.send('Not found')
+            let apiResponse = response.generate(false, 'Ingredient Successfuly found', 200, null)
+            res.send(apiResponse)
 
         } else {
             let apiResponse = response.generate(false, 'Ingredient Successfuly found', 200, result)
