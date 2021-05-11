@@ -10,6 +10,8 @@ module.exports.setRouter = (app) => {
 
     app.get(`${baseUrl}/view/all`, foodSubCategoryController.getAllFoodSubCategory);
 
+    app.get(`${baseUrl}/used`, foodSubCategoryController.getMostlyUsedFood);
+
     app.post(`${baseUrl}/create`, foodSubCategoryController.createSubCategory);
 
     app.get(`${baseUrl}/:id/delete`, foodSubCategoryController.deleteSubCategory);

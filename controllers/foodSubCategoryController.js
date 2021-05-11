@@ -74,6 +74,7 @@ let createSubCategory = (req, res) => {
                 price: req.body.price,
                 type: req.body.type,
                 status: req.body.status,
+                mostly_used: req.body.mostly_used,
                 createdOn: time.now()
             })
 
@@ -92,6 +93,24 @@ let createSubCategory = (req, res) => {
     })
 
 
+}
+
+let getMostlyUsedFood =(req,res) => {
+    foodCategoryModel.find({'mostly_used': 'Yes'}).exec((err,result) => {
+        if (err) {
+            console.log(err)
+            logger.error(err.message, 'FoodSubCategory Controller: getSingleSubCategoryDetail', 10)
+            let apiResponse = response.generate(true, 'Failed To Find Details', 500, null)
+            res.send(apiResponse)
+        } else if (check.isEmpty(result)) {
+            logger.info('No User Found', 'FoodSubCategory Controller: getSingleSubCategoryDetail')
+            let apiResponse = response.generate(true, 'No Detail Found', 404, null)
+            res.send(apiResponse)
+        } else {
+            let apiResponse = response.generate(false, 'Detail Found', 200, result)
+            res.send(apiResponse)
+        }
+    })
 }
 
 
@@ -154,5 +173,6 @@ module.exports = {
     getSingleSubCategoryDetail: getSingleSubCategoryDetail,
     createSubCategory: createSubCategory,
     deleteSubCategory: deleteSubCategory,
-    updateSubCategory: updateSubCategory
+    updateSubCategory: updateSubCategory,
+    getMostlyUsedFood:getMostlyUsedFood
 }

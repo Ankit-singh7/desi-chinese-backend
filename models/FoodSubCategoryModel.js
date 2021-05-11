@@ -34,6 +34,10 @@ let foodSubCategorySchema = new Schema(
             type: String,
             default:''
         },
+        mostly_used:{
+            type: String,
+            default:''
+        },
         createdOn :{
             type:Date,
             default:''
