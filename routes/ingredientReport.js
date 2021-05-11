@@ -12,7 +12,7 @@ module.exports.setRouter = (app) => {
 
     app.get(`${baseUrl}/:date`, ingredientReportController.getIngredientReportByDate);
 
-    app.get(`${baseUrl}/:startDate/:endDate`, ingredientReportController.getIngredientReportByDate);
+    app.get(`${baseUrl}/:startDate/:endDate`, ingredientReportController.getReportBetweenDates);
 
 
 }
