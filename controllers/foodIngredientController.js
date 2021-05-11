@@ -117,7 +117,7 @@ let createIngredient = (req, res) => {
 
 
 let deleteIngredient = (req, res) => {
-    ingredientModel.findOneAndRemove({ 'food_ingredient_id': req.params.id })
+    foodIngredientModel.findOneAndRemove({ 'food_ingredient_id': req.params.id })
         .exec((err, result) => {
             if (err) {
                 console.log(err)
