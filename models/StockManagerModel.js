@@ -22,6 +22,10 @@ let stockManagerSchema = new Schema(
    type: String,
    default: ''
  },
+ mobileNumber: {
+  type: String,
+  default: ''
+},
  email: {
    type: String,
    default: ''
@@ -30,6 +34,10 @@ let stockManagerSchema = new Schema(
    type: String,
    deafault:''
  },
+ status: {
+  type:String,
+  default:''
+},
  validationToken: { //will generate automatically while resetting password
    type: String,
    default: ''

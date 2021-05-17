@@ -233,15 +233,16 @@ let signUpFunction = (req, res) => {
                     } else if (check.isEmpty(retrievedUserDetails)) {
                         console.log(req.body)
                         let newUser = new stockManagerModel({
-                            adminId: customId({
+                            stockManagerId: customId({
                                 randomLength: 2
                             }),
                             firstName: req.body.firstName,
                             lastName: req.body.lastName || '',
                             email: req.body.email.toLowerCase(),
                             password: req.body.password,
+                            mobileNumber:req.body.mobileNumber,
                             status:req.body.status,
-                            role:'admin',
+                            role:'sm',
                             createdOn: time.now()
                         })
                         newUser.save((err, newUser) => {
