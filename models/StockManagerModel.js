@@ -2,9 +2,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let adminSchema = new Schema(
+let stockManagerSchema = new Schema(
  {
- adminId: {
+ stockManagerId: {
    type: String,
    default: '',
    index: true,
@@ -45,4 +45,4 @@ let adminSchema = new Schema(
 })
 
 
-mongoose.model('Admin', adminSchema);
+mongoose.model('stockManager', stockManagerSchema);
