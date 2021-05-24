@@ -119,7 +119,7 @@ let createBill = (req, res) => {
                                     ingredientReportModel.find({ 'date': time.getNormalTime() }).exec((err, report) => {
                                         if (err) {
                                             let apiResponse = response.generate(true, 'Failed to find the data', 500, null)
-                                            res.send(apiResponse)
+                                            console.log('failed to find the data')
                                         } else if (check.isEmpty(report)) {
                                             let ingArray = []
                                             let product;
@@ -130,7 +130,7 @@ let createBill = (req, res) => {
                                                 console.log(req.body.products[i].quantity)
                                                 foodIngredientModel.find({ 'sub_category_id': req.body.products[i].food_id }, (err, ingredient) => {
                                                     if (err) {
-                                                        reject('Failed to find the ingredients')
+                                                        console.log(err)
                                                     } else if (check.isEmpty(ingredient)) {
                                                         let apiResponse = response.generate(true, 'No Detail Found', 404, null)
                                                         console.log(apiResponse)
@@ -174,7 +174,7 @@ let createBill = (req, res) => {
                                                 console.log('item', item)
                                                 foodIngredientModel.find({ 'sub_category_id': item.food_id }, (err, ingredient) => {
                                                     if (err) {
-                                                        res.send('Failed to find the ingredients')
+                                                       console.log('Failed to find igredient')
                                                     } else if (check.isEmpty(ingredient)) {
                                                         let apiResponse = response.generate(true, 'No Detail Found', 404, null)
                                                         console.log('No ingredient')
