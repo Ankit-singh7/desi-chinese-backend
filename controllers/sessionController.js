@@ -13,7 +13,7 @@ const sessionModel = mongoose.model('session')
 
 
 let getAllSession = (req,res) => {
-    sessionModel.find()
+    sessionModel.find().sort({ _id: -1 })
     .lean()
     .exec((err,result) => {
         if(err) {
