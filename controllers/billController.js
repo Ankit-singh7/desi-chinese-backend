@@ -12,7 +12,7 @@ const foodIngredientModel = mongoose.model('foodIngredient');
 const ingredientReportModel = mongoose.model('ingredientReport');
 
 let getAllBill = (req, res) => {
-    billModel.find()
+    billModel.find().sort({ _id: -1 })  
         .lean()
         .exec((err, result) => {
             if (err) {
