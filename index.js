@@ -33,7 +33,7 @@ app.use(express.static(path.join(__dirname, 'client')));
 
 
 
-cron.schedule('55 17 * * *', function() {
+cron.schedule('30 02 * * *', function() {
   console.log('running a task every minute');
   sessionModel.find({session_status:'true'}).exec((err,result) => {
     if(err) {
