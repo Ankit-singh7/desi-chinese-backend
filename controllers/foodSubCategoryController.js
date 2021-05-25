@@ -10,6 +10,8 @@ const foodSubCategoryModel = mongoose.model('foodSubCategory')
 const foodCategoryModel = mongoose.model('foodCategory');
 
 let getAllFoodSubCategory = (req, res) => {
+    const page = req.query.current_page
+    const limit = req.query.per_page
     foodSubCategoryModel.find()
         .lean()
         .exec((err, result) => {
@@ -23,7 +25,12 @@ let getAllFoodSubCategory = (req, res) => {
                 let apiResponse = response.generate(true, 'No Data Found', 404, null)
                 res.send(apiResponse)
             } else {
-                let apiResponse = response.generate(false, 'All Food SubCategory Found', 200, result)
+                const startIndex = (page - 1)*limit;
+                const endIndex = page * limit
+                let total = result.length;
+                let foodList = result.slice(startIndex,endIndex)
+                let newResult = {total:total,result:foodList}
+                let apiResponse = response.generate(false, 'All Food SubCategory Found', 200, newResult)
                 res.send(apiResponse)
             }
         })
