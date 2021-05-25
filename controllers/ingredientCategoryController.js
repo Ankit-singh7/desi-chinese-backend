@@ -26,11 +26,18 @@ let getAllIngredientCategory = (req,res) => {
             let apiResponse = response.generate(true, 'No Data Found', 404, null)
             res.send(apiResponse)
         }  else {
-            const startIndex = (page - 1)*limit;
-            const endIndex = page * limit
-            let total = result.length;
-            let catList = result.slice(startIndex,endIndex)
-            let newResult = {total:total,result:catList}
+            let newResult
+            if(page && limit) {
+
+                const startIndex = (page - 1)*limit;
+                const endIndex = page * limit
+                let total = result.length;
+                let catList = result.slice(startIndex,endIndex)
+                newResult = {total:total,result:catList}
+            } else {
+                let total = result.length;
+                newResult = {total:total,result:result}
+            }
             let apiResponse = response.generate(false, 'All Ingredients Category Found', 200, newResult)
             res.send(apiResponse)
         }
