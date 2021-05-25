@@ -12,8 +12,8 @@ const unitModel = mongoose.model('unit');
 
 
 let getAllIngredient = (req, res) => {
-    const page = 1
-    const limit = 10
+    const page = req.query.current_page
+    const limit = req.query.per_page
     ingredientModel.find()
         .lean()
         .select('-__v -_id')
@@ -30,8 +30,10 @@ let getAllIngredient = (req, res) => {
             } else {
                 const startIndex = (page - 1)*limit;
                 const endIndex = page * limit
+                let total = result.length;
                 let ingredient = result.slice(startIndex,endIndex)
-                let apiResponse = response.generate(false, 'All Ingredients Found', 200, ingredient)
+                let newResult = {total:total,result:ingredient}
+                let apiResponse = response.generate(false, 'All Ingredients Found', 200, newResult)
                 res.send(apiResponse)
             }
         })
