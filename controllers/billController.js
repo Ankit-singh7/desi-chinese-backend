@@ -35,8 +35,8 @@ let getAllBill = (req, res) => {
                     }
                     return isValid;
                   });
-                  res.send(filteredUsers);
-                let apiResponse = response.generate(false, 'All Bills Found', 200, result)
+                //   res.send(filteredUsers);
+                let apiResponse = response.generate(false, 'All Bills Found', 200, filteredUsers)
                 res.send(apiResponse)
             }
         })
