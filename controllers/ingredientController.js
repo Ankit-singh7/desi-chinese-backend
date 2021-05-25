@@ -12,6 +12,8 @@ const unitModel = mongoose.model('unit');
 
 
 let getAllIngredient = (req, res) => {
+    const page = 1
+    const limit = 10
     ingredientModel.find()
         .lean()
         .select('-__v -_id')
@@ -26,7 +28,10 @@ let getAllIngredient = (req, res) => {
                 let apiResponse = response.generate(true, 'No Data Found', 404, null)
                 res.send(apiResponse)
             } else {
-                let apiResponse = response.generate(false, 'All Ingredients Found', 200, result)
+                const startIndex = (page - 1)*limit;
+                const endIndex = page * limit
+                let ingredient = result.slice(startIndex,endIndex)
+                let apiResponse = response.generate(false, 'All Ingredients Found', 200, ingredient)
                 res.send(apiResponse)
             }
         })
