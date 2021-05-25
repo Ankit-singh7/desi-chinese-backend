@@ -12,6 +12,8 @@ const foodIngredientModel = mongoose.model('foodIngredient');
 const ingredientReportModel = mongoose.model('ingredientReport');
 
 let getAllBill = (req, res) => {
+    const filters = req.query;
+  
     billModel.find().sort({ _id: -1 })  
         .lean()
         .exec((err, result) => {
@@ -25,6 +27,15 @@ let getAllBill = (req, res) => {
                 let apiResponse = response.generate(true, 'No Data Found', 404, null)
                 res.send(apiResponse)
             } else {
+                const filteredUsers = result.filter(user => {
+                    let isValid = true;
+                    for (key in filters) {
+                      console.log(key, user[key], filters[key]);
+                      isValid = isValid && user[key] == filters[key];
+                    }
+                    return isValid;
+                  });
+                  res.send(filteredUsers);
                 let apiResponse = response.generate(false, 'All Bills Found', 200, result)
                 res.send(apiResponse)
             }
