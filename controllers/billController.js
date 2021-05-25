@@ -13,6 +13,7 @@ const ingredientReportModel = mongoose.model('ingredientReport');
 
 let getAllBill = (req, res) => {
     const filters = req.query;
+    console.log(filters)
   
     billModel.find().sort({ _id: -1 })  
         .lean()
@@ -30,8 +31,12 @@ let getAllBill = (req, res) => {
                 const filteredUsers = result.filter(user => {
                     let isValid = true;
                     for (key in filters) {
-                      console.log(key, user[key], filters[key]);
-                      isValid = isValid && user[key] == filters[key];
+                      if(user[key] === 'createdOn') {
+                          user[key] = moment(user[key]).format('YYYY-MM-DD')
+                          isValid = isValid && user[key] == filters[key];
+                      } else {
+                        isValid = isValid && user[key] == filters[key];
+                      }
                     }
                     return isValid;
                   });
