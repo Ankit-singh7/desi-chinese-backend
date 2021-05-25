@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const shortid = require('shortid');
 const customId = require('custom-id');
 const time = require('./../libs/timeLib');
+const moment = require('moment')//npm install moment --save
 const response = require('./../libs/responseLib')
 const logger = require('./../libs/loggerLib');
 const check = require('../libs/checkLib')
@@ -12,8 +13,12 @@ const foodIngredientModel = mongoose.model('foodIngredient');
 const ingredientReportModel = mongoose.model('ingredientReport');
 
 let getAllBill = (req, res) => {
+    const page = req.query.current_page
+    const limit = req.query.per_page
     const filters = req.query;
-    console.log(filters)
+    delete filters.current_page
+    delete filters.per_page
+    console.log('filter',filters)
   
     billModel.find().sort({ _id: -1 })  
         .lean()
@@ -29,21 +34,27 @@ let getAllBill = (req, res) => {
                 res.send(apiResponse)
             } else {
                 const filteredUsers = result.filter(user => {
+                    console.log('here',user)
                     let isValid = true;
                     for (key in filters) {
-                      if(user[key] === 'createdOn') {
-                          user[key] = moment(user[key]).format('YYYY-MM-DD')
-                          console.log('user',user[key])
-                          console.log('filter',filters[key])
-                          isValid = isValid && user[key] == filters[key];
+                        console.log(filters[key])
+                      console.log('here',user[key])
+                      if(key === 'createdOn') {
+
+                          isValid = isValid && moment(user[key]).format('YYYY-MM-DD') == filters[key];
                       } else {
                         isValid = isValid && user[key] == filters[key];
                       }
+                      
                     }
                     return isValid;
                   });
-                //   res.send(filteredUsers);
-                let apiResponse = response.generate(false, 'All Bills Found', 200, filteredUsers)
+                  const startIndex = (page - 1)*limit;
+                  const endIndex = page * limit
+                  let total = result.length;
+                  let billList = filteredUsers.slice(startIndex,endIndex)
+                  let newResult = {total:total,result:billList}
+                let apiResponse = response.generate(false, 'All Bills Found', 200, newResult)
                 res.send(apiResponse)
             }
         })

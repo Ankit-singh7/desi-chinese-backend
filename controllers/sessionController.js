@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const shortid = require('shortid');
 const customId = require('custom-id');
 const time = require('./../libs/timeLib');
+const moment = require('moment')//npm install moment --save
 const response = require('./../libs/responseLib')
 const logger = require('./../libs/loggerLib');
 const check = require('../libs/checkLib')
@@ -13,6 +14,11 @@ const sessionModel = mongoose.model('session')
 
 
 let getAllSession = (req,res) => {
+    const page = req.query.current_page
+    const limit = req.query.per_page
+    const filters = req.query;
+    delete filters.current_page
+    delete filters.per_page
     sessionModel.find().sort({ _id: -1 })
     .lean()
     .exec((err,result) => {
@@ -26,7 +32,28 @@ let getAllSession = (req,res) => {
             let apiResponse = response.generate(true, 'No Data Found', 404, null)
             res.send(apiResponse)
         }  else {
-            let apiResponse = response.generate(false, 'All Bills Found', 200, result)
+            const filteredUsers = result.filter(user => {
+                console.log('here',user)
+                let isValid = true;
+                for (key in filters) {
+                    console.log(filters[key])
+                  console.log('here',user[key])
+                  if(key === 'createdOn') {
+
+                      isValid = isValid && moment(user[key]).format('YYYY-MM-DD') == filters[key];
+                  } else {
+                    isValid = isValid && user[key] == filters[key];
+                  }
+                  
+                }
+                return isValid;
+              });
+              const startIndex = (page - 1)*limit;
+              const endIndex = page * limit
+              let total = result.length;
+              let sessionList = filteredUsers.slice(startIndex,endIndex)
+              let newResult = {total:total,result:sessionList}
+            let apiResponse = response.generate(false, 'All Bills Found', 200, newResult)
             res.send(apiResponse)
         }
     })
