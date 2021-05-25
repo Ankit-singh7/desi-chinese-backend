@@ -10,6 +10,8 @@ const ingredientCategoryModel = mongoose.model('ingredientCategory');
 
 
 let getAllIngredientCategory = (req,res) => {
+    const page = req.query.current_page
+    const limit = req.query.per_page
     ingredientCategoryModel.find()
     .lean()
     .select('-__v -_id')
@@ -24,7 +26,12 @@ let getAllIngredientCategory = (req,res) => {
             let apiResponse = response.generate(true, 'No Data Found', 404, null)
             res.send(apiResponse)
         }  else {
-            let apiResponse = response.generate(false, 'All Ingredients Category Found', 200, result)
+            const startIndex = (page - 1)*limit;
+            const endIndex = page * limit
+            let total = result.length;
+            let catList = result.slice(startIndex,endIndex)
+            let newResult = {total:total,result:catList}
+            let apiResponse = response.generate(false, 'All Ingredients Category Found', 200, newResult)
             res.send(apiResponse)
         }
     })
