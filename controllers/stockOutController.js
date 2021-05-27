@@ -118,49 +118,52 @@ let createStockOut = (req, res) => {
                                         } else {
                                             let apiResponse = response.generate(false, 'stock out Successfully created', 200, result)
                                             console.log('stock updated successfully')
-                                        }
-                                    })
-                                    ingredientReportModel.find({ 'date': time.getNormalTime() }).exec((err, report) => {
-                                        if(err) {
-                                            console.log(err)
-                                        } else if (check.isEmpty(result)) {
-                                            let report = new ingredientReportModel({
-                                                date: time.getNormalTime(),
-                                                ingredient_id: req.body.ingredient_id,
-                                                ingredient: ingredientName,
-                                                category_id: req.body.category_id,
-                                                category: catName,
-                                                unit_id: req.body.unit_id,
-                                                unit: unitName,
-                                                quantity_by_order: 0,
-                                                quantity_by_stock: req.body.quantity
-                                            })
-                                            report.save((err,result) => {
+                                            console.log('Starting Ingredient Report Update')
+                                            ingredientReportModel.find({ 'date': time.getNormalTime() }).exec((err, report) => {
                                                 if(err) {
                                                     console.log(err)
-                                                } else {
-                                                    console.log('ingredient report updated successfully')
-                                                }
-                                            })
-                                        } else {
-                                            for(let item of report) {
-                                                if(item.id === req.body.ingredient_id) {
-                                                    let quantity = Number(item.quantity_by_stock) + Number(req.body.quantity) 
-                                                    const payload = {
-                                                        quantity_by_stock: quantity
-                                                    }
-                                                    ingredientReportModel.update({'ingredient_id':req.body.ingredient_id, 'date': time.getNormalTime()},payload,{multi:true}).exec((err,result) => {
+                                                } else if (check.isEmpty(result)) {
+                                                    console.log('No Date Found in ingredient report')
+                                                    let report = new ingredientReportModel({
+                                                        date: time.getNormalTime(),
+                                                        ingredient_id: req.body.ingredient_id,
+                                                        ingredient: ingredientName,
+                                                        category_id: req.body.category_id,
+                                                        category: catName,
+                                                        unit_id: req.body.unit_id,
+                                                        unit: unitName,
+                                                        quantity_by_order: 0,
+                                                        quantity_by_stock: req.body.quantity
+                                                    })
+                                                    report.save((err,result) => {
                                                         if(err) {
                                                             console.log(err)
                                                         } else {
-                                                            console.log(result)
+                                                            console.log('Added new ingredient report successfully')
                                                         }
                                                     })
-
+                                                } else {
+                                                    for(let item of report) {
+                                                        if(item.id === req.body.ingredient_id) {
+                                                            let quantity = Number(item.quantity_by_stock) + Number(req.body.quantity) 
+                                                            const payload = {
+                                                                quantity_by_stock: quantity
+                                                            }
+                                                            ingredientReportModel.update({'ingredient_id':req.body.ingredient_id, 'date': time.getNormalTime()},payload,{multi:true}).exec((err,result) => {
+                                                                if(err) {
+                                                                    console.log(err)
+                                                                } else {
+                                                                    console.log(result)
+                                                                }
+                                                            })
+        
+                                                        }
+                                                    }
                                                 }
-                                            }
+                                            })
                                         }
                                     })
+
 
 
                                 }
