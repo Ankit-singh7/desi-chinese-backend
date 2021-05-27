@@ -150,23 +150,49 @@ let createStockOut = (req, res) => {
                                                         }
                                                     })
                                                 } else {
-                                                    for(let item of report) {
-                                                        if(item.id === req.body.ingredient_id) {
-                                                            let quantity = Number(item.quantity_by_stock) + Number(req.body.quantity) 
-                                                            const payload = {
-                                                                quantity_by_stock: quantity
-                                                            }
-                                                            ingredientReportModel.update({'ingredient_id':req.body.ingredient_id, 'date': time.getNormalTime()},payload,{multi:true}).exec((err,result) => {
-                                                                if(err) {
-                                                                    console.log(err)
-                                                                    res.send(err)
-                                                                } else {
-                                                                    console.log(result)
-                                                                    res.send('Ingredient Report Updated Successfully')
+                                                    let isThere = report.some((item => item.ingredient_id === req.body.ingredient_id))
+                                                    if(isThere) {
+                                                         console.log('there')
+                                                        for(let item of report) {
+    
+                                                            if(item.id === req.body.ingredient_id) {
+                                                                let quantity = Number(item.quantity_by_stock) + Number(req.body.quantity) 
+                                                                const payload = {
+                                                                    quantity_by_stock: quantity
                                                                 }
-                                                            })
-        
+                                                                ingredientReportModel.update({'ingredient_id':req.body.ingredient_id, 'date': time.getNormalTime()},payload,{multi:true}).exec((err,result) => {
+                                                                    if(err) {
+                                                                        console.log(err)
+                                                                        res.send(err)
+                                                                    } else {
+                                                                        console.log(result)
+                                                                        res.send('Ingredient Report Updated Successfully')
+                                                                    }
+                                                                })
+            
+                                                            }
                                                         }
+                                                    } else {
+                                                        console.log('not there')
+                                                        let report = new ingredientReportModel({
+                                                            date: time.getNormalTime(),
+                                                            ingredient_id: req.body.ingredient_id,
+                                                            ingredient: ingredientName,
+                                                            category_id: req.body.category_id,
+                                                            category: catName,
+                                                            unit_id: req.body.unit_id,
+                                                            unit: unitName,
+                                                            quantity_by_order: 0,
+                                                            quantity_by_stock: req.body.quantity
+                                                        })
+                                                        report.save((err,result) => {
+                                                            if(err) {
+                                                                console.log(err)
+                                                            } else {
+                                                                console.log('Added new ingredient report successfully')
+                                                                res.send('Added New Ingredient Report')
+                                                            }
+                                                        })
                                                     }
                                                 }
                                             })
