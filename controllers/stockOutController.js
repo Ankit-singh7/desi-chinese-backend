@@ -69,6 +69,10 @@ let getSingleStockOutDetail = (req, res) => {
 }// end get single category
 
 
+
+
+
+
 let createStockOut = (req, res) => {
     let catName, unitName, ingredientName;
     ingredientCategoryModel.find({ 'ingredient_category_id': req.body.category_id }, (err, result) => {
@@ -124,7 +128,7 @@ let createStockOut = (req, res) => {
                                                     console.log('error')
                                                     console.log(err)
 
-                                                } else if (check.isEmpty(result)) {
+                                                } else if (check.isEmpty(report)) {
                                                     console.log('No Date Found in ingredient report')
                                                     let report = new ingredientReportModel({
                                                         date: time.getNormalTime(),
