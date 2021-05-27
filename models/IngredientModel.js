@@ -29,6 +29,10 @@ let ingredientSchema = new Schema(
             type: String,
             default:''
           },
+        stock:{
+            type: Number,
+            default:''
+        },
           createdOn :{
             type:Date,
             default:''

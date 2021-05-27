@@ -39,9 +39,7 @@ let ingredientReportSchema = new Schema(
                 quantity_by_stock: {
                     type: Number,
                     default: null
-                }
-            
-        
+                }                   
     }
 )
 

@@ -11,6 +11,7 @@ const billModel = mongoose.model('bill')
 const totalModel = mongoose.model('total')
 const foodIngredientModel = mongoose.model('foodIngredient');
 const ingredientReportModel = mongoose.model('ingredientReport');
+const ingredientModel = mongoose.model('ingredient');
 
 let getAllBill = (req, res) => {
     const page = req.query.current_page
@@ -180,6 +181,25 @@ let createBill = (req, res) => {
                                                                 quantity_by_order: quantity,
                                                                 quantity_by_stock: 0
                                                             })
+                                                             ingredientModel.find({ingredient_id:j.ingredient_id}).exec((err,result) => {
+                                                                 if(err){
+                                                                     console.log(err)
+                                                                 } else {
+                                                                     let stock = result[0].stock
+                                                                     const option = {
+                                                                         stock: stock-Number(quantity)
+                                                                     }
+                                                                     ingredientModel.update({ingredient_id:j.ingredient_id},option,{multi:true}).exec((err,result) => {
+                                                                         if(err) {
+                                                                             console.log(err)
+                                                                         } else {
+                                                                             console.log('stock updated successfully')
+                                                                             console.log(result)
+                                                                         }
+                                                                     })
+                                                                 }
+                                                             })
+
 
                                                             report.save((err, result) => {
                                                                 if (err) {
@@ -188,7 +208,7 @@ let createBill = (req, res) => {
                                                                     console.log('successfully saved thankyou')
                                                                 }
                                                             })
-
+                                                            
                                                         }
 
                                                     }
@@ -230,6 +250,25 @@ let createBill = (req, res) => {
                                                                                 console.log('successfully updated')
                                                                             }
                                                                         })
+                                                                        ingredientModel.find({ingredient_id:ri.ingredient_id}).exec((err,result) => {
+                                                                            if(err){
+                                                                                console.log(err)
+                                                                            } else {
+                                                                                let quantity2 = Number(item.quantity) * Number(i.quantity)
+                                                                                let stock = result[0].stock
+                                                                                const option = {
+                                                                                    stock: stock-Number(quantity2)
+                                                                                }
+                                                                                ingredientModel.update({ingredient_id:ri.ingredient_id},option,{multi:true}).exec((err,result) => {
+                                                                                    if(err) {
+                                                                                        console.log(err)
+                                                                                    } else {
+                                                                                        console.log('stock updated successfully')
+                                                                                        console.log(result)
+                                                                                    }
+                                                                                })
+                                                                            }
+                                                                        })
                                                                     }
                                                                 }
 
@@ -255,6 +294,26 @@ let createBill = (req, res) => {
                                                                         console.log(err)
                                                                     } else {
                                                                         console.log('successfully saved thankyou')
+                                                                    }
+                                                                })
+
+                                                                ingredientModel.find({ingredient_id:i.ingredient_id}).exec((err,result) => {
+                                                                    if(err){
+                                                                        console.log(err)
+                                                                    } else {
+                                                                        let quantity2 = Number(item.quantity) * Number(i.quantity)
+                                                                        let stock = result[0].stock
+                                                                        const option = {
+                                                                            stock: stock-Number(quantity2)
+                                                                        }
+                                                                        ingredientModel.update({ingredient_id:i.ingredient_id},option,{multi:true}).exec((err,result) => {
+                                                                            if(err) {
+                                                                                console.log(err)
+                                                                            } else {
+                                                                                console.log('stock updated successfully')
+                                                                                console.log(result)
+                                                                            }
+                                                                        })
                                                                     }
                                                                 })
                                                             }
