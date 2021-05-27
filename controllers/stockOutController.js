@@ -140,6 +140,7 @@ let createStockOut = (req, res) => {
                                                             console.log(err)
                                                         } else {
                                                             console.log('Added new ingredient report successfully')
+                                                            res.send('Added New Ingredient Report')
                                                         }
                                                     })
                                                 } else {
@@ -152,8 +153,10 @@ let createStockOut = (req, res) => {
                                                             ingredientReportModel.update({'ingredient_id':req.body.ingredient_id, 'date': time.getNormalTime()},payload,{multi:true}).exec((err,result) => {
                                                                 if(err) {
                                                                     console.log(err)
+                                                                    res.send(err)
                                                                 } else {
                                                                     console.log(result)
+                                                                    res.send('Ingredient Report Updated Successfully')
                                                                 }
                                                             })
         
@@ -177,7 +180,6 @@ let createStockOut = (req, res) => {
                 }
             })
         }
-        res.send('done')
     })
 
 
