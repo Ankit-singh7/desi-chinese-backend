@@ -155,7 +155,7 @@ let createStockOut = (req, res) => {
                                                          console.log('there')
                                                         for(let item of report) {
     
-                                                            if(item.id === req.body.ingredient_id) {
+                                                            if(item.ingredient_id === req.body.ingredient_id) {
                                                                 let quantity = Number(item.quantity_by_stock) + Number(req.body.quantity) 
                                                                 const payload = {
                                                                     quantity_by_stock: quantity
