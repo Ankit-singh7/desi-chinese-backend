@@ -80,7 +80,7 @@ let getSingleUser = (req, res) => {
 
 let deleteUser = (req, res) => {
 
-    UserModel.findOneAndRemove({ 'stockManagerId': req.params.id })
+    stockManagerModel.findOneAndRemove({ 'stockManagerId': req.params.id })
     .select('-password -_id -__v -email -validationToken')
     .exec((err, result) => {
         if (err) {
@@ -109,7 +109,7 @@ let deleteUser = (req, res) => {
 let editUser = (req, res) => {
 
     let options = req.body;
-    UserModel.update({ 'stockManagerId': req.params.id }, options).exec((err, result) => {
+    stockManagerModel.update({ 'stockManagerId': req.params.id }, options).exec((err, result) => {
         if (err) {
             console.log(err)
             logger.error(err.message, 'User Controller:editUser', 10)
