@@ -14,6 +14,8 @@ const unitModel = mongoose.model('unit');
 
 
 let getAllStockOutList = (req, res) => {
+    const page = req.query.current_page
+    const limit = req.query.per_page
     stockOutModel.find()
         .lean()
         .select('-__v -_id')
@@ -28,7 +30,12 @@ let getAllStockOutList = (req, res) => {
                 let apiResponse = response.generate(true, 'No Data Found', 404, null)
                 res.send(apiResponse)
             } else {
-                let apiResponse = response.generate(false, 'All Stock out list Found', 200, result)
+                const startIndex = (page - 1)*limit;
+                const endIndex = page * limit
+                let total = result.length;
+                let ingredient = result.slice(startIndex,endIndex)
+                let newResult = {total:total,result:ingredient}
+                let apiResponse = response.generate(false, 'All Stock out list Found', 200, newResult)
                 res.send(apiResponse)
             }
         })
