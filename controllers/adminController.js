@@ -796,7 +796,7 @@ let forgotPasswordFunction = (req,res) => {
                     password: req.body.newPassword
                 }
     
-                UserModel.update({'email':req.body.email},options)
+                adminModel.update({'email':req.body.email},options)
                 .select('-password')
                 .exec((err,result) => {
                     if(err) {
