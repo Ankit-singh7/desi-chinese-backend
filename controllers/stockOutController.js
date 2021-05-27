@@ -174,6 +174,7 @@ let createStockOut = (req, res) => {
                 }
             })
         }
+        res.send('done')
     })
 
 
