@@ -125,9 +125,8 @@ let createStockOut = (req, res) => {
                                             console.log('Starting Ingredient Report Update')
                                             ingredientReportModel.find({'date': time.getNormalTime()}).exec((err, report) => {
                                                 if(err) {
-                                                    console.log('error')
-                                                    console.log(err)
-
+                                                    let apiResponse = response.generate(true, 'Failed to update', 500, null)
+                                                    res.send(apiResponse)
                                                 } else if (check.isEmpty(report)) {
                                                     console.log('No Date Found in ingredient report')
                                                     let report = new ingredientReportModel({
@@ -143,10 +142,11 @@ let createStockOut = (req, res) => {
                                                     })
                                                     report.save((err,result) => {
                                                         if(err) {
-                                                            console.log(err)
+                                                            let apiResponse = response.generate(true, 'Failed to update', 500, null)
+                                                            res.send(apiResponse)
                                                         } else {
-                                                            console.log('Added new ingredient report successfully')
-                                                            res.send('Added New Ingredient Report')
+                                                            let apiResponse = response.generate(false, 'Added new ingredient report successfully', 200, result)
+                                                            res.send(apiResponse)
                                                         }
                                                     })
                                                 } else {
@@ -162,11 +162,12 @@ let createStockOut = (req, res) => {
                                                                 }
                                                                 ingredientReportModel.update({'ingredient_id':req.body.ingredient_id, 'date': time.getNormalTime()},payload,{multi:true}).exec((err,result) => {
                                                                     if(err) {
-                                                                        console.log(err)
-                                                                        res.send(err)
+                                                                        let apiResponse = response.generate(true, 'Failed to update', 500, null)
+                                                                        res.send(apiResponse)
                                                                     } else {
                                                                         console.log(result)
-                                                                        res.send('Ingredient Report Updated Successfully')
+                                                                        let apiResponse = response.generate(false, 'Ingredient Report Updated Successfully', 200, result)
+                                                                        res.send(apiResponse)
                                                                     }
                                                                 })
             
@@ -187,10 +188,11 @@ let createStockOut = (req, res) => {
                                                         })
                                                         report.save((err,result) => {
                                                             if(err) {
-                                                                console.log(err)
+                                                                let apiResponse = response.generate(true, 'Failed to update', 500, null)
+                                                                res.send(apiResponse)
                                                             } else {
-                                                                console.log('Added new ingredient report successfully')
-                                                                res.send('Added New Ingredient Report')
+                                                                let apiResponse = response.generate(false, 'Added new ingredient report successfully', 200, result)
+                                                                 res.send(apiResponse)
                                                             }
                                                         })
                                                     }
