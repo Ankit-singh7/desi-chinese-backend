@@ -80,7 +80,7 @@ let getSingleUser = (req, res) => {
 
 let deleteUser = (req, res) => {
 
-    UserModel.findOneAndRemove({ 'stockManagerId': req.params.userId })
+    UserModel.findOneAndRemove({ 'stockManagerId': req.params.id })
     .select('-password -_id -__v -email -validationToken')
     .exec((err, result) => {
         if (err) {
@@ -371,7 +371,7 @@ let loginFunction = (req, res) => {
  * auth params: userId.
  */
 let logout = (req, res) => {
-    stockManagerModel.findOneAndRemove({ stockManagerId: req.params.userId }, (err, result) => {
+    stockManagerModel.findOneAndRemove({ stockManagerId: req.params.id }, (err, result) => {
         if (err) {
             console.log(err)
             logger.error(err.message, 'user Controller: logout', 10)

@@ -149,7 +149,7 @@ module.exports.setRouter = (app) => {
 
 
     // params: userId.
-    app.put(`${baseUrl}/:userId/edit`, userController.editUser);
+    app.put(`${baseUrl}/:id/edit`, userController.editUser);
     /**
      * @apiGroup users
      * @apiVersion  1.0.0
@@ -175,7 +175,7 @@ module.exports.setRouter = (app) => {
 
     
     // params: userId.
-    app.get(`${baseUrl}/:userId/delete`, userController.deleteUser);
+    app.get(`${baseUrl}/:id/delete`, userController.deleteUser);
 
     /**
      * @apiGroup users
@@ -209,7 +209,7 @@ module.exports.setRouter = (app) => {
 
 
     // params: userId.
-    app.get(`${baseUrl}/:userId/details`,userController.getSingleUser);
+    app.get(`${baseUrl}/:id/details`,userController.getSingleUser);
     /**
      * @apiGroup users
      * @apiVersion  1.0.0
@@ -239,7 +239,7 @@ module.exports.setRouter = (app) => {
     */
   
 
-    app.post(`${baseUrl}/:userId/logout`, userController.logout);
+    app.post(`${baseUrl}/:id/logout`, userController.logout);
     /**
      * @apiGroup users
      * @apiVersion  1.0.0
