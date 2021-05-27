@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const shortid = require('shortid');
 const customId = require('custom-id');
 const time = require('./../libs/timeLib');
+const moment = require('moment')//npm install moment --save
 const response = require('./../libs/responseLib')
 const logger = require('./../libs/loggerLib');
 const check = require('../libs/checkLib')
@@ -116,12 +117,13 @@ let createStockOut = (req, res) => {
                                             let apiResponse = response.generate(true, 'Failed To create new Ingredient', 500, null)
                                             console.log('failed to update')
                                         } else {
-                                            let apiResponse = response.generate(false, 'stock out Successfully created', 200, result)
                                             console.log('stock updated successfully')
                                             console.log('Starting Ingredient Report Update')
-                                            ingredientReportModel.find({ 'date': time.getNormalTime() }).exec((err, report) => {
+                                            ingredientReportModel.find({'date': time.getNormalTime()}).exec((err, report) => {
                                                 if(err) {
+                                                    console.log('error')
                                                     console.log(err)
+
                                                 } else if (check.isEmpty(result)) {
                                                     console.log('No Date Found in ingredient report')
                                                     let report = new ingredientReportModel({
