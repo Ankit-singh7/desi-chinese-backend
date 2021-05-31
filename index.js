@@ -23,7 +23,7 @@ const sessionModel = mongoose.model('session')
 const multer = require('multer');
 const storage = multer.diskStorage({
   destination: function(req,file,cb) {
-    cb(null,path.join(__dirname+'/uploads'));
+    cb(null,'./uploads');
   },
   filename:(req,file,cb) => {
     cb(null,new Date().toISOString().replace(/:/g, '-') + file.originalname);
@@ -31,7 +31,10 @@ const storage = multer.diskStorage({
 })
 const destination = multer({storage:storage})
 let billUrl = `${appConfig.apiVersion}/bill`;
-
+let dir = './uploads'
+if (!fs.existsSync(dir)){
+  fs.mkdirSync(dir);
+}
 app.use(morgan('dev'));
 
 app.use(bodyParser.json());
@@ -191,8 +194,8 @@ function onListening() {
   ('Listening on ' + bind);
   logger.info('server listening on port' + addr.port, 'serverOnListeningHandler', 10);
   console.log()
-  let db = mongoose.connect(process.env.MONGODB_URI || appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
-  // let db = mongoose.connect(appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
+  // let db = mongoose.connect(process.env.MONGODB_URI || appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
+  let db = mongoose.connect(appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
 }
 
 process.on('unhandledRejection', (reason, p) => {
