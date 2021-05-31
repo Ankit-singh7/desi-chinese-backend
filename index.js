@@ -19,7 +19,9 @@ const time = require('./libs/timeLib');
 const check = require('./libs/checkLib')
 const model = require('./models/SessionModel')
 const sessionModel = mongoose.model('session')
-
+const  multipart  =  require('connect-multiparty');
+const  multipartMiddleware  =  multipart({ uploadDir:  './uploads' });
+let billUrl = `${appConfig.apiVersion}/bill`;
 
 app.use(morgan('dev'));
 
@@ -55,6 +57,14 @@ cron.schedule('3 3 * * *', function() {
     }
   })
 });
+
+
+app.post(`${baseUrl}/upload`, multipartMiddleware, (req, res) => {
+  res.json({
+      'message': 'File uploaded successfully'
+  });
+});
+
 
 
 

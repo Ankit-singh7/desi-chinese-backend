@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const shortid = require('shortid');
 const customId = require('custom-id');
+
 const time = require('./../libs/timeLib');
 const moment = require('moment')//npm install moment --save
 const response = require('./../libs/responseLib')
@@ -405,6 +406,11 @@ let updateBill = (req, res) => {
                 res.send(apiResponse)
             }
         })
+}
+
+
+let uploadBill = (req,res) => {
+    
 }
 
 
