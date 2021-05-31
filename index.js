@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const app = express();
 const http = require('http');
+const base64 = require('base64topdf');
 const appConfig = require('./config/appConfig');
 const logger = require('./libs/loggerLib');
 const routeLoggerMiddleware = require('./middlewares/routeLogger.js');
@@ -19,8 +20,16 @@ const time = require('./libs/timeLib');
 const check = require('./libs/checkLib')
 const model = require('./models/SessionModel')
 const sessionModel = mongoose.model('session')
-const  multipart  =  require('connect-multiparty');
-const  multipartMiddleware  =  multipart({ uploadDir:  './uploads' });
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: function(req,file,cb) {
+    cb(null,'./uploads/');
+  },
+  filename:(req,file,cb) => {
+    cb(null,new Date().toISOString() + file.originalname);
+  }
+})
+const destination = multer({storage:storage})
 let billUrl = `${appConfig.apiVersion}/bill`;
 
 app.use(morgan('dev'));
@@ -31,8 +40,8 @@ app.use(cookieParser());
 app.use(routeLoggerMiddleware.logIp);
 app.use(globalErrorMiddleware.globalErrorHandler);
 
+app.use('/uploads',express.static('uploads'))
 app.use(express.static(path.join(__dirname, 'client')));
-
 
 
 cron.schedule('3 3 * * *', function() {
@@ -59,11 +68,20 @@ cron.schedule('3 3 * * *', function() {
 });
 
 
-app.post(`${billUrl}/upload`, multipartMiddleware, (req, res) => {
-  res.json({
-      'message': 'File uploaded successfully'
-  });
-});
+// app.post(`${billUrl}/upload`, multipartMiddleware, (req, res) => {
+//   res.json({
+//       'message': 'File uploaded successfully'
+//   });
+// });
+
+app.post(`${billUrl}/upload`,destination.single('pdf'),(req,res) => {
+  console.log(req)
+  // let decodedBase64 = base64.base64Decode(req.body.base64, 'bill.pdf');
+  res.json({message:'file saved',
+            path: req.file.path
+          })
+  
+})
 
 
 
@@ -173,8 +191,8 @@ function onListening() {
   ('Listening on ' + bind);
   logger.info('server listening on port' + addr.port, 'serverOnListeningHandler', 10);
   console.log()
-  let db = mongoose.connect(process.env.MONGODB_URI || appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
-  // let db = mongoose.connect(appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
+  // let db = mongoose.connect(process.env.MONGODB_URI || appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
+  let db = mongoose.connect(appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
 }
 
 process.on('unhandledRejection', (reason, p) => {
