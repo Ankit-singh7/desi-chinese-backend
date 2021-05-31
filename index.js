@@ -23,8 +23,7 @@ const sessionModel = mongoose.model('session')
 const multer = require('multer');
 const storage = multer.diskStorage({
   destination: function(req,file,cb) {
-    cb(null, path.join(__dirname, '/uploads'));
-   
+    cb(null,'./uploads/');
   },
   filename:(req,file,cb) => {
     cb(null,new Date().toISOString() + file.originalname);
@@ -41,7 +40,7 @@ app.use(cookieParser());
 app.use(routeLoggerMiddleware.logIp);
 app.use(globalErrorMiddleware.globalErrorHandler);
 
-app.use('/uploads',express.static('uploads'))
+app.use('/uploads',express.static(path.join(__dirname, 'uploads')))
 app.use(express.static(path.join(__dirname, 'client')));
 
 
