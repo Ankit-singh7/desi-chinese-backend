@@ -95,10 +95,12 @@ let createBill = (req, res) => {
         user_name: req.body.user_name,
         customer_name: req.body.customer_name,
         customer_phone: req.body.customer_phone,
+        customer_alternative_phone: req.body.customer_alternative_phone,
         customer_address: req.body.customer_address,
         payment_mode: req.body.payment_mode,
         delivery_mode: req.body.delivery_mode,
         total_price: req.body.total_price,
+        status: 'in-queue',
         products: req.body.products,
         createdOn: time.now()
     })
@@ -390,28 +392,41 @@ let deleteBill = (req, res) => {
 
 let updateBill = (req, res) => {
     let option = req.body
-    billModel.update({ 'bill_id': req.params.id }, option, { multi: true })
-        .exec((err, result) => {
-            if (err) {
-                console.log(err)
-                logger.error(err.message, 'Bill Controller: updateSubCatergory', 10)
-                let apiResponse = response.generate(true, 'Failed To delete bill', 500, null)
-                res.send(apiResponse)
-            } else if (check.isEmpty(result)) {
-                logger.info('No Bill Found', 'Bill Controller: updateBIll')
-                let apiResponse = response.generate(true, 'No Detail Found', 404, null)
-                res.send(apiResponse)
-            } else {
-                let apiResponse = response.generate(false, 'Bill Successfully updated', 200, result)
-                res.send(apiResponse)
-            }
-        })
-}
-
-
-let uploadBill = (req,res) => {
+    if(req.body.status === 'in-cook') {
+        let option = {
+            status: 'in-cook',
+            incookAt: time.now()
+        }
+    } else if(req.body.status === 'cookedAt') {
+        let option = {
+            status: 'cookedAt',
+            cookedAt: time.now()
+        }
+    } else if(req.body.status === 'dispatchedAt') {
+        let option = {
+            status: 'dispatchedAt',
+            dispatchedAt: time.now()
+        }
+    }
     
+            billModel.update({ 'bill_id': req.params.id }, option, { multi: true })
+                .exec((err, result) => {
+                    if (err) {
+                        console.log(err)
+                        logger.error(err.message, 'Bill Controller: updateSubCatergory', 10)
+                        let apiResponse = response.generate(true, 'Failed To delete bill', 500, null)
+                        res.send(apiResponse)
+                    } else if (check.isEmpty(result)) {
+                        logger.info('No Bill Found', 'Bill Controller: updateBIll')
+                        let apiResponse = response.generate(true, 'No Detail Found', 404, null)
+                        res.send(apiResponse)
+                    } else {
+                        let apiResponse = response.generate(false, 'Bill Successfully updated', 200, result)
+                        res.send(apiResponse)
+                    }
+                })
 }
+
 
 
 module.exports = {

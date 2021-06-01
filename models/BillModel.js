@@ -22,6 +22,10 @@ let billSchema = new Schema(
             type:Number,
             default:null
         },
+        customer_alternative_phone:{
+            type:Number,
+            default:null
+        },
         customer_address: {
             type: String,
             default:''
@@ -37,6 +41,10 @@ let billSchema = new Schema(
         total_price: {
             type: Number,
             default:null
+        },
+        status:{
+            type:String,
+            default:''
         },
         products: [
             {
@@ -61,7 +69,19 @@ let billSchema = new Schema(
         createdOn :{
             type:Date,
             default:''
-          }
+          },
+        incookAt: {
+            type:Date,
+            default:''
+        },
+        cookedAt:{
+            type:Date,
+            default:''
+        },
+        dispatchedAt: {
+            type:Date,
+            default:''
+        }
     }
 )
 
