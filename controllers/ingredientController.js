@@ -176,6 +176,29 @@ let updateCategory = (req, res) => {
 }
 
 
+let updateStatus = (req,res) => {
+    let option = {
+        stock: 0
+    }
+
+    ingredientModel.update(option).exec((err,result) => {
+        if (err) {
+            console.log(err)
+            logger.error(err.message, 'FoodCategory Controller: updateCatergory', 10)
+            let apiResponse = response.generate(true, 'Failed To delete food category', 500, null)
+            res.send(apiResponse)
+        } else if (check.isEmpty(result)) {
+            logger.info('No Category Found', 'FoodCategory Controller: updateCategory')
+            let apiResponse = response.generate(true, 'No Detail Found', 404, null)
+            res.send(apiResponse)
+        } else {
+            let apiResponse = response.generate(false, 'Food Category Successfully updated', 200, result)
+            res.send(apiResponse)
+        }
+     })
+}
+
+
 
 
 module.exports = {
@@ -183,5 +206,6 @@ module.exports = {
     getSingleIngredientDetail: getSingleIngredientDetail,
     createIngredient: createIngredient,
     deleteCategory: deleteCategory,
-    updateCategory: updateCategory
+    updateCategory: updateCategory,
+    updateStatus: updateStatus
 }

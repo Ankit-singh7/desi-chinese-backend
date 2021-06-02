@@ -18,4 +18,6 @@ module.exports.setRouter = (app) => {
 
     app.get(`${baseUrl}/:id/getById`, ingredientController.getSingleIngredientDetail);
 
+    app.get(`${baseUrl}/status`, ingredientController.updateStatus)
+
 }
