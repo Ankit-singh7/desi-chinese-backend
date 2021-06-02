@@ -181,7 +181,7 @@ let updateStatus = (req,res) => {
         stock: 0
     }
 
-    ingredientModel.update(option).exec((err,result) => {
+    ingredientModel.updateMany(option).exec((err,result) => {
         if (err) {
             console.log(err)
             logger.error(err.message, 'FoodCategory Controller: updateCatergory', 10)
