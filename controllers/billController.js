@@ -390,7 +390,7 @@ let deleteBill = (req, res) => {
 }
 
 
-let updateBill = (req, res) => {
+let changeStatus = (req, res) => {
     let option = req.body
     if(req.body.status === 'in-cook') {
         let option = {
@@ -429,11 +429,35 @@ let updateBill = (req, res) => {
 
 
 
+let updateBill = (req, res) => {
+    let option = req.body
+            billModel.update({ 'bill_id': req.params.id }, option, { multi: true })
+                .exec((err, result) => {
+                    if (err) {
+                        console.log(err)
+                        logger.error(err.message, 'Bill Controller: updateSubCatergory', 10)
+                        let apiResponse = response.generate(true, 'Failed To delete bill', 500, null)
+                        res.send(apiResponse)
+                    } else if (check.isEmpty(result)) {
+                        logger.info('No Bill Found', 'Bill Controller: updateBIll')
+                        let apiResponse = response.generate(true, 'No Detail Found', 404, null)
+                        res.send(apiResponse)
+                    } else {
+                        let apiResponse = response.generate(false, 'Bill Successfully updated', 200, result)
+                        res.send(apiResponse)
+                    }
+                })
+}
+
+
+
+
 module.exports = {
     getAllBill: getAllBill,
     getBillDetail: getBillDetail,
     createBill: createBill,
     deleteBill: deleteBill,
     updateBill: updateBill,
+    changeStatus: changeStatus,
     getTotalSales: getTotalSales
 }
