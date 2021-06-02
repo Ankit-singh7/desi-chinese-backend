@@ -102,10 +102,7 @@ let createBill = (req, res) => {
         total_price: req.body.total_price,
         status: 'in-queue',
         products: req.body.products,
-        createdOn: time.now(),
-        incookAt: time.now(),
-        cookedAt: time.now(),
-        dispatchedAt: time.now()
+        createdOn: time.now()
     })
 
 
@@ -396,17 +393,17 @@ let deleteBill = (req, res) => {
 let changeStatus = (req, res) => {
     let option = req.body
     if(req.body.status === 'in-cook') {
-        let option = {
+        option = {
             status: 'in-cook',
             incookAt: time.now()
         }
     } else if(req.body.status === 'cookedAt') {
-        let option = {
+        option = {
             status: 'cookedAt',
             cookedAt: time.now()
         }
     } else if(req.body.status === 'dispatchedAt') {
-        let option = {
+        option = {
             status: 'dispatchedAt',
             dispatchedAt: time.now()
         }
