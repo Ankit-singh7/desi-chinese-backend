@@ -102,7 +102,10 @@ let createBill = (req, res) => {
         total_price: req.body.total_price,
         status: 'in-queue',
         products: req.body.products,
-        createdOn: time.now()
+        createdOn: time.now(),
+        incookAt: time.now(),
+        cookedAt: time.now(),
+        dispatchedAt: time.now()
     })
 
 
