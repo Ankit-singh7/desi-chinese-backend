@@ -16,7 +16,7 @@ module.exports.setRouter = (app) => {
 
     app.post(`${baseUrl}/:id/update`, billController.updateBill);
 
-    app.post(`${baseUrl}/id/status`, billController.changeStatus)
+    app.post(`${baseUrl}/:id/status`, billController.changeStatus)
 
     app.get(`${baseUrl}/:id/getById`,billController.getBillDetail);
 
