@@ -90,7 +90,7 @@ let getBillDetail = (req, res) => {
 
 
 let createBill = (req, res) => {
-    let newSubCategory = new billModel({
+    let newBill = new billModel({
         bill_id: req.body.bill_id,
         user_name: req.body.user_name,
         customer_name: req.body.customer_name,
@@ -107,7 +107,7 @@ let createBill = (req, res) => {
 
 
 
-    newSubCategory.save((err, result) => {
+    newBill.save((err, result) => {
         if (err) {
             console.log(err)
             logger.error(err.message, 'Bill Controller: createBill', 10)
@@ -132,7 +132,7 @@ let createBill = (req, res) => {
 
                         total.save((err, result) => {
                             if (err) {
-                                console.log('error occured while creating the total')
+                                console.log(err)
                             } else {
                                 console.log('successfully total added')
                             }
@@ -144,7 +144,6 @@ let createBill = (req, res) => {
                             total: newTotal
                         }
                         totalModel.update({ 'total_id': totalS[0].total_id }, option,{multi:true})
-                            .lean()
                             .exec((err, result) => {
                                 if (err) {
                                     console.log(err)
