@@ -22,6 +22,10 @@ const totalSchema = new Schema({
   delivery_mode: {
    type: String,
    default:''
+  },
+  bill_by:{
+    type: String,
+    default:''
   }
 })
 

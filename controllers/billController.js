@@ -127,6 +127,7 @@ let createBill = (req, res) => {
                             total: req.body.total_price,
                             payment_mode: req.body.payment_mode,
                             delivery_mode: req.body.delivery_mode,
+                            bill_by: req.body.user_name,
                             createdOn: time.getNormalTime()
                         })
 
