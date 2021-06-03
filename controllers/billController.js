@@ -115,16 +115,19 @@ let createBill = (req, res) => {
             res.send(apiResponse)
         } else {
             let apiResponse = response.generate(false, 'Bill Successfully created', 200, result)
-            totalModel.find()
+            totalModel.find({'createdOn': time.getNormalTime()})
                 .lean()
-                .select('-total_id -__v -_id')
+                .select('-__v -_id')
                 .exec((err, result) => {
                     if (err) {
                         console.log(err)
                     } else if (check.isEmpty(result)) {
                         let total = new totalModel({
-                            total_id: 123,
-                            total: req.body.total_price
+                            total_id: shortid.generate(),
+                            total: req.body.total_price,
+                            payment_mode: req.body.payment_mode,
+                            delivery_mode: req.body.delivery_mode,
+                            createdOn: time.getNormalTime()
                         })
 
                         total.save((err, result) => {
@@ -140,7 +143,7 @@ let createBill = (req, res) => {
                         const option = {
                             total: newTotal
                         }
-                        totalModel.update({ 'total_id': 123 }, option)
+                        totalModel.update({ 'total_id': result[0].total_id }, option)
                             .lean()
                             .exec((err, result) => {
                                 if (err) {
@@ -348,27 +351,45 @@ let createBill = (req, res) => {
 
 }
 
+
 let getTotalSales = (req, res) => {
+    const filters = req.query;
+    console.log('filter',filters)
     totalModel.find()
         .lean()
-        .select('-total_id -__v -_id')
+        .select('-__v -_id')
         .exec((err, result) => {
             if (err) {
                 console.log(err)
-                logger.error(err.message, 'Bill Controller: getTotalSales', 10)
-                let apiResponse = response.generate(true, 'Failed To get the total', 500, null)
+                logger.error(err.message, 'Ingredient Controller: getAllIngredient', 10)
+                let apiResponse = response.generate(true, 'Failed To Find ', 500, null)
                 res.send(apiResponse)
             } else if (check.isEmpty(result)) {
-                logger.info('No Data Found', 'Bill Controller: getTotalSales')
+                logger.info('No Data Found', 'Ingredient Controller: getAllIngredient')
                 let apiResponse = response.generate(true, 'No Data Found', 404, null)
                 res.send(apiResponse)
             } else {
-                let apiResponse = response.generate(false, 'Total sale', 200, result)
+                const filteredUsers = result.filter(user => {
+                    console.log('here',user)
+                    let isValid = true;
+                    for (key in filters) {
+                        console.log(filters[key])
+                      console.log('here',user[key])
+                      if(key === 'createdOn') {
+
+                          isValid = isValid && moment(user[key]).format('YYYY-MM-DD') == filters[key];
+                      } else {
+                        isValid = isValid && user[key] == filters[key];
+                      }
+                      
+                    }
+                    return isValid;
+                  });
+                let apiResponse = response.generate(false, 'All Sales Found', 200, filteredUsers)
                 res.send(apiResponse)
             }
         })
 }
-
 
 let deleteBill = (req, res) => {
     billModel.findOneAndRemove({ 'bill_id': req.params.id })

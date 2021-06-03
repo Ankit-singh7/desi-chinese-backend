@@ -10,6 +10,18 @@ const totalSchema = new Schema({
   total: {
     type: Number,
     default:0
+  },
+  createdOn :{
+    type:String,
+    default:''
+  },
+  payment_mode : {
+    type: String,
+    default:''
+  },
+  delivery_mode: {
+   type: String,
+   default:''
   }
 })
 
