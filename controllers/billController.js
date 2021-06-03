@@ -116,12 +116,11 @@ let createBill = (req, res) => {
         } else {
             let apiResponse = response.generate(false, 'Bill Successfully created', 200, result)
             totalModel.find({'createdOn': time.getNormalTime()})
-                .lean()
-                .select('-__v -_id')
-                .exec((err, result) => {
+                .exec((err, totalS) => {
                     if (err) {
                         console.log(err)
-                    } else if (check.isEmpty(result)) {
+                    } else if (check.isEmpty(totalS)) {
+                        console.log('date here')
                         let total = new totalModel({
                             total_id: shortid.generate(),
                             total: req.body.total_price,
@@ -135,16 +134,16 @@ let createBill = (req, res) => {
                             if (err) {
                                 console.log('error occured while creating the total')
                             } else {
-                                console.log('successfully added')
+                                console.log('successfully total added')
                             }
                         })
                     } else {
-                        let oldTotal = result[0].total
+                        let oldTotal = totalS[0].total
                         let newTotal = oldTotal + req.body.total_price
                         const option = {
                             total: newTotal
                         }
-                        totalModel.update({ 'total_id': result[0].total_id }, option)
+                        totalModel.update({ 'total_id': totalS[0].total_id }, option,{multi:true})
                             .lean()
                             .exec((err, result) => {
                                 if (err) {
