@@ -13,8 +13,12 @@ const totalSchema = new Schema({
     type: Number,
     default:0
   },
-  createdOn :{
+  date: {
     type:String,
+    default:''
+  },
+  createdOn :{
+    type:Date,
     default:''
   },
   payment_mode : {

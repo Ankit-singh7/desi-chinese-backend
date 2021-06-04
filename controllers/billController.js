@@ -22,44 +22,88 @@ let getAllBill = (req, res) => {
     delete filters.per_page
     console.log('filter', filters)
 
-    billModel.find().sort({ _id: -1 })
-        .lean()
-        .exec((err, result) => {
-            if (err) {
-                console.log(err)
-                logger.error(err.message, 'Bill Controller: getAllBill', 10)
-                let apiResponse = response.generate(true, 'Failed To Find Food Sub-Category Details', 500, null)
-                res.send(apiResponse)
-            } else if (check.isEmpty(result)) {
-                logger.info('No Data Found', 'Bill Controller: getAllBill')
-                let apiResponse = response.generate(true, 'No Data Found', 404, null)
-                res.send(apiResponse)
-            } else {
-                const filteredUsers = result.filter(user => {
-                    console.log('here', user)
-                    let isValid = true;
-                    for (key in filters) {
-                        console.log(filters[key])
-                        console.log('here', user[key])
-                        if (key === 'createdOn') {
+    if(req.query.startDate && req.query.endDate) {
 
-                            isValid = isValid && moment(user[key]).format('YYYY-MM-DD') == filters[key];
-                        } else {
-                            isValid = isValid && user[key] == filters[key];
+        billModel.find({'date':{ $gte:req.query.startDate, $lte:req.query.endDate}}).sort({ _id: -1 })
+            .lean()
+            .exec((err, result) => {
+                if (err) {
+                    console.log(err)
+                    logger.error(err.message, 'Bill Controller: getAllBill', 10)
+                    let apiResponse = response.generate(true, 'Failed To Find Food Sub-Category Details', 500, null)
+                    res.send(apiResponse)
+                } else if (check.isEmpty(result)) {
+                    logger.info('No Data Found', 'Bill Controller: getAllBill')
+                    let apiResponse = response.generate(true, 'No Data Found', 404, null)
+                    res.send(apiResponse)
+                } else {
+                    const filteredUsers = result.filter(user => {
+                        console.log('here', user)
+                        let isValid = true;
+                        for (key in filters) {
+                            console.log(filters[key])
+                            console.log('here', user[key])
+                            if (key === 'createdOn') {
+    
+                                isValid = isValid && moment(user[key]).format('YYYY-MM-DD') == filters[key];
+                            } else {
+                                isValid = isValid && user[key] == filters[key];
+                            }
+    
                         }
+                        return isValid;
+                    });
+                    const startIndex = (page - 1) * limit;
+                    const endIndex = page * limit
+                    let total = result.length;
+                    let billList = filteredUsers.slice(startIndex, endIndex)
+                    let newResult = { total: total, result: billList }
+                    let apiResponse = response.generate(false, 'All Bills Found', 200, newResult)
+                    res.send(apiResponse)
+                }
+            })
+    } else {
 
-                    }
-                    return isValid;
-                });
-                const startIndex = (page - 1) * limit;
-                const endIndex = page * limit
-                let total = result.length;
-                let billList = filteredUsers.slice(startIndex, endIndex)
-                let newResult = { total: total, result: billList }
-                let apiResponse = response.generate(false, 'All Bills Found', 200, newResult)
-                res.send(apiResponse)
-            }
-        })
+        billModel.find().sort({ _id: -1 })
+            .lean()
+            .exec((err, result) => {
+                if (err) {
+                    console.log(err)
+                    logger.error(err.message, 'Bill Controller: getAllBill', 10)
+                    let apiResponse = response.generate(true, 'Failed To Find Food Sub-Category Details', 500, null)
+                    res.send(apiResponse)
+                } else if (check.isEmpty(result)) {
+                    logger.info('No Data Found', 'Bill Controller: getAllBill')
+                    let apiResponse = response.generate(true, 'No Data Found', 404, null)
+                    res.send(apiResponse)
+                } else {
+                    const filteredUsers = result.filter(user => {
+                        console.log('here', user)
+                        let isValid = true;
+                        for (key in filters) {
+                            console.log(filters[key])
+                            console.log('here', user[key])
+                            if (key === 'createdOn') {
+    
+                                isValid = isValid && moment(user[key]).format('YYYY-MM-DD') == filters[key];
+                            } else {
+                                isValid = isValid && user[key] == filters[key];
+                            }
+    
+                        }
+                        return isValid;
+                    });
+                    const startIndex = (page - 1) * limit;
+                    const endIndex = page * limit
+                    let total = result.length;
+                    let billList = filteredUsers.slice(startIndex, endIndex)
+                    let newResult = { total: total, result: billList }
+                    let apiResponse = response.generate(false, 'All Bills Found', 200, newResult)
+                    res.send(apiResponse)
+                }
+            })
+    }
+
 }
 
 
@@ -115,7 +159,7 @@ let createBill = (req, res) => {
             res.send(apiResponse)
         } else {
             let apiResponse = response.generate(false, 'Bill Successfully created', 200, result)
-            totalModel.find({ 'createdOn': time.getNormalTime() })
+            totalModel.find({ 'date': time.getNormalTime() })
                 .exec((err, totalS) => {
                     if (err) {
                         console.log(err)
@@ -127,7 +171,8 @@ let createBill = (req, res) => {
                             payment_mode: req.body.payment_mode,
                             delivery_mode: req.body.delivery_mode,
                             bill_by: req.body.user_name,
-                            createdOn: time.getNormalTime()
+                            date: time.getNormalTime(),
+                            createdOn: time.now()
                         })
 
                         total.save((err, result) => {
@@ -543,40 +588,79 @@ let createBill = (req, res) => {
 let getTotalSales = (req, res) => {
     const filters = req.query;
     console.log('filter', filters)
-    totalModel.find()
-        .lean()
-        .select('-__v -_id')
-        .exec((err, result) => {
-            if (err) {
-                console.log(err)
-                logger.error(err.message, 'Ingredient Controller: getAllIngredient', 10)
-                let apiResponse = response.generate(true, 'Failed To Find ', 500, null)
-                res.send(apiResponse)
-            } else if (check.isEmpty(result)) {
-                logger.info('No Data Found', 'Ingredient Controller: getAllIngredient')
-                let apiResponse = response.generate(true, 'No Data Found', 404, null)
-                res.send(apiResponse)
-            } else {
-                const filteredUsers = result.filter(user => {
-                    console.log('here', user)
-                    let isValid = true;
-                    for (key in filters) {
-                        console.log(filters[key])
-                        console.log('here', user[key])
-                        if (key === 'createdOn') {
+    if(req.query.startDate && req.query.endDate) {
 
-                            isValid = isValid && moment(user[key]).format('YYYY-MM-DD') == filters[key];
-                        } else {
-                            isValid = isValid && user[key] == filters[key];
+        totalModel.find({'date':{ $gte:req.query.startDate, $lte:req.query.endDate}})
+            .lean()
+            .select('-__v -_id')
+            .exec((err, result) => {
+                if (err) {
+                    console.log(err)
+                    logger.error(err.message, 'Ingredient Controller: getAllIngredient', 10)
+                    let apiResponse = response.generate(true, 'Failed To Find ', 500, null)
+                    res.send(apiResponse)
+                } else if (check.isEmpty(result)) {
+                    logger.info('No Data Found', 'Ingredient Controller: getAllIngredient')
+                    let apiResponse = response.generate(true, 'No Data Found', 404, null)
+                    res.send(apiResponse)
+                } else {
+                    const filteredUsers = result.filter(user => {
+                        console.log('here', user)
+                        let isValid = true;
+                        for (key in filters) {
+                            console.log(filters[key])
+                            console.log('here', user[key])
+                            if (key === 'createdOn') {
+    
+                                isValid = isValid && moment(user[key]).format('YYYY-MM-DD') == filters[key];
+                            } else {
+                                isValid = isValid && user[key] == filters[key];
+                            }
+    
                         }
-
-                    }
-                    return isValid;
-                });
-                let apiResponse = response.generate(false, 'All Sales Found', 200, filteredUsers)
-                res.send(apiResponse)
-            }
-        })
+                        return isValid;
+                    });
+                    let apiResponse = response.generate(false, 'All Sales Found', 200, filteredUsers)
+                    res.send(apiResponse)
+                }
+            })
+    } else {
+       
+        totalModel.find()
+            .lean()
+            .select('-__v -_id')
+            .exec((err, result) => {
+                if (err) {
+                    console.log(err)
+                    logger.error(err.message, 'Ingredient Controller: getAllIngredient', 10)
+                    let apiResponse = response.generate(true, 'Failed To Find ', 500, null)
+                    res.send(apiResponse)
+                } else if (check.isEmpty(result)) {
+                    logger.info('No Data Found', 'Ingredient Controller: getAllIngredient')
+                    let apiResponse = response.generate(true, 'No Data Found', 404, null)
+                    res.send(apiResponse)
+                } else {
+                    const filteredUsers = result.filter(user => {
+                        console.log('here', user)
+                        let isValid = true;
+                        for (key in filters) {
+                            console.log(filters[key])
+                            console.log('here', user[key])
+                            if (key === 'createdOn') {
+    
+                                isValid = isValid && moment(user[key]).format('YYYY-MM-DD') == filters[key];
+                            } else {
+                                isValid = isValid && user[key] == filters[key];
+                            }
+    
+                        }
+                        return isValid;
+                    });
+                    let apiResponse = response.generate(false, 'All Sales Found', 200, filteredUsers)
+                    res.send(apiResponse)
+                }
+            }) 
+    }
 }
 
 let deleteBill = (req, res) => {
