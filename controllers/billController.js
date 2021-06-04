@@ -17,6 +17,8 @@ const ingredientModel = mongoose.model('ingredient');
 let getAllBill = (req, res) => {
     const page = req.query.current_page
     const limit = req.query.per_page
+    const startDate = req.query.startDate
+    const endDate = req.query.endDate
     const filters = req.query;
     delete filters.current_page
     delete filters.per_page
@@ -24,11 +26,11 @@ let getAllBill = (req, res) => {
     delete filters.endDate
     console.log('filter', filters)
 
-    if(req.query.startDate && req.query.endDate) {
+    if(startDate && endDate) {
          console.log('here')
-         console.log('billStart',req.query.startDate)
-         console.log('billEnd', req.query.endDate)
-        billModel.find({'date':{ $gte:req.query.startDate, $lte:req.query.endDate}}).sort({ _id: -1 })
+         console.log('billStart',startDate)
+         console.log('billEnd', endDate)
+        billModel.find({'date':{ $gte:startDate, $lte:endDate}}).sort({ _id: -1 })
             .lean()
             .exec((err, result) => {
                 if (err) {
@@ -592,12 +594,14 @@ let createBill = (req, res) => {
 
 let getTotalSales = (req, res) => {
     const filters = req.query;
+    const startDate = req.query.startDate
+    const endDate = req.query.endDate
     delete filters.startDate
     delete filters.endDate
     console.log('filter', filters)
-    if(req.query.startDate && req.query.endDate) {
+    if(startDate && endDate) {
 
-        totalModel.find({'date':{ $gte:req.query.startDate, $lte:req.query.endDate}})
+        totalModel.find({'date':{ $gte:startDate, $lte:endDate}})
             .lean()
             .select('-__v -_id')
             .exec((err, result) => {
