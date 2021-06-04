@@ -166,7 +166,7 @@ let createBill = (req, res) => {
             res.send(apiResponse)
         } else {
             let apiResponse = response.generate(false, 'Bill Successfully created', 200, result)
-            totalModel.find({ 'date': time.getNormalTime() })
+            totalModel.find({ 'date': time.getNormalTime(),'payment_mode': req.body.payment_mode,'delivery_mode': req.body.delivery_mode, 'bill_by': req.body.user_name })
                 .exec((err, totalS) => {
                     if (err) {
                         console.log(err)
