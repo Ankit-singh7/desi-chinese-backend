@@ -20,8 +20,8 @@ let getAllBill = (req, res) => {
     const filters = req.query;
     delete filters.current_page
     delete filters.per_page
-    delete filter.startDate
-    delete filter.endDate
+    delete filters.startDate
+    delete filters.endDate
     console.log('filter', filters)
 
     if(req.query.startDate && req.query.endDate) {
@@ -592,8 +592,8 @@ let createBill = (req, res) => {
 
 let getTotalSales = (req, res) => {
     const filters = req.query;
-    delete filter.startDate
-    delete filter.endDate
+    delete filters.startDate
+    delete filters.endDate
     console.log('filter', filters)
     if(req.query.startDate && req.query.endDate) {
 
