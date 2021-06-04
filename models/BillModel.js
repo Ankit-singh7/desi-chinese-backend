@@ -66,6 +66,10 @@ let billSchema = new Schema(
                 }
             }
         ],
+        date:{
+            type:String,
+            default:''
+        },
         createdOn :{
             type:Date,
             default:''

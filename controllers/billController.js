@@ -146,6 +146,7 @@ let createBill = (req, res) => {
         total_price: req.body.total_price,
         status: 'in-queue',
         products: req.body.products,
+        date: time.getNormalTime(),
         createdOn: time.now()
     })
 
