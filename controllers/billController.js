@@ -23,7 +23,7 @@ let getAllBill = (req, res) => {
     console.log('filter', filters)
 
     if(req.query.startDate && req.query.endDate) {
-         console.log(here)
+         console.log('here')
          console.log('billStart',req.query.startDate)
          console.log('billEnd', req.query.endDate)
         billModel.find({'date':{ $gte:req.query.startDate, $lte:req.query.endDate}}).sort({ _id: -1 })
