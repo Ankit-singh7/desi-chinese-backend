@@ -77,7 +77,7 @@ cron.schedule('3 3 * * *', function() {
 //   });
 // });
 
-app.post(`${billUrl}/upload`,destination.single('pdf'),(req,res) => {
+app.post(`${billUrl}/upload`,destination.single('image'),(req,res) => {
   console.log(req)
   // let decodedBase64 = base64.base64Decode(req.body.base64, 'bill.pdf');
   res.json({message:'file saved',
