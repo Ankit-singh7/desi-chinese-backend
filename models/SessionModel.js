@@ -25,7 +25,7 @@ const sessionSchema = new Schema({
       type:Number,
       default:0
   },
-  isWithrawn: {
+  isWithdrawn: {
       type: String,
       default: 'false'
   },
