@@ -47,7 +47,7 @@ app.use('/uploads',express.static('uploads'))
 app.use(express.static(path.join(__dirname, 'client')));
 
 
-cron.schedule('59 11 * * *', function() {
+cron.schedule('59 23 * * *', function() {
   console.log('running a task every minute');
   sessionModel.find({session_status:'true'}).exec((err,result) => {
     if(err) {
@@ -59,7 +59,7 @@ cron.schedule('59 11 * * *', function() {
         session_status: 'false'
       }
 
-      sessionModel.update({'session_id':result[0].session_id},option,{multi:true}).exec((err,result) => {
+      sessionModel.updateOne({'session_id':result[0].session_id},option,{multi:true}).exec((err,result) => {
         if(err) {
           console.log(err)
         }else {
@@ -194,8 +194,8 @@ function onListening() {
   ('Listening on ' + bind);
   logger.info('server listening on port' + addr.port, 'serverOnListeningHandler', 10);
   console.log()
-  // let db = mongoose.connect(process.env.MONGODB_URI || appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
-  let db = mongoose.connect(appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
+  let db = mongoose.connect(process.env.MONGODB_URI || appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
+  // let db = mongoose.connect(appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
 }
 
 process.on('unhandledRejection', (reason, p) => {
