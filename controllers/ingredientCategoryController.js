@@ -108,7 +108,7 @@ let deleteIngredientCategory = (req,res) => {
 
 let updateIngredientCategory = (req,res) => {
     let option = req.body
-    ingredientCategoryModel.update({'ingredient_category_id':req.params.id},option,{multi:true})
+    ingredientCategoryModel.updateOne({'ingredient_category_id':req.params.id},option,{multi:true})
     .exec((err,result) => {
         if (err) {
             console.log(err)

@@ -103,7 +103,7 @@ let createStockIn = (req, res) => {
                                 stock : result[0].stock + Number(req.body.quantity)
                             }
 
-                            ingredientModel.update({'ingredient_id': req.body.ingredient_id},payload,{multi:true}).exec((err,result) => {
+                            ingredientModel.updateOne({'ingredient_id': req.body.ingredient_id},payload,{multi:true}).exec((err,result) => {
                                 if(err) {
                                     console.log(err)
                                 } else {

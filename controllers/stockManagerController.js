@@ -804,7 +804,7 @@ let forgotPasswordFunction = (req,res) => {
                     password: req.body.newPassword
                 }
     
-                stockManagerModel.update({'email':req.body.email},options)
+                stockManagerModel.updateOne({'email':req.body.email},options)
                 .select('-password')
                 .exec((err,result) => {
                     if(err) {

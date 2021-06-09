@@ -101,7 +101,7 @@ let deleteUnit = (req,res) => {
 
 let updateUnit = (req,res) => {
     let option = req.body
-    unitModel.update({'unit_id':req.params.id},option,{multi:true})
+    unitModel.updateOne({'unit_id':req.params.id},option,{multi:true})
     .exec((err,result) => {
         if (err) {
             console.log(err)

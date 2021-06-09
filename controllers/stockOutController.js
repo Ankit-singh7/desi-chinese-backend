@@ -109,7 +109,7 @@ let createStockOut = (req, res) => {
                                 stock : result[0].stock - Number(req.body.quantity)
                             }
 
-                            ingredientModel.update({'ingredient_id': req.body.ingredient_id},payload,{multi:true}).exec((err,result) => {
+                            ingredientModel.updateOne({'ingredient_id': req.body.ingredient_id},payload,{multi:true}).exec((err,result) => {
                                 if(err) {
                                     console.log(err)
                                 } else {
@@ -160,7 +160,7 @@ let createStockOut = (req, res) => {
                                                                 const payload = {
                                                                     quantity_by_stock: quantity
                                                                 }
-                                                                ingredientReportModel.update({'ingredient_id':req.body.ingredient_id, 'date': time.getNormalTime()},payload,{multi:true}).exec((err,result) => {
+                                                                ingredientReportModel.updateOne({'ingredient_id':req.body.ingredient_id, 'date': time.getNormalTime()},payload,{multi:true}).exec((err,result) => {
                                                                     if(err) {
                                                                         let apiResponse = response.generate(true, 'Failed to update', 500, null)
                                                                         res.send(apiResponse)

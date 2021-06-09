@@ -153,7 +153,7 @@ let updateCategory = (req, res) => {
                     let option = req.body
                     option.category = catName
                     option.unit = unitName
-                    ingredientModel.update({ 'ingredient_id': req.params.id }, option, { multi: true })
+                    ingredientModel.updateOne({ 'ingredient_id': req.params.id }, option, { multi: true })
                         .exec((err, result) => {
                             if (err) {
                                 console.log(err)

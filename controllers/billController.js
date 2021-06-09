@@ -230,7 +230,7 @@ let createBill = (req, res) => {
                                                                 const option = {
                                                                     stock: stock - Number(quantity)
                                                                 }
-                                                                ingredientModel.update({ ingredient_id: j.ingredient_id }, option, { multi: true }).exec((err, result) => {
+                                                                ingredientModel.updateOne({ ingredient_id: j.ingredient_id }, option, { multi: true }).exec((err, result) => {
                                                                     if (err) {
                                                                         console.log(err)
                                                                     } else {
@@ -283,7 +283,7 @@ let createBill = (req, res) => {
                                                                     let data = {
                                                                         quantity_by_order: ri.quantity_by_order
                                                                     }
-                                                                    ingredientReportModel.update({ 'date': time.getNormalTime(), 'ingredient_id': ri.ingredient_id }, data, { multi: true }).exec((err, response) => {
+                                                                    ingredientReportModel.updateOne({ 'date': time.getNormalTime(), 'ingredient_id': ri.ingredient_id }, data, { multi: true }).exec((err, response) => {
                                                                         if (err) {
                                                                             console.log(err)
                                                                         } else {
@@ -300,7 +300,7 @@ let createBill = (req, res) => {
                                                                             const option = {
                                                                                 stock: stock - Number(quantity2)
                                                                             }
-                                                                            ingredientModel.update({ ingredient_id: ri.ingredient_id }, option, { multi: true }).exec((err, result) => {
+                                                                            ingredientModel.updateOne({ ingredient_id: ri.ingredient_id }, option, { multi: true }).exec((err, result) => {
                                                                                 if (err) {
                                                                                     console.log(err)
                                                                                 } else {
@@ -347,7 +347,7 @@ let createBill = (req, res) => {
                                                                     const option = {
                                                                         stock: stock - Number(quantity2)
                                                                     }
-                                                                    ingredientModel.update({ ingredient_id: i.ingredient_id }, option, { multi: true }).exec((err, result) => {
+                                                                    ingredientModel.updateOne({ ingredient_id: i.ingredient_id }, option, { multi: true }).exec((err, result) => {
                                                                         if (err) {
                                                                             console.log(err)
                                                                         } else {
@@ -713,7 +713,7 @@ let changeStatus = (req, res) => {
         }
     }
 
-    billModel.update({ 'bill_id': req.params.id }, option, { multi: true })
+    billModel.updateOne({ 'bill_id': req.params.id }, option, { multi: true })
         .exec((err, result) => {
             if (err) {
                 console.log(err)
@@ -735,7 +735,7 @@ let changeStatus = (req, res) => {
 
 let updateBill = (req, res) => {
     let option = req.body
-    billModel.update({ 'bill_id': req.params.id }, option, { multi: true })
+    billModel.updateOne({ 'bill_id': req.params.id }, option, { multi: true })
         .exec((err, result) => {
             if (err) {
                 console.log(err)
