@@ -69,6 +69,7 @@ let createSession = (req,res) => {
        drawer_balance: req.body.drawer_balance,
        user_name: req.body.user_name,
        withdrawn: req.body.withdrawn,
+       isWithdrawn: 'false',
        cash_income: req.body.cash_income,
        createdOn: time.now()
     })
