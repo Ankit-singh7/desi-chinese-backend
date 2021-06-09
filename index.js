@@ -37,8 +37,8 @@ if (!fs.existsSync(dir)){
 }
 app.use(morgan('dev'));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(routeLoggerMiddleware.logIp);
 app.use(globalErrorMiddleware.globalErrorHandler);
@@ -194,8 +194,8 @@ function onListening() {
   ('Listening on ' + bind);
   logger.info('server listening on port' + addr.port, 'serverOnListeningHandler', 10);
   console.log()
-  let db = mongoose.connect(process.env.MONGODB_URI || appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
-  // let db = mongoose.connect(appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
+  // let db = mongoose.connect(process.env.MONGODB_URI || appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
+  let db = mongoose.connect(appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
 }
 
 process.on('unhandledRejection', (reason, p) => {
