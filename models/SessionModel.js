@@ -25,6 +25,10 @@ const sessionSchema = new Schema({
       type:Number,
       default:0
   },
+  isWithrawn: {
+      type: String,
+      default: 'false'
+  },
   cash_income: {
       type:Number,
       default: 0
