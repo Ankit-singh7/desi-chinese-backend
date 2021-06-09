@@ -137,6 +137,7 @@ let getSessionDetail = (req, res) => {
 
 let updateSession = (req,res) => {
     let option = req.body
+    console.log(option)
     sessionModel.updateOne({'session_id':req.params.id},option,{multi:true})
     .exec((err,result) => {
         if (err) {
