@@ -374,11 +374,11 @@ let createBill = (req, res) => {
                         })
                     } else {
                         let oldTotal = totalS[0].total
-                        let newTotal = oldTotal + req.body.total_price
+                        let newTotal = Number(oldTotal) + Number(req.body.total_price)
                         const option = {
                             total: newTotal
                         }
-                        totalModel.update({ 'total_id': totalS[0].total_id }, option, { multi: true })
+                        totalModel.updateOne({ 'total_id': totalS[0].total_id }, option, { multi: true })
                             .exec((err, result) => {
                                 if (err) {
                                     console.log(err)
