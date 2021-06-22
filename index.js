@@ -47,7 +47,7 @@ app.use('/uploads',express.static('uploads'))
 app.use(express.static(path.join(__dirname, 'client')));
 
 
-cron.schedule('00 00 00 * * *', function() {
+cron.schedule('0 0 0 * * *', function() {
   console.log('running a task every minute');
   sessionModel.find({session_status:'true'}).exec((err,result) => {
     if(err) {
@@ -194,8 +194,8 @@ function onListening() {
   ('Listening on ' + bind);
   logger.info('server listening on port' + addr.port, 'serverOnListeningHandler', 10);
   console.log()
-  let db = mongoose.connect(process.env.MONGODB_URI || appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
-  // let db = mongoose.connect(appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
+  // let db = mongoose.connect(process.env.MONGODB_URI || appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
+  let db = mongoose.connect(appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
 }
 
 process.on('unhandledRejection', (reason, p) => {
