@@ -832,7 +832,7 @@ let updateDrawerBalance = () => {
                                 for(let i of ingredient) {
                                     for (let ri of report) {
                                         if (ri.ingredient_id === i.ingredient_id) {
-                                            ri.quantity_by_order = String(ri.quantity_by_order - (item.quantity * Number(i.quantity)))
+                                            ri.quantity_by_order = String(Number(ri.quantity_by_order) - (Number(item.quantity) * Number(i.quantity)))
                                             let data = {
                                                 quantity_by_order: ri.quantity_by_order
                                             }
@@ -841,28 +841,30 @@ let updateDrawerBalance = () => {
                                                     console.log(err)
                                                 } else {
                                                     console.log(response)
-                                                    console.log('successfully updated')
-                                                }
-                                            })
-                                            ingredientModel.find({ ingredient_id: ri.ingredient_id }).exec((err, result) => {
-                                                if (err) {
-                                                    console.log(err)
-                                                } else {
-                                                    let quantity2 = Number(item.quantity) * Number(i.quantity)
-                                                    let stock = result[0].stock
-                                                    const option = {
-                                                        stock: stock + Number(quantity2)
-                                                    }
-                                                    ingredientModel.updateOne({ ingredient_id: ri.ingredient_id }, option, { multi: true }).exec((err, result) => {
+                                                    console.log('IG Report Successfully updated')
+                                                    // Updating Stocks
+                                                    ingredientModel.find({ ingredient_id: ri.ingredient_id }).exec((err, result) => {
                                                         if (err) {
                                                             console.log(err)
                                                         } else {
-                                                            console.log('stock updated successfully')
-                                                            console.log(result)
+                                                            let quantity2 = Number(item.quantity) * Number(i.quantity)
+                                                            let stock = result[0].stock
+                                                            const option = {
+                                                                stock: stock + Number(quantity2)
+                                                            }
+                                                            ingredientModel.updateOne({ ingredient_id: ri.ingredient_id }, option, { multi: true }).exec((err, result) => {
+                                                                if (err) {
+                                                                    console.log(err)
+                                                                } else {
+                                                                    console.log('stock updated successfully')
+                                                                    console.log(result)
+                                                                }
+                                                            })
                                                         }
                                                     })
                                                 }
                                             })
+                                  
                                         }
                                     }
                                 }
