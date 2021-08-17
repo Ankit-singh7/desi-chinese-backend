@@ -55,17 +55,20 @@ cron.schedule('0 0 0 * * *', function() {
     }else if (check.isEmpty(result)) {
       console.log('No active session')
     } else {
-      let option = {
-        session_status: 'false'
-      }
+      for (let item of result) {
 
-      sessionModel.updateOne({'session_id':result[0].session_id},option,{multi:true}).exec((err,result) => {
-        if(err) {
-          console.log(err)
-        }else {
-          console.log('updated successfully')
+        let option = {
+          session_status: 'false'
         }
-      })
+  
+        sessionModel.updateOne({'session_id':item.session_id},option,{multi:true}).exec((err,result) => {
+          if(err) {
+            console.log(err)
+          }else {
+            console.log('updated successfully')
+          }
+        })
+      }
     }
   })
 });
