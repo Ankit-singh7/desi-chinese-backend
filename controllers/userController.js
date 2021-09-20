@@ -20,8 +20,8 @@ const applicationUrl = 'http://trego.tk' //url of frontend application
 
 /* Get all user Details */
 let getAllUser = (req, res) => {
-    const page = req.query.current_page
-    const limit = req.query.per_page
+    // const page = req.query.current_page
+    // const limit = req.query.per_page
     UserModel.find()
         .select(' -__v -_id')
         .lean()
@@ -36,12 +36,12 @@ let getAllUser = (req, res) => {
                 let apiResponse = response.generate(true, 'No User Found', 404, null)
                 res.send(apiResponse)
             } else {
-                const startIndex = (page - 1)*limit;
-                const endIndex = page * limit
-                let total = result.length;
-                let empList = result.slice(startIndex,endIndex)
-                let newResult = {total:total,result:empList}
-                let apiResponse = response.generate(false, 'All User Details Found', 200, newResult)
+                // const startIndex = (page - 1)*limit;
+                // const endIndex = page * limit
+                // let total = result.length;
+                // let empList = result.slice(startIndex,endIndex)
+                // let newResult = {total:total,result:empList}
+                let apiResponse = response.generate(false, 'All User Details Found', 200, result)
                 res.send(apiResponse)
             }
         })
