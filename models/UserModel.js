@@ -35,6 +35,10 @@ let userSchema = new Schema(
     type:String,
     default:''
   },
+  role:{
+    type:String,
+    default:'',
+  },
   validationToken: { //will generate automatically while resetting password
     type: String,
     default: ''
