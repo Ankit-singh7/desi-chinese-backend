@@ -241,7 +241,7 @@ let signUpFunction = (req, res) => {
                             email: req.body.email.toLowerCase(),
                             password: req.body.password,
                             status:req.body.status,
-                            role:'admin',
+                            role:req.body.role,
                             createdOn: time.now()
                         })
                         newUser.save((err, newUser) => {
