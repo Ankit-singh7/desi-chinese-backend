@@ -70,6 +70,10 @@ let billSchema = new Schema(
             type:String,
             default:''
         },
+        printed:{
+            type:String,
+            default:''  
+        },
         createdOn :{
             type:Date,
             default:''

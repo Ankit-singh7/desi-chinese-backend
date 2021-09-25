@@ -152,6 +152,7 @@ let createBill = (req, res) => {
         payment_mode: req.body.payment_mode,
         delivery_mode: req.body.delivery_mode,
         total_price: req.body.total_price,
+        printed: 'No',
         status: 'in-queue',
         products: req.body.products,
         date: time.getNormalTime(),
