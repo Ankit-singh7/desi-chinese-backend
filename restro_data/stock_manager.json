@@ -1,0 +1,54 @@
+{
+	"_id": {
+		"$oid": "60a2d07ff442330016157322"
+	},
+	"stockManagerId": "57PC46YS",
+	"firstName": "ravi",
+	"lastName": "shankar",
+	"password": "Ravi@123",
+	"mobileNumber": "98473728222",
+	"email": "ravi@gmail.com",
+	"status": "Active",
+	"validationToken": "",
+	"createdOn": {
+		"$date": "2021-05-17T20:22:23Z"
+	},
+	"role": "sm",
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60af722ce0504600160fb1d7"
+	},
+	"stockManagerId": "54BR14QN",
+	"firstName": "Test",
+	"lastName": "Stock",
+	"password": "Stick@123",
+	"mobileNumber": "8777363542",
+	"email": "stockm@gmail.com",
+	"status": "Active",
+	"validationToken": "",
+	"createdOn": {
+		"$date": "2021-05-27T10:19:24Z"
+	},
+	"role": "sm",
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60f172abe6622e0016e1b377"
+	},
+	"stockManagerId": "64PG64OL",
+	"firstName": "Stock ",
+	"lastName": "Manager",
+	"password": "1234.abcd",
+	"mobileNumber": "7044444089",
+	"email": "stockmanager@gmail.com",
+	"status": "Active",
+	"validationToken": "",
+	"createdOn": {
+		"$date": "2021-07-16T11:51:07Z"
+	},
+	"role": "sm",
+	"__v": 0
+}

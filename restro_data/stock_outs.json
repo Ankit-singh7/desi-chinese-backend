@@ -1,0 +1,289 @@
+{
+	"_id": {
+		"$oid": "60af85c78bddb5001698abb4"
+	},
+	"stock_out_id": "ixRYJA2JT",
+	"ingredient_id": "71WYhFHDi",
+	"category": "Pouchong",
+	"category_id": "vvecAwA8n",
+	"ingredient": "Aginamoto MSG",
+	"unit_id": "qkmUzGwng",
+	"unit": "gm",
+	"quantity": "20",
+	"createdOn": {
+		"$date": "2021-05-27T11:43:03Z"
+	},
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60af86732e62ee00164cfbdc"
+	},
+	"stock_out_id": "BgTNszy6J",
+	"ingredient_id": "71WYhFHDi",
+	"category": "Pouchong",
+	"category_id": "vvecAwA8n",
+	"ingredient": "Aginamoto MSG",
+	"unit_id": "qkmUzGwng",
+	"unit": "gm",
+	"quantity": "20",
+	"createdOn": {
+		"$date": "2021-05-27T11:45:55Z"
+	},
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60af872f2e62ee00164cfbdd"
+	},
+	"stock_out_id": "XzL_6Zoqy",
+	"ingredient_id": "6b6zZvDTF",
+	"category": "Fish",
+	"category_id": "nwfim3VxF",
+	"ingredient": "Asian Seabass Fish",
+	"unit_id": "qkmUzGwng",
+	"unit": "gm",
+	"quantity": "5",
+	"createdOn": {
+		"$date": "2021-05-27T11:49:03Z"
+	},
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60af88fc249f0b00166a7efe"
+	},
+	"stock_out_id": "l0QU8Ouoa",
+	"ingredient_id": "71WYhFHDi",
+	"category": "Pouchong",
+	"category_id": "vvecAwA8n",
+	"ingredient": "Aginamoto MSG",
+	"unit_id": "qkmUzGwng",
+	"unit": "gm",
+	"quantity": "2",
+	"createdOn": {
+		"$date": "2021-05-27T11:56:44Z"
+	},
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60af89ebf821810016a06a97"
+	},
+	"stock_out_id": "eRSmi5KnX",
+	"ingredient_id": "71WYhFHDi",
+	"category": "Pouchong",
+	"category_id": "vvecAwA8n",
+	"ingredient": "Aginamoto MSG",
+	"unit_id": "qkmUzGwng",
+	"unit": "gm",
+	"quantity": "2",
+	"createdOn": {
+		"$date": "2021-05-27T12:00:43Z"
+	},
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60af8e499394c9001678eb36"
+	},
+	"stock_out_id": "mkPqst2Pi",
+	"ingredient_id": "71WYhFHDi",
+	"category": "Pouchong",
+	"category_id": "vvecAwA8n",
+	"ingredient": "Aginamoto MSG",
+	"unit_id": "qkmUzGwng",
+	"unit": "gm",
+	"quantity": "4",
+	"createdOn": {
+		"$date": "2021-05-27T12:19:21Z"
+	},
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60af949dd1f63d0016f7c5d6"
+	},
+	"stock_out_id": "uIQ6zR908",
+	"ingredient_id": "6b6zZvDTF",
+	"category": "Fish",
+	"category_id": "nwfim3VxF",
+	"ingredient": "Asian Seabass Fish",
+	"unit_id": "qkmUzGwng",
+	"unit": "gm",
+	"quantity": "7",
+	"createdOn": {
+		"$date": "2021-05-27T12:46:21Z"
+	},
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60af950ed1f63d0016f7c5d8"
+	},
+	"stock_out_id": "ySc-Dz4hi",
+	"ingredient_id": "71WYhFHDi",
+	"category": "Pouchong",
+	"category_id": "vvecAwA8n",
+	"ingredient": "Aginamoto MSG",
+	"unit_id": "qkmUzGwng",
+	"unit": "gm",
+	"quantity": "100",
+	"createdOn": {
+		"$date": "2021-05-27T12:48:14Z"
+	},
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60af9656ebf17900166d3af8"
+	},
+	"stock_out_id": "rYAcugrCz",
+	"ingredient_id": "71WYhFHDi",
+	"category": "Pouchong",
+	"category_id": "vvecAwA8n",
+	"ingredient": "Aginamoto MSG",
+	"unit_id": "qkmUzGwng",
+	"unit": "gm",
+	"quantity": "100",
+	"createdOn": {
+		"$date": "2021-05-27T12:53:42Z"
+	},
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60af96d0ebf17900166d3afa"
+	},
+	"stock_out_id": "eKyChvAAT",
+	"ingredient_id": "6b6zZvDTF",
+	"category": "Fish",
+	"category_id": "nwfim3VxF",
+	"ingredient": "Asian Seabass Fish",
+	"unit_id": "qkmUzGwng",
+	"unit": "gm",
+	"quantity": "2",
+	"createdOn": {
+		"$date": "2021-05-27T12:55:44Z"
+	},
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60af98047f1579001666c8ce"
+	},
+	"stock_out_id": "JkfbEtioG",
+	"ingredient_id": "6b6zZvDTF",
+	"category": "Fish",
+	"category_id": "nwfim3VxF",
+	"ingredient": "Asian Seabass Fish",
+	"unit_id": "qkmUzGwng",
+	"unit": "gm",
+	"quantity": "2",
+	"createdOn": {
+		"$date": "2021-05-27T13:00:52Z"
+	},
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60afb71efe986600163e89c5"
+	},
+	"stock_out_id": "vlNSd8dSt",
+	"ingredient_id": "6b6zZvDTF",
+	"category": "Fish",
+	"category_id": "nwfim3VxF",
+	"ingredient": "Asian Seabass Fish",
+	"unit_id": "qkmUzGwng",
+	"unit": "gm",
+	"quantity": "18",
+	"createdOn": {
+		"$date": "2021-05-27T15:13:34Z"
+	},
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60afb75cfe986600163e89c6"
+	},
+	"stock_out_id": "tt-UJPPCN",
+	"ingredient_id": "6b6zZvDTF",
+	"category": "Fish",
+	"category_id": "nwfim3VxF",
+	"ingredient": "Asian Seabass Fish",
+	"unit_id": "qkmUzGwng",
+	"unit": "gm",
+	"quantity": "1",
+	"createdOn": {
+		"$date": "2021-05-27T15:14:36Z"
+	},
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60afb881fe986600163e89c7"
+	},
+	"stock_out_id": "zcpwniAHU",
+	"ingredient_id": "6b6zZvDTF",
+	"category": "Fish",
+	"category_id": "nwfim3VxF",
+	"ingredient": "Asian Seabass Fish",
+	"unit_id": "qkmUzGwng",
+	"unit": "gm",
+	"quantity": "1",
+	"createdOn": {
+		"$date": "2021-05-27T15:19:29Z"
+	},
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60afb8cefe986600163e89ca"
+	},
+	"stock_out_id": "2qX9i2YjD",
+	"ingredient_id": "15gd0teBR",
+	"category": "Vegetables",
+	"category_id": "qrv8oa3rz",
+	"ingredient": "Babycorn",
+	"unit_id": "qkmUzGwng",
+	"unit": "gm",
+	"quantity": "20",
+	"createdOn": {
+		"$date": "2021-05-27T15:20:46Z"
+	},
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60affdb71e3d3d0016deb51d"
+	},
+	"stock_out_id": "-0-6I46Di",
+	"ingredient_id": "_8J1zwCN0",
+	"category": "Vegetables",
+	"category_id": "qrv8oa3rz",
+	"ingredient": "Beans",
+	"unit_id": "qkmUzGwng",
+	"unit": "gm",
+	"quantity": "5",
+	"createdOn": {
+		"$date": "2021-05-27T20:14:47Z"
+	},
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60b0aac50fd00b0016397a5e"
+	},
+	"stock_out_id": "VrjD9z7om",
+	"ingredient_id": "71WYhFHDi",
+	"category": "Pouchong",
+	"category_id": "vvecAwA8n",
+	"ingredient": "Aginamoto MSG",
+	"unit_id": "qkmUzGwng",
+	"unit": "gm",
+	"quantity": "10",
+	"createdOn": {
+		"$date": "2021-05-28T08:33:09Z"
+	},
+	"__v": 0
+}

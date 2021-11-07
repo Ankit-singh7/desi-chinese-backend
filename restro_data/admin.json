@@ -1,0 +1,2 @@
+{"_id":{"$oid":"60970a3913133b0016e3fe41"},"adminId":"50IO55DJ","firstName":"Rahul","lastName":"Das","password":"Rahul@123","email":"rahul123@gmail.com","validationToken":"","role":"admin","createdOn":{"$date":"2021-05-08T22:01:29Z"},"__v":0}
+{"_id":{"$oid":"6148db96d89dd10017ea0f1c"},"adminId":"20FZ04BA","firstName":"billing","lastName":"operator","password":"operator@123","email":"operator@gmail.com","role":"operator","validationToken":"","createdOn":{"$date":"2021-09-20T19:05:58Z"},"__v":0}

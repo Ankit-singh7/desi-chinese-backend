@@ -1,0 +1,72 @@
+{
+	"_id": {
+		"$oid": "60d242d21f18a9001667f5c0"
+	},
+	"delivery_mode_id": "MyifZQg0T",
+	"delivery_mode_name": "Home Delivery",
+	"is_banking": "false",
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60d242e01f18a9001667f5c1"
+	},
+	"delivery_mode_id": "qYqiw5i7l",
+	"delivery_mode_name": "Parcel",
+	"is_banking": "false",
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60d242ef1f18a9001667f5c2"
+	},
+	"delivery_mode_id": "-V-gVyFpU",
+	"delivery_mode_name": "Dine-in",
+	"is_banking": "false",
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60d243001f18a9001667f5c3"
+	},
+	"delivery_mode_id": "mRvBGnTUm",
+	"delivery_mode_name": "Swiggy",
+	"is_banking": "true",
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60d2430f1f18a9001667f5c4"
+	},
+	"delivery_mode_id": "s1HroBZ21",
+	"delivery_mode_name": "Zomato",
+	"is_banking": "true",
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60d2578618efcc0016dc7915"
+	},
+	"delivery_mode_id": "shPZAb5ig",
+	"delivery_mode_name": "Staff",
+	"is_banking": "false",
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60d376e9b9651f00163ff103"
+	},
+	"delivery_mode_id": "2fydwHUTX",
+	"delivery_mode_name": "Tell Me",
+	"is_banking": "false",
+	"__v": 0
+}
+{
+	"_id": {
+		"$oid": "60d3770ab9651f00163ff104"
+	},
+	"delivery_mode_id": "iHMKIu2bu",
+	"delivery_mode_name": "Dineout",
+	"is_banking": "true",
+	"__v": 0
+}

@@ -197,8 +197,8 @@ function onListening() {
   ('Listening on ' + bind);
   logger.info('server listening on port' + addr.port, 'serverOnListeningHandler', 10);
   console.log()
-  let db = mongoose.connect(process.env.MONGODB_URI || appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
-  // let db = mongoose.connect(appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
+  //  let db = mongoose.connect(process.env.MONGODB_URI || appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
+  let db = mongoose.connect(appConfig.db.localUri ,{useNewUrlParser:true, useUnifiedTopology: true});
 }
 
 process.on('unhandledRejection', (reason, p) => {
