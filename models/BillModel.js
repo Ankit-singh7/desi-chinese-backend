@@ -30,9 +30,25 @@ let billSchema = new Schema(
             type: String,
             default:''
         },
-        payment_mode: {
+        dual_payment_mode:{
             type:String,
             default:''
+        },
+        payment_mode_1: {
+            type:String,
+            default:''
+        },
+        payment_mode_2: {
+            type:String,
+            default:''
+        },
+        split_amount_1:{
+            type:Number,
+            default:null
+        },
+        split_amount_2:{
+            type:Number,
+            default:null
         },
         delivery_mode: {
             type:String,
