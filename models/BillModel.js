@@ -34,7 +34,7 @@ let billSchema = new Schema(
             type:String,
             default:''
         },
-        payment_mode_1: {
+        payment_mode: {
             type:String,
             default:''
         },
