@@ -162,6 +162,7 @@ let createBill = (req, res) => {
             date: time.getNormalTime(),
             createdOn: time.now()
         })
+        
     } else if(req.body.dual_payment_mode === true  || req.body.dual_payment_mode === 'true' ){
         newBill = new billModel({
             bill_id: req.body.bill_id,
