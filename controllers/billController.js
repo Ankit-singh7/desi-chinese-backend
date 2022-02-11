@@ -145,6 +145,7 @@ let createBill = (req, res) => {
     let newBill;
     if(req.body.dual_payment_mode === false  || req.body.dual_payment_mode === 'false' ) {
 
+        
         newBill = new billModel({
             bill_id: req.body.bill_id,
             token_id: req.body.token_id,
