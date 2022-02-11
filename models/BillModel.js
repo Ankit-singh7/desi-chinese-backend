@@ -10,6 +10,10 @@ let billSchema = new Schema(
             index: true,
             unique: true
         },
+        token_id:{
+            type:String,
+            default:'' 
+        },
         user_name: {
           type:String,
           default:''
