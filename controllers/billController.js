@@ -199,36 +199,85 @@ let createBill = (req, res) => {
             res.send(apiResponse)
         } else {
             let apiResponse = response.generate(false, 'Bill Successfully created', 200, result)
-            if(req.body.payment_mode === 'Cash') {
-                console.log('mode is cash')
-                sessionModel.findOne({'session_status': 'true'})
-                .select('-__v -_id')
-                .lean()
-                .exec((err, result) => {
-                    if (err) {
-                         console.log(err)
-                         logger.error(err.message, 'Session Controller: getSingleSessionDetail', 10)
-                         let apiResponse = response.generate(true, 'Failed To Find Details', 500, null)
-                         console.log(apiResponse);
-                    } else if (check.isEmpty(result)) {
-                         logger.info('No User Found', 'Session Controller: getSingleSessionDetail')
-                         let apiResponse = response.generate(true, 'No Detail Found', 404, null)
-                         console.log(apiResponse);
-                    } else {
-                       console.log(result)
-                       let option = {
-                           drawer_balance: Number(result.drawer_balance) + Number(req.body.total_price)
-                       }
-                       sessionModel.updateOne({session_id: result.session_id},option,{multi:true}).exec((err,result) => {
-                           if(err){
-                               console.log(err)
-                           } else {
-                               console.log(result)
+            if(req.body.dual_payment_mode === false  || req.body.dual_payment_mode === 'false' ) {
+
+                if(req.body.payment_mode_1 === 'Cash') {
+                    console.log('mode is cash')
+                    sessionModel.findOne({'session_status': 'true'})
+                    .select('-__v -_id')
+                    .lean()
+                    .exec((err, result) => {
+                        if (err) {
+                             console.log(err)
+                             logger.error(err.message, 'Session Controller: getSingleSessionDetail', 10)
+                             let apiResponse = response.generate(true, 'Failed To Find Details', 500, null)
+                             console.log(apiResponse);
+                        } else if (check.isEmpty(result)) {
+                             logger.info('No User Found', 'Session Controller: getSingleSessionDetail')
+                             let apiResponse = response.generate(true, 'No Detail Found', 404, null)
+                             console.log(apiResponse);
+                        } else {
+                           console.log(result)
+                           let option = {
+                               drawer_balance: Number(result.drawer_balance) + Number(req.body.total_price)
                            }
-                       })
-                    
+                           sessionModel.updateOne({session_id: result.session_id},option,{multi:true}).exec((err,result) => {
+                               if(err){
+                                   console.log(err)
+                               } else {
+                                   console.log(result)
+                               }
+                           })
+                        
+                        }
+                     })
+                }
+            } else if(req.body.dual_payment_mode === true  || req.body.dual_payment_mode === 'true' ){
+
+                    console.log('mode is cash')
+                    if(req.body.payment_mode_1 === 'Cash' || req.body.payment_mode_2 === 'Cash') {
+
+                        sessionModel.findOne({'session_status': 'true'})
+                        .select('-__v -_id')
+                        .lean()
+                        .exec((err, result) => {
+                            if (err) {
+                                 console.log(err)
+                                 logger.error(err.message, 'Session Controller: getSingleSessionDetail', 10)
+                                 let apiResponse = response.generate(true, 'Failed To Find Details', 500, null)
+                                 console.log(apiResponse);
+                            } else if (check.isEmpty(result)) {
+                                 logger.info('No User Found', 'Session Controller: getSingleSessionDetail')
+                                 let apiResponse = response.generate(true, 'No Detail Found', 404, null)
+                                 console.log(apiResponse);
+                            } else {
+                               console.log(result)
+                               if(req.body.payment_mode_1 === 'Cash' && req.body.payment_mode_2 !== 'Cash') {
+                                   let option = {
+                                       drawer_balance: Number(result.drawer_balance) + Number(req.body.split_amount_1)
+                                   }
+                                   
+                               } else if(req.body.payment_mode_1 !== 'Cash' && req.body.payment_mode_2 === 'Cash') {
+                                let option = {
+                                    drawer_balance: Number(result.drawer_balance) + Number(req.body.split_amount_2)
+                                }
+                               } else if(req.body.payment_mode_1 === 'Cash' && req.body.payment_mode_2 === 'Cash') {
+                                let option = {
+                                    drawer_balance: Number(result.drawer_balance) + Number(req.body.total_price)
+                                }
+                               }
+                               sessionModel.updateOne({session_id: result.session_id},option,{multi:true}).exec((err,result) => {
+                                   if(err){
+                                       console.log(err)
+                                   } else {
+                                       console.log(result)
+                                   }
+                               })
+                            
+                            }
+                         })
                     }
-                 })
+                
             }
             for(let item of req.body.products) {
                salesReportModel.findOne({'date': time.getNormalTime(),'food_id': item.food_id}).exec((err,result) => {
