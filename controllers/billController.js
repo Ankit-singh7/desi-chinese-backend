@@ -144,70 +144,90 @@ let getBillDetail = (req, res) => {
 let createBill = (req, res) => {
     let formattedDate = moment(this.date).format('YYYY-MM-DD');
     let billCount;
-    billModel.find({'createdOn':formattedDate}).exec((err,result) => {
-        if(err) {
-            console.log(err)
-            logger.error(err.message, 'Bill Controller: getBillCount', 10)
-            billCount = 0;
-            
-        }
-        else if (check.isEmpty(result)) {
-            billCount = 0;
-           
-        } else {
-            let apiResponse = response.generate(false, 'Detail Found', 200, result)
-            if(Array.isArray(result)) {
 
-                billCount = result.length
-            } else {
-                billCount = 0;
-            }
-        }
-    })
     let newBill;
     if(req.body.dual_payment_mode === false  || req.body.dual_payment_mode === 'false' ) {
-
-        
-        newBill = new billModel({
-            bill_id: req.body.bill_id,
-            token_id: `LDC-${billCount}`,
-            user_name: req.body.user_name,
-            customer_name: req.body.customer_name,
-            customer_phone: req.body.customer_phone,
-            customer_alternative_phone: req.body.customer_alternative_phone,
-            customer_address: req.body.customer_address,
-            payment_mode: req.body.payment_mode_1,
-            delivery_mode: req.body.delivery_mode,
-            dual_payment_mode: req.body.dual_payment_mode,
-            total_price: req.body.total_price,
-            printed: 'No',
-            status: 'in-queue',
-            products: req.body.products,
-            date: time.getNormalTime(),
-            createdOn: time.now()
+        billModel.find({'createdOn':formattedDate}).exec((err,result) => {
+            if(err) {
+                console.log(err)
+                logger.error(err.message, 'Bill Controller: getBillCount', 10)
+                billCount = 0;
+                
+            }
+            else if (check.isEmpty(result)) {
+                billCount = 0;
+               
+            } else {
+                let apiResponse = response.generate(false, 'Detail Found', 200, result)
+                if(Array.isArray(result)) {
+    
+                    billCount = result.length
+                } else {
+                    billCount = 0;
+                }
+            }
+            newBill = new billModel({
+                bill_id: req.body.bill_id,
+                token_id: `LDC-${billCount}`,
+                user_name: req.body.user_name,
+                customer_name: req.body.customer_name,
+                customer_phone: req.body.customer_phone,
+                customer_alternative_phone: req.body.customer_alternative_phone,
+                customer_address: req.body.customer_address,
+                payment_mode: req.body.payment_mode_1,
+                delivery_mode: req.body.delivery_mode,
+                dual_payment_mode: req.body.dual_payment_mode,
+                total_price: req.body.total_price,
+                printed: 'No',
+                status: 'in-queue',
+                products: req.body.products,
+                date: time.getNormalTime(),
+                createdOn: time.now()
+            })
         })
         
+        
     } else if(req.body.dual_payment_mode === true  || req.body.dual_payment_mode === 'true' ){
-        newBill = new billModel({
-            bill_id: req.body.bill_id,
-            token_id: `LDC-${billCount}`,
-            user_name: req.body.user_name,
-            customer_name: req.body.customer_name,
-            customer_phone: req.body.customer_phone,
-            customer_alternative_phone: req.body.customer_alternative_phone,
-            customer_address: req.body.customer_address,
-            payment_mode: req.body.payment_mode_1,
-            payment_mode_2: req.body.payment_mode_2,
-            split_amount_1: req.body.split_amount_1,
-            split_amount_2: req.body.split_amount_2,
-            dual_payment_mode: req.body.dual_payment_mode,
-            delivery_mode: req.body.delivery_mode,
-            total_price: req.body.total_price,
-            printed: 'No',
-            status: 'in-queue',
-            products: req.body.products,
-            date: time.getNormalTime(),
-            createdOn: time.now()
+        billModel.find({'createdOn':formattedDate}).exec((err,result) => {
+            if(err) {
+                console.log(err)
+                logger.error(err.message, 'Bill Controller: getBillCount', 10)
+                billCount = 0;
+                
+            }
+            else if (check.isEmpty(result)) {
+                billCount = 0;
+               
+            } else {
+                let apiResponse = response.generate(false, 'Detail Found', 200, result)
+                if(Array.isArray(result)) {
+    
+                    billCount = result.length
+                } else {
+                    billCount = 0;
+                }
+            }
+            newBill = new billModel({
+                bill_id: req.body.bill_id,
+                token_id: `LDC-${billCount}`,
+                user_name: req.body.user_name,
+                customer_name: req.body.customer_name,
+                customer_phone: req.body.customer_phone,
+                customer_alternative_phone: req.body.customer_alternative_phone,
+                customer_address: req.body.customer_address,
+                payment_mode: req.body.payment_mode_1,
+                payment_mode_2: req.body.payment_mode_2,
+                split_amount_1: req.body.split_amount_1,
+                split_amount_2: req.body.split_amount_2,
+                dual_payment_mode: req.body.dual_payment_mode,
+                delivery_mode: req.body.delivery_mode,
+                total_price: req.body.total_price,
+                printed: 'No',
+                status: 'in-queue',
+                products: req.body.products,
+                date: time.getNormalTime(),
+                createdOn: time.now()
+            })
         })
     }
 
