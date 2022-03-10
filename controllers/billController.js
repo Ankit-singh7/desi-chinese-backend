@@ -18,6 +18,7 @@ const salesReportModel = mongoose.model('salesReport')
 
 let getAllBill = (req, res) => {
     let total_sales = 0
+    let total_bill_count = 0
     const page = req.query.current_page
     const limit = req.query.per_page
     const startDate = req.query.startDate
@@ -66,12 +67,14 @@ let getAllBill = (req, res) => {
                         for(let item of filteredUsers) {
                             total_sales = total_sales + item.total_price
                         }
+
                       } else {
-                        total_sales = 0;
+                            total_sales = 0;
                       }
+                    total_bill_count = filteredUsers.length
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit
-                    let total = total_sales;
+                    let total = `${total_sales}-${total_bill_count}`;
                     let billList = filteredUsers.slice(startIndex, endIndex)
                     let newResult = { total: total, result: billList }
                     let apiResponse = response.generate(false, 'All Bills Found', 200, newResult)
