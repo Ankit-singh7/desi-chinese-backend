@@ -109,7 +109,7 @@ let deleteUser = (req, res) => {
 let editUser = (req, res) => {
 
     let options = req.body;
-    UserModel.update({ 'userId': req.params.userId }, options).exec((err, result) => {
+    UserModel.updateOne({ 'userId': req.params.userId }, options).exec((err, result) => {
         if (err) {
             console.log(err)
             logger.error(err.message, 'User Controller:editUser', 10)
