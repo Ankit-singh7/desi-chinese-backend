@@ -267,7 +267,7 @@ let createBill = (req, res) => {
                 }
             } else if(req.body.dual_payment_mode === true  || req.body.dual_payment_mode === 'true' ){
 
-                    console.log('mode is cash')
+                    console.log('dual payment mode')
                     if(req.body.payment_mode_1 === 'Cash' || req.body.payment_mode_2 === 'Cash') {
 
                         sessionModel.findOne({'session_status': 'true'})
@@ -285,17 +285,18 @@ let createBill = (req, res) => {
                                  console.log(apiResponse);
                             } else {
                                console.log(result)
+                               let option;
                                if(req.body.payment_mode_1 === 'Cash' && req.body.payment_mode_2 !== 'Cash') {
-                                   let option = {
+                                   option = {
                                        drawer_balance: Number(result.drawer_balance) + Number(req.body.split_amount_1)
                                    }
                                    
                                } else if(req.body.payment_mode_1 !== 'Cash' && req.body.payment_mode_2 === 'Cash') {
-                                let option = {
+                                option = {
                                     drawer_balance: Number(result.drawer_balance) + Number(req.body.split_amount_2)
                                 }
                                } else if(req.body.payment_mode_1 === 'Cash' && req.body.payment_mode_2 === 'Cash') {
-                                let option = {
+                                option = {
                                     drawer_balance: Number(result.drawer_balance) + Number(req.body.total_price)
                                 }
                                }
