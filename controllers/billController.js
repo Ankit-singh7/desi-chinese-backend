@@ -112,9 +112,18 @@ let getAllBill = (req, res) => {
                         }
                         return isValid;
                     });
+                    if(filteredUsers.length>0) {
+                        for(let item of filteredUsers) {
+                            total_sales = total_sales + item.total_price
+                        }
+
+                      } else {
+                            total_sales = 0;
+                      }
+                    total_bill_count = filteredUsers.length
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit
-                    let total = result.length;
+                    let total = `${total_sales}-${total_bill_count}`;
                     let billList = filteredUsers.slice(startIndex, endIndex)
                     let newResult = { total: total, result: billList }
                     let apiResponse = response.generate(false, 'All Bills Found', 200, newResult)
