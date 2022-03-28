@@ -31,7 +31,7 @@ let getAllBill = (req, res) => {
 
     if(startDate && endDate) {
          let formatted_sd = moment(startDate,'DD-MM-YYYY')
-         let formatted_ed = moment(endDate,'DD-MM-YYYY')
+         let formatted_ed = moment(endDate,'DD-MM-YYYY').add('day')
          console.log(formatted_sd.format())
          console.log(formatted_ed.format())
         
