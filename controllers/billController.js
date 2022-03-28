@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const shortid = require('shortid');
 const customId = require('custom-id');
-const moment = require('moment')//npm install moment --save
 const time = require('./../libs/timeLib');
 const moment = require('moment')//npm install moment --save
 const response = require('./../libs/responseLib')
