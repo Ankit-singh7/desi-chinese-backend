@@ -31,9 +31,11 @@ let getAllBill = (req, res) => {
 
     if(startDate && endDate) {
          let formatted_sd = moment(startDate,'DD-MM-YYYY')
-         let formatted_ed = moment(endDate,'DD-MM-YYYY').add('day')
+         let formatted_ed = moment(endDate,'DD-MM-YYYY').add('d')
          console.log(formatted_sd.format())
          console.log(formatted_ed.format())
+         console.log(formatted_sd)
+         console.log(formatted_ed)
         
         billModel.find({'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()}}).sort({ _id: -1 })
             .lean()
