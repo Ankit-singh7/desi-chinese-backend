@@ -15,8 +15,10 @@ let getAllSalesReport = (req, res) => {
     const filters = req.query;
     console.log(filters)
     if(Object.keys(filters).length) {
+        let formatted_sd = moment(req.query.startDate,'DD-MM-YYYY')
+        let formatted_ed = moment(req.query.endDate,'DD-MM-YYYY').add(1,'day')
         console.log('object')
-        salesReportModel.find({'date':{ $gte:req.query.startDate, $lte:req.query.endDate}}).exec((err,result) => {
+        salesReportModel.find({'date':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()}}).exec((err,result) => {
             if(err) {
                 res.send(err)
             } else if (check.isEmpty(result)) {

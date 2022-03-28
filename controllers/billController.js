@@ -332,7 +332,7 @@ let createBill = (req, res) => {
                    } else if (check.isEmpty(result)) {
                        let sales = new salesReportModel({
                         sales_report_id: shortid.generate(),
-                        date: time.getNormalTime(),
+                        date: time.now(),
                         food_name: item.food_name,
                         food_id: item.food_id,
                         quantity: Number(item.quantity)
@@ -353,7 +353,7 @@ let createBill = (req, res) => {
                                console.log(err)
                            } else {
                                console.log(result)
-                               ingredientReportModel.find({ 'date': time.getNormalTime() }).exec((err, report) => {
+                               ingredientReportModel.find({ 'date': time.now() }).exec((err, report) => {
                                 if (err) {
                                     let apiResponse = response.generate(true, 'Failed to find the data', 500, null)
                                     console.log(err)
@@ -378,7 +378,7 @@ let createBill = (req, res) => {
 
                                                     let quantity = String(product.quantity * Number(j.quantity))
                                                     let report = new ingredientReportModel({
-                                                        date: time.getNormalTime(),
+                                                        date: time.now(),
                                                         ingredient_id: j.ingredient_id,
                                                         category: j.category,
                                                         category_id: j.category_id,
@@ -482,7 +482,7 @@ let createBill = (req, res) => {
                                                     } else {
                                                         let quantity = String(item.quantity * Number(i.quantity))
                                                         let report = new ingredientReportModel({
-                                                            date: time.getNormalTime(),
+                                                            date: time.now(),
                                                             ingredient_id: i.ingredient_id,
                                                             category: i.category,
                                                             category_id: i.category_id,

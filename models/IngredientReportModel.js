@@ -4,9 +4,9 @@ const Schema = mongoose.Schema;
 let ingredientReportSchema = new Schema(
     {
                 date: {
-                    type: String,
-                    default: ''
-                },
+                    type:Date,
+                    default:''
+                  },
                 ingredient_id: {
                     type: String,
                     default: ''

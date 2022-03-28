@@ -10,8 +10,8 @@ let salesReportSchema = new Schema(
                     unique: true
                 },
                 date: {
-                    type: String,
-                    default: ''
+                    type:Date,
+                    default:''
                 },
                 food_name: {
                     type: String,
