@@ -34,7 +34,7 @@ let getAllBill = (req, res) => {
          console.log('here')
          console.log('billStart',startDate)
          console.log('billEnd', endDate)
-        billModel.find({'date':{ $gte:startDate, $lte:endDate}}).sort({ _id: -1 })
+        billModel.find({'createdOn':{ $gte:startDate, $lte:endDate}}).sort({ _id: -1 })
             .lean()
             .exec((err, result) => {
                 if (err) {
