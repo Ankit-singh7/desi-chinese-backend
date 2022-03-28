@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const shortid = require('shortid');
 const customId = require('custom-id');
-
+const moment = require('moment')//npm install moment --save
 const time = require('./../libs/timeLib');
 const moment = require('moment')//npm install moment --save
 const response = require('./../libs/responseLib')
@@ -31,10 +31,10 @@ let getAllBill = (req, res) => {
     console.log('filter', filters)
 
     if(startDate && endDate) {
-         console.log('here')
-         console.log('billStart',startDate)
-         console.log('billEnd', endDate)
-        billModel.find({'createdOn':{ $gte:new Date(startDate), $lte:new Date(endDate)}}).sort({ _id: -1 })
+         let formatted_sd = moment(startDate,'DD-MM-YYYY')
+         let formatted_ed = moment(endDate,'DD-MM-YYYY')
+        
+        billModel.find({'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()}}).sort({ _id: -1 })
             .lean()
             .exec((err, result) => {
                 if (err) {
