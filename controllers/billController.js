@@ -55,7 +55,7 @@ let getAllBill = (req, res) => {
                             console.log('here', user[key])
                             if (key === 'createdOn') {
     
-                                isValid = isValid && moment(user[key]).format('YYYY-MM-DD') == filters[key];
+                                // isValid = isValid && moment(user[key]).format('YYYY-MM-DD') == filters[key];
                             } else {
                                 isValid = isValid && user[key] == filters[key];
                             }
