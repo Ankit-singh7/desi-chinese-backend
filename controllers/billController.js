@@ -352,12 +352,13 @@ let createBill = (req, res) => {
                            if(err) {
                                console.log(err)
                            } else {
-                               console.log(result)
+                               console.log('ingredient report will start')
                                ingredientReportModel.find({'date': time.getNormalTime()}).exec((err, report) => {
                                 if (err) {
                                     let apiResponse = response.generate(true, 'Failed to find the data', 500, null)
                                     console.log(err)
                                 } else if (check.isEmpty(report)) {
+                                    console.log('ingredient report is empty, will create new')
                                     let ingArray = []
                                     let product;
                                     let i = 0
@@ -414,6 +415,7 @@ let createBill = (req, res) => {
                                                             console.log(err)
                                                         } else {
                                                             console.log('successfully saved thankyou')
+
                                                         }
                                                     })
 
