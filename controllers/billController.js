@@ -326,7 +326,7 @@ let createBill = (req, res) => {
                 
             }
             for(let item of req.body.products) {
-               salesReportModel.findOne({'date': time.getNormalTime(),'food_id': item.food_id}).exec((err,result) => {
+               salesReportModel.findOne({'date': time.now(),'food_id': item.food_id}).exec((err,result) => {
                    if(err){
                        console.log(err)
                    } else if (check.isEmpty(result)) {
@@ -353,7 +353,7 @@ let createBill = (req, res) => {
                                console.log(err)
                            } else {
                                console.log(result)
-                               ingredientReportModel.find({ 'date': time.now() }).exec((err, report) => {
+                               ingredientReportModel.find({'date': time.now()}).exec((err, report) => {
                                 if (err) {
                                     let apiResponse = response.generate(true, 'Failed to find the data', 500, null)
                                     console.log(err)
@@ -449,7 +449,7 @@ let createBill = (req, res) => {
                                                                 let data = {
                                                                     quantity_by_order: ri.quantity_by_order
                                                                 }
-                                                                ingredientReportModel.updateOne({ 'date': time.getNormalTime(), 'ingredient_id': ri.ingredient_id }, data, { multi: true }).exec((err, response) => {
+                                                                ingredientReportModel.updateOne({ 'date': time.now(), 'ingredient_id': ri.ingredient_id }, data, { multi: true }).exec((err, response) => {
                                                                     if (err) {
                                                                         console.log(err)
                                                                     } else {
