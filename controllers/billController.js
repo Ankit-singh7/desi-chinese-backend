@@ -353,7 +353,7 @@ let createBill = (req, res) => {
                                console.log(err)
                            } else {
                                console.log(result)
-                               ingredientReportModel.find({'date': time.now()}).exec((err, report) => {
+                               ingredientReportModel.find({'date': time.getNormalTime()}).exec((err, report) => {
                                 if (err) {
                                     let apiResponse = response.generate(true, 'Failed to find the data', 500, null)
                                     console.log(err)
@@ -378,7 +378,7 @@ let createBill = (req, res) => {
 
                                                     let quantity = String(product.quantity * Number(j.quantity))
                                                     let report = new ingredientReportModel({
-                                                        date: time.now(),
+                                                        date: time.getNormalTime(),
                                                         ingredient_id: j.ingredient_id,
                                                         category: j.category,
                                                         category_id: j.category_id,
@@ -386,7 +386,8 @@ let createBill = (req, res) => {
                                                         unit_id: j.unit_id,
                                                         unit: j.unit,
                                                         quantity_by_order: quantity,
-                                                        quantity_by_stock: 0
+                                                        quantity_by_stock: 0,
+                                                        created_at: time.now()
                                                     })
                                                     ingredientModel.find({ ingredient_id: j.ingredient_id }).exec((err, result) => {
                                                         if (err) {
@@ -482,7 +483,7 @@ let createBill = (req, res) => {
                                                     } else {
                                                         let quantity = String(item.quantity * Number(i.quantity))
                                                         let report = new ingredientReportModel({
-                                                            date: time.now(),
+                                                            date: time.getNormalTime(),
                                                             ingredient_id: i.ingredient_id,
                                                             category: i.category,
                                                             category_id: i.category_id,
@@ -490,7 +491,8 @@ let createBill = (req, res) => {
                                                             unit_id: i.unit_id,
                                                             unit: i.unit,
                                                             quantity_by_order: quantity,
-                                                            quantity_by_stock: 0
+                                                            quantity_by_stock: 0,
+                                                            created_at:time.now()
                                                         })
 
 

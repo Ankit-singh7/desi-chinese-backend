@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 let ingredientReportSchema = new Schema(
     {
                 date: {
-                    type:Date,
+                    type:String,
                     default:''
                   },
                 ingredient_id: {
@@ -39,7 +39,11 @@ let ingredientReportSchema = new Schema(
                 quantity_by_stock: {
                     type: Number,
                     default: null
-                }                   
+                },
+                created_at: {
+                    type:Date,
+                    default:'' 
+                }                  
     }
 )
 
