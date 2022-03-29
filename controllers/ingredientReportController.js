@@ -23,6 +23,9 @@ let getAllIngredientReport = (req, res) => {
         console.log('object')
         let formatted_sd = moment(req.query.startDate,'DD-MM-YYYY')
         let formatted_ed = moment(req.query.endDate,'DD-MM-YYYY').add(1,'day')
+        console.log(formatted_sd.format())
+        console.log(formatted_ed.format())
+
         ingredientReportModel.find({'date':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()}}).exec((err,result) => {
             if(err) {
                 res.send(err)
