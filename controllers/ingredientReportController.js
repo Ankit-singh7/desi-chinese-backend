@@ -22,7 +22,7 @@ let getAllIngredientReport = (req, res) => {
     if(Object.keys(filters).length) {
         console.log('object')
         let formatted_sd = moment(filters.startDate,'DD-MM-YYYY')
-        let formatted_ed = moment(filter.endDate,'DD-MM-YYYY').add(1,'day')
+        let formatted_ed = moment(filters.endDate,'DD-MM-YYYY').add(1,'day')
         console.log(formatted_sd.format())
         console.log(formatted_ed.format())
 
