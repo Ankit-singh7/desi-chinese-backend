@@ -26,7 +26,7 @@ let getAllIngredientReport = (req, res) => {
         console.log(formatted_sd.format())
         console.log(formatted_ed.format())
 
-        ingredientReportModel.find({'created_at':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()}}).exec((err,result) => {
+        ingredientReportModel.find({'date':{ $gte:filters.startDate, $lte:filters.endDate}}).exec((err,result) => {
             if(err) {
                 res.send(err)
             } else if (check.isEmpty(result)) {
