@@ -1,43 +1,29 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let foodSubCategorySchema = new Schema(
+let popularFoodSchema = new Schema(
     {
 
-        sub_category_id:{
+        food_id:{
             type:String,
             default: '',
             index: true,
             unique: true
         },
-        category_name: {
+        food_name: {
             type:String,
             default:''
         },
-        category_id: {
+        food_type: {
             type:String,
             default: ''
         },
-        name: {
-            type:String,
-            default:''
-        },
+
         price: {
             type:Number,
             default:null
         },
-        type: {
-            type: String,
-            default:''
-        },
-        status: {
-            type: String,
-            default:''
-        },
-        mostly_used:{
-            type: String,
-            default:''
-        },
+
         createdOn :{
             type:Date,
             default:''
@@ -45,4 +31,4 @@ let foodSubCategorySchema = new Schema(
     }
 )
 
-mongoose.model('foodSubCategory', foodSubCategorySchema);
+mongoose.model('popularFood', popularFoodSchema);

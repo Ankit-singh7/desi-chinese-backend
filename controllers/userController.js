@@ -823,6 +823,45 @@ let forgotPasswordFunction = (req,res) => {
 }
 
 
+let sendEmail = (req,res) => {
+    let sendEmail = () => {
+        return new Promise((resolve, reject) => {
+            
+            let sendEmailOptions = {
+               email: req.email,
+               subject: `Query from a customer - ${req.name}`,
+               html: `<h4> Hi Admin,</h4>
+                   <p>
+                       We got a query from ${req.name} - ${req.message}
+                       Phone number - ${req.phone}                             
+                   </p>
+       
+                   <br><b>Love Desi Chinese</b>
+                               `
+           }
+       
+           setTimeout(() => {
+               emailLib.sendEmail(sendEmailOptions);
+           }, 2000);
+           resolve('Message Sent Successfully')
+        })
+    }
+
+    sendEmail(req, res)
+    .then((resolve) => {
+        let apiResponse = response.generate(false, 'Message Sent Successfully', 200, 'None')
+        res.status(200)
+        res.send(apiResponse)
+    })
+    .catch((err) => {
+        console.log("errorhandler");
+        console.log(err);
+        res.status(err.status)
+        res.send(err)
+    })
+}
+
+
 module.exports = {
 
     signUpFunction: signUpFunction,
@@ -836,5 +875,6 @@ module.exports = {
     deleteUser: deleteUser,
     getAllUser:getAllUser,
     resetPasswordFunction:resetPasswordFunction,
-    forgotPasswordFunction: forgotPasswordFunction
+    forgotPasswordFunction: forgotPasswordFunction,
+    sendEmail: sendEmail
 }// end exports

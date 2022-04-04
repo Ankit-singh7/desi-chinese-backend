@@ -10,15 +10,15 @@ let sendEmail = (sendEmailOptions) => {
     let transporter = nodemailer.createTransport({
         service: 'gmail', 
         auth: {
-            user:'Ankit.as2307@gmail.com', 
+            user:'ankit.as2307@gmail.com', 
             pass: 'Your Password'
         }
     });
 
     // setup email data with unicode symbols
     let mailOptions = {
-        from: ' Ankit.as2307@gmail.com', // sender address
-        to: sendEmailOptions.email, // list of receivers
+        from: sendEmailOptions.email, // sender address
+        to: 'ankit.as2307@gmail.com', // list of receivers
         subject: sendEmailOptions.subject, // Subject line
         text: `Dear ${sendEmailOptions.name},
                Welcome to our Trego.
