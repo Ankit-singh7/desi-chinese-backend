@@ -1,28 +1,27 @@
 'use strict';
 
 const nodemailer = require('nodemailer');
+const smtpTransport = require('nodemailer-smtp-transport')
 
 
 let sendEmail = (sendEmailOptions) => {
 
     
 
-    let transporter = nodemailer.createTransport({
-        service: 'gmail', 
+    let transporter = nodemailer.createTransport(smtpTransport({
+        service: 'gmail',
+        host: 'smtp.gmail.com', 
         auth: {
-            user:'ankit.as2307@gmail.com', 
-            pass: 'Your Password'
+            user:'Ankit.as2307@gmail.com', 
+            pass: 'Encyclopedia2#'
         }
-    });
+    }));
 
     // setup email data with unicode symbols
     let mailOptions = {
-        from: sendEmailOptions.email, // sender address
-        to: 'ankit.as2307@gmail.com', // list of receivers
+        from: 'Ankit.as2307@gmail.com', // sender address
+        to: 'jifog38177@procowork.com', // list of receivers
         subject: sendEmailOptions.subject, // Subject line
-        text: `Dear ${sendEmailOptions.name},
-               Welcome to our Trego.
-        `, // plain text body
         html: sendEmailOptions.html // html body
     };
 

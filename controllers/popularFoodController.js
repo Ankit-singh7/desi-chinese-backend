@@ -119,7 +119,7 @@ let deletePopularFood = (req,res) => {
 
 let updatePopularFood = (req,res) => {
     let option = req.body
-    branchModel.updateOne({'food_id':req.params.id},option,{multi:true})
+    popularFoodModel.updateOne({'food_id':req.params.id},option,{multi:true})
     .exec((err,result) => {
         if (err) {
             console.log(err)

@@ -824,17 +824,20 @@ let forgotPasswordFunction = (req,res) => {
 
 
 let sendEmail = (req,res) => {
+    console.log(req.body)
     let sendEmail = () => {
         return new Promise((resolve, reject) => {
             
             let sendEmailOptions = {
                email: req.email,
-               subject: `Query from a customer - ${req.name}`,
+               subject: `Query from a customer - ${req.body.name}`,
                html: `<h4> Hi Admin,</h4>
-                   <p>
-                       We got a query from ${req.name} - ${req.message}
-                       Phone number - ${req.phone}                             
-                   </p>
+                   <p> We got a query from <B>${req.body.name}</B> </p>
+                       
+                    <p>${req.body.message}</p>
+
+                    <p>Contact No: - ${req.body.phone}</p>                             
+                   
        
                    <br><b>Love Desi Chinese</b>
                                `
