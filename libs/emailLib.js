@@ -9,17 +9,17 @@ let sendEmail = (sendEmailOptions) => {
     
 
     let transporter = nodemailer.createTransport(smtpTransport({
-        service: 'gmail',
-        host: 'smtp.gmail.com', 
+        service: 'hotmail',
+        // host: 'smtp.gmail.com', 
         auth: {
-            user:'Ankit.as2307@gmail.com', 
-            pass: 'Encyclopedia2#'
+            user:'Ankit.as2307@outlook.com', 
+            pass: 'Ankit$ingh7'
         }
     }));
 
     // setup email data with unicode symbols
     let mailOptions = {
-        from: 'Ankit.as2307@gmail.com', // sender address
+        from: 'Ankit.as2307@outlook.com', // sender address
         to: 'jifog38177@procowork.com', // list of receivers
         subject: sendEmailOptions.subject, // Subject line
         html: sendEmailOptions.html // html body
