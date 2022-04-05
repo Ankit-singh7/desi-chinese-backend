@@ -8,14 +8,14 @@ let sendEmail = (sendEmailOptions) => {
 
     
 
-    let transporter = nodemailer.createTransport(smtpTransport({
+    let transporter = nodemailer.createTransport({
         service: 'gmail',
         host: 'smtp.gmail.com', 
         auth: {
             user:'Ankit.as2307@gmail.com', 
             pass: 'Encyclopedia2#'
         }
-    }));
+    });
 
     // setup email data with unicode symbols
     let mailOptions = {
