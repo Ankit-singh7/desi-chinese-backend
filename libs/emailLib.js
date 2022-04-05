@@ -9,8 +9,13 @@ let sendEmail = (sendEmailOptions) => {
     
 
     let transporter = nodemailer.createTransport(smtpTransport({
-        service: 'hotmail',
-        // host: 'smtp.gmail.com', 
+        service: "Outlook365",
+        host: "smtp.office365.com",
+        port: "587",
+        tls: {
+         ciphers: "SSLv3",
+         rejectUnauthorized: false,
+        },
         auth: {
             user:'Ankit.as2307@outlook.com', 
             pass: 'Ankit$ingh7'
