@@ -17,8 +17,8 @@ let sendEmail = (sendEmailOptions) => {
         //  rejectUnauthorized: false,
         // },
         auth: {
-            user:'Ankit.as2307@gmail.com', 
-            pass: 'Encyclopedia2#'
+            user:'query.lovedesichinese@gmail.com', 
+            pass: 'Rohit@2022'
         }
     });
 
