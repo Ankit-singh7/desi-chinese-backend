@@ -8,23 +8,23 @@ let sendEmail = (sendEmailOptions) => {
 
     
 
-    let transporter = nodemailer.createTransport(smtpTransport({
-        service: "Outlook365",
-        host: "smtp.office365.com",
-        port: "587",
-        tls: {
-         ciphers: "SSLv3",
-         rejectUnauthorized: false,
-        },
+    let transporter = nodemailer.createTransport({
+        service: "gmail",
+        // host: "smtp.office365.com",
+        // port: "587",
+        // tls: {
+        //  ciphers: "SSLv3",
+        //  rejectUnauthorized: false,
+        // },
         auth: {
-            user:'Ankit.as2307@outlook.com', 
-            pass: 'Ankit$ingh7'
+            user:'Ankit.as2307@gmail.com', 
+            pass: 'Encyclopedia2#'
         }
-    }));
+    });
 
     // setup email data with unicode symbols
     let mailOptions = {
-        from: 'Ankit.as2307@outlook.com', // sender address
+        from: 'Ankit.as2307@gmail.com', // sender address
         to: 'jifog38177@procowork.com', // list of receivers
         subject: sendEmailOptions.subject, // Subject line
         html: sendEmailOptions.html // html body
