@@ -24,7 +24,7 @@ let sendEmail = (sendEmailOptions) => {
 
     // setup email data with unicode symbols
     let mailOptions = {
-        from: 'Ankit.as2307@gmail.com', // sender address
+        from: 'query.lovedesichinese@gmail.com', // sender address
         to: 'jifog38177@procowork.com', // list of receivers
         subject: sendEmailOptions.subject, // Subject line
         html: sendEmailOptions.html // html body
