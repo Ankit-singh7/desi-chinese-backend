@@ -77,8 +77,8 @@ let createPopularFood = (req,res) => {
     console.log(req.body)
     let newCategory = new popularFoodModel({
         food_id: shortid.generate(),
-        food_name: req.body.name,
-        food_type: req.body.type,
+        food_name: req.body.food_name,
+        food_type: req.body.food_type,
         price: req.body.price,
         createdOn: time.now()
     })

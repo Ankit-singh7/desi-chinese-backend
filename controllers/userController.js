@@ -829,14 +829,14 @@ let sendEmail = (req,res) => {
         return new Promise((resolve, reject) => {
             
             let sendEmailOptions = {
-               email: req.email,
-               subject: `Query from a customer - ${req.body.name}`,
+               email: req.body.email,
+               subject: `Query from a customer - ${req.body.subject}`,
                html: `<h4> Hi Admin,</h4>
                    <p> We got a query from <B>${req.body.name}</B> </p>
                        
                     <p>${req.body.message}</p>
 
-                    <p>Contact No: - ${req.body.phone}</p>                             
+                    <p>Contact No: - ${req.body.email}</p>                             
                    
        
                    <br><b>Love Desi Chinese</b>
