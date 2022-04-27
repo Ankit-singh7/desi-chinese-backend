@@ -22,14 +22,10 @@ let getAllBill = (req, res) => {
     const limit = req.query.per_page
     const startDate = req.query.startDate
     const endDate = req.query.endDate
-    let cus_name;
-    if(req.query.customer_name) {
-        cus_name = new RegExp(req.query.customer_name,'i')
-    }
     const filters = req.query;
     delete filters.current_page
     delete filters.per_page
-    delete filters.startD
+    delete filters.startDate
     delete filters.endDate
     console.log('filter', filters)
 
