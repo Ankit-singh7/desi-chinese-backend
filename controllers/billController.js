@@ -43,7 +43,7 @@ let getAllBill = (req, res) => {
          console.log(formatted_ed)
          let find_obj;
          if(req.query.customer_name) {
-             find_obj = {'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()},'customer_name':cus_name}
+             find_obj = {'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()}}
          } else {
             find_obj = {'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()}}
          }
@@ -97,11 +97,11 @@ let getAllBill = (req, res) => {
             })
     } else {
       console.log('no date')
-      if(req.query.customer_name) {
-        find_obj = {'customer_name':cus_name}
-    } else {
-       find_obj = {}
-    }
+    //   if(req.query.customer_name) {
+    //     find_obj = {'customer_name':cus_name}
+    // } else {
+    //    find_obj = {}
+    // }
         billModel.find().sort({ _id: -1 })
             .lean()
             .exec((err, result) => {
