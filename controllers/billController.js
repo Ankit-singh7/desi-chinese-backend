@@ -31,6 +31,7 @@ let getAllBill = (req, res) => {
     delete filters.per_page
     delete filters.startD
     delete filters.endDate
+    delete filters.customer_name
     console.log('filter', filters)
 
     if(startDate && endDate) {
