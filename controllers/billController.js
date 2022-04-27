@@ -31,7 +31,6 @@ let getAllBill = (req, res) => {
     delete filters.per_page
     delete filters.startD
     delete filters.endDate
-    delete filters.customer_name
     console.log('filter', filters)
 
     if(startDate && endDate) {
@@ -41,14 +40,8 @@ let getAllBill = (req, res) => {
          console.log(formatted_ed.format())
          console.log(formatted_sd)
          console.log(formatted_ed)
-         let find_obj;
-         if(req.query.customer_name) {
-             find_obj = {'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()}}
-         } else {
-            find_obj = {'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()}}
-         }
         
-        billModel.find(find_obj).sort({ _id: -1 })
+        billModel.find({'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()}}).sort({ _id: -1 })
             .lean()
             .exec((err, result) => {
                 if (err) {
@@ -97,11 +90,6 @@ let getAllBill = (req, res) => {
             })
     } else {
       console.log('no date')
-    //   if(req.query.customer_name) {
-    //     find_obj = {'customer_name':cus_name}
-    // } else {
-    //    find_obj = {}
-    // }
         billModel.find().sort({ _id: -1 })
             .lean()
             .exec((err, result) => {
