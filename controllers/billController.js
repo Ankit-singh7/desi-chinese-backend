@@ -41,7 +41,6 @@ let getAllBill = (req, res) => {
         
         billModel.find({'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()},'customer_name':{$regex:req.query.customer_name}},{'customer_name':1}).sort({ _id: -1 })
             .lean()
-            .foreach(printjson)
             .exec((err, result) => {
                 if (err) {
                     console.log(err)
