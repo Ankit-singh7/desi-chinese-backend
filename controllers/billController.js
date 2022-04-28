@@ -24,10 +24,10 @@ let getAllBill = (req, res) => {
     const endDate = req.query.endDate
     // const name = new RegExp(req.query.customer_name,'i')
     let name;
-    if(req.query.customer_name) {
+
 
         name = '/'+req.query.customer_name+'/'
-    }
+
     const filters = req.query;
     delete filters.current_page
     delete filters.per_page
