@@ -47,6 +47,7 @@ let getAllBill = (req, res) => {
         let query;
         if(req.query.customer_name) {
              query = {'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()},'customer_name':name}
+             console.log(query)
         } else {
             query = {'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()}}
         }
