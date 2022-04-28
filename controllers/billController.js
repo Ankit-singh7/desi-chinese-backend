@@ -51,7 +51,7 @@ let getAllBill = (req, res) => {
         } else {
             query = {'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()}}
         }
-        billModel.find(query).sort({ _id: -1 })
+        billModel.find({'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()},'customer_name':name}).sort({ _id: -1 })
             .lean()
             .exec((err, result) => {
                 if (err) {
