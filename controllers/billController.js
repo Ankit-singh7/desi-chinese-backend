@@ -27,6 +27,7 @@ let getAllBill = (req, res) => {
 
 
         name = '/'+req.query.customer_name+'/'
+        console.log(name)
 
     const filters = req.query;
     delete filters.current_page
@@ -44,13 +45,6 @@ let getAllBill = (req, res) => {
          console.log(formatted_sd)
          console.log(formatted_ed)
         //  customer_name:name},{'customer_name':1}
-        let query;
-        if(req.query.customer_name) {
-             query = {'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()},'customer_name':name}
-             console.log(query)
-        } else {
-            query = {'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()}}
-        }
         billModel.find({'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()},'customer_name':name}).sort({ _id: -1 })
             .lean()
             .exec((err, result) => {
