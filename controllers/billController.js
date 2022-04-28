@@ -46,7 +46,7 @@ let getAllBill = (req, res) => {
         //  customer_name:name},{'customer_name':1}
         let query;
         if(req.query.customer_name) {
-             query = {'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()},'customer_name': { $regex: name, $options: 'i' }}
+             query = {'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()},'customer_name':name}
         } else {
             query = {'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()}}
         }
