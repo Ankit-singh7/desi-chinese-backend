@@ -39,7 +39,7 @@ let getAllBill = (req, res) => {
          console.log(formatted_sd)
          console.log(formatted_ed)
         //  customer_name:name},{'customer_name':1}
-        billModel.find({'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()},'customer_name':name},{option:'i'}).sort({ _id: -1 })
+        billModel.find({'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()}}).sort({ _id: -1 })
             .lean()
             .exec((err, result) => {
                 if (err) {
