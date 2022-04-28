@@ -26,7 +26,7 @@ let getAllBill = (req, res) => {
     const filters = req.query;
     delete filters.current_page
     delete filters.per_page
-    // delete filters.customer_name
+    delete filters.customer_name
     delete filters.startDate
     delete filters.endDate
     console.log('filter', filters)
