@@ -22,17 +22,11 @@ let getAllBill = (req, res) => {
     const limit = req.query.per_page
     const startDate = req.query.startDate
     const endDate = req.query.endDate
-    // const name = new RegExp(req.query.customer_name,'i')
-    let name;
-
-
-        name = '/'+req.query.customer_name+'/'
-        console.log(name)
-
+    const name = new RegExp(req.query.customer_name,'i')
     const filters = req.query;
     delete filters.current_page
     delete filters.per_page
-    delete filters.customer_name
+    // delete filters.customer_name
     delete filters.startDate
     delete filters.endDate
     console.log('filter', filters)
@@ -45,7 +39,7 @@ let getAllBill = (req, res) => {
          console.log(formatted_sd)
          console.log(formatted_ed)
         //  customer_name:name},{'customer_name':1}
-        billModel.find({'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()},'customer_name':name}).sort({ _id: -1 })
+        billModel.find({'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()}}).sort({ _id: -1 })
             .lean()
             .exec((err, result) => {
                 if (err) {
