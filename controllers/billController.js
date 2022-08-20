@@ -14,6 +14,7 @@ const ingredientReportModel = mongoose.model('ingredientReport');
 const ingredientModel = mongoose.model('ingredient');
 const sessionModel = mongoose.model('session');
 const salesReportModel = mongoose.model('salesReport')
+const discountModel = mongoose.model('discount')
 
 let getAllBill = (req, res) => {
     let total_sales = 0
@@ -1124,6 +1125,69 @@ let updateBill = (req, res) => {
         })
 }
 
+let createDiscount = (req,res) => {
+    console.log(req.body)
+    let newDiscount = new discountModel({
+        discount_id: 'dine_discount',
+        discount: req.body.discount
+    })
+
+    newDiscount.save((err,result) => {
+        if (err) {
+            console.log(err)
+            logger.error(err.message, 'Bill Controller: Discount creation failed', 10)
+            let apiResponse = response.generate(true, 'Failed To create discount', 500, null)
+            res.send(apiResponse)
+        } else {
+            let apiResponse = response.generate(false, 'discount Successfully created', 200, result)
+            res.send(apiResponse)
+        }
+    })
+}
+
+let updateDiscount = (req,res) => {
+    let option = req.body
+    let discount_id = 'dine_discount';
+    discountModel.updateOne({ 'discount_id': discount_id }, option, { multi: true })
+        .exec((err, result) => {
+            if (err) {
+                console.log(err)
+                logger.error(err.message, 'Bill Controller: updateDiscount', 10)
+                let apiResponse = response.generate(true, 'Failed To update discount', 500, null)
+                res.send(apiResponse)
+            } else if (check.isEmpty(result)) {
+                logger.info('No discount found', 'Bill Controller: updateDiscount')
+                let apiResponse = response.generate(true, 'No Detail Found', 404, null)
+                res.send(apiResponse)
+            } else {
+                let apiResponse = response.generate(false, 'Discount Successfully updated', 200, result)
+                res.send(apiResponse)
+            }
+        })
+}
+
+let getDiscount = (req, res) => {
+    let discount_id = 'dine_discount';
+    discountModel.findOne({ 'discount_id': discount_id})
+        .select('-__v -_id')
+        .lean()
+        .exec((err, result) => {
+            if (err) {
+                console.log(err)
+                logger.error(err.message, 'Bill Controller: getDiscountDetail', 10)
+                let apiResponse = response.generate(true, 'Failed To Find Details', 500, null)
+                res.send(apiResponse)
+            } else if (check.isEmpty(result)) {
+                logger.info('No User Found', 'BillCategory Controller: getDiscountDetail')
+                let apiResponse = response.generate(true, 'No Detail Found', 404, null)
+                res.send(apiResponse)
+            } else {
+                let apiResponse = response.generate(false, 'Detail Found', 200, result)
+                res.send(apiResponse)
+            }
+        })
+}// end get single category
+
 
 
 
@@ -1134,5 +1198,8 @@ module.exports = {
     deleteBill: deleteBill,
     updateBill: updateBill,
     changeStatus: changeStatus,
-    getTotalSales: getTotalSales
+    getTotalSales: getTotalSales,
+    createDiscount:createDiscount,
+    updateDiscount:updateDiscount,
+    getDiscount:getDiscount
 }

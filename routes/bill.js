@@ -21,4 +21,11 @@ module.exports.setRouter = (app) => {
     app.get(`${baseUrl}/:id/getById`,billController.getBillDetail);
 
     app.get(`${baseUrl}/total`,billController.getTotalSales);
+
+    app.post(`${baseUrl}/create_discount`, billController.createDiscount);
+
+    app.post(`${baseUrl}/update_discount`, billController.updateDiscount);
+
+    app.get(`${baseUrl}/get_discount`,billController.getDiscount);
+
 }
