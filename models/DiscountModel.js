@@ -11,6 +11,18 @@ const DiscountSchema = new Schema({
   discount: {
     type: Number,
     default:0
+  },
+  SGST: {
+    type: Number,
+    default:0
+  },
+  CGST: {
+    type: Number,
+    default:0
+  },
+  last_updated: {
+    type:Date,
+    default:''
   }
 })
 

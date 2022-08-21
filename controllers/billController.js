@@ -1128,8 +1128,10 @@ let updateBill = (req, res) => {
 let createDiscount = (req,res) => {
     console.log(req.body)
     let newDiscount = new discountModel({
-        discount_id: 'dine_discount',
-        discount: req.body.discount
+        discount_id: 'dine_charges',
+        discount: req.body.discount,
+        SGST: req.body.sgst,
+        CGST: req.body.cgst
     })
 
     newDiscount.save((err,result) => {
@@ -1147,7 +1149,9 @@ let createDiscount = (req,res) => {
 
 let updateDiscount = (req,res) => {
     let option = req.body
-    let discount_id = 'dine_discount';
+    console.log(option)
+    option.last_updated = time.now()
+    let discount_id = 'dine_charges';
     discountModel.updateOne({ 'discount_id': discount_id }, option, { multi: true })
         .exec((err, result) => {
             if (err) {
@@ -1167,7 +1171,7 @@ let updateDiscount = (req,res) => {
 }
 
 let getDiscount = (req, res) => {
-    let discount_id = 'dine_discount';
+    let discount_id = 'dine_charges';
     discountModel.findOne({ 'discount_id': discount_id})
         .select('-__v -_id')
         .lean()
