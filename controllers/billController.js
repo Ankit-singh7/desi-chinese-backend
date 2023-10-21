@@ -30,16 +30,10 @@ let getAllBill = (req, res) => {
     // delete filters.customer_name
     delete filters.startDate
     delete filters.endDate
-    console.log('filter', filters)
 
     if(startDate && endDate) {
          let formatted_sd = moment(startDate,'DD-MM-YYYY')
          let formatted_ed = moment(endDate,'DD-MM-YYYY').add(1,'day')
-         console.log(formatted_sd.format())
-         console.log(formatted_ed.format())
-         console.log(formatted_sd)
-         console.log(formatted_ed)
-        //  customer_name:name},{'customer_name':1}
         billModel.find({'createdOn':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()}}).sort({ _id: -1 })
             .lean()
             .exec((err, result) => {
@@ -53,13 +47,9 @@ let getAllBill = (req, res) => {
                     let apiResponse = response.generate(true, 'No Data Found', 404, null)
                     res.send(apiResponse)
                 } else {
-                    console.log('result',result)
                     const filteredUsers = result.filter(user => {
-                        console.log('here', user)
                         let isValid = true;
                         for (key in filters) {
-                            console.log(filters[key])
-                            console.log('here', user[key])
                             if (key === 'createdOn') {
     
                                 // isValid = isValid && moment(user[key]).format('YYYY-MM-DD') == filters[key];
@@ -89,12 +79,10 @@ let getAllBill = (req, res) => {
                 }
             })
     } else {
-      console.log('no date')
         billModel.find().sort({ _id: -1 })
             .lean()
             .exec((err, result) => {
                 if (err) {
-                    console.log(err)
                     logger.error(err.message, 'Bill Controller: getAllBill', 10)
                     let apiResponse = response.generate(true, 'Failed To Find Food Sub-Category Details', 500, null)
                     res.send(apiResponse)
@@ -104,11 +92,8 @@ let getAllBill = (req, res) => {
                     res.send(apiResponse)
                 } else {
                     const filteredUsers = result.filter(user => {
-                        console.log('here', user)
                         let isValid = true;
                         for (key in filters) {
-                            console.log(filters[key])
-                            console.log('here', user[key])
                             if (key === 'createdOn') {
     
                                 isValid = isValid && moment(user[key]).format('YYYY-MM-DD') == filters[key];
@@ -170,626 +155,280 @@ let getBillDetail = (req, res) => {
 
 let createBill = (req, res) => {
     let formattedDate = moment(this.date).format('YYYY-MM-DD');
-    // let billCount;
-    // billModel.find({'createdOn':formattedDate}).exec((err,result) => {
-    //     if(err) {
-    //         console.log(err)
-    //         logger.error(err.message, 'Bill Controller: getBillCount', 10)
-    //         billCount = 0;
-            
-    //     }
-    //     else if (check.isEmpty(result)) {
-    //         billCount = 0;
-           
-    //     } else {
-    //         let apiResponse = response.generate(false, 'Detail Found', 200, result)
-    //         if(Array.isArray(result)) {
-
-    //             billCount = result.length
-    //         } else {
-    //             billCount = 0;
-    //         }
-    //     }
-    // })
     let newBill;
-    if(req.body.dual_payment_mode === false  || req.body.dual_payment_mode === 'false' ) {
+    let isDualPayment = (req.body.dual_payment_mode === true || req.body.dual_payment_mode === 'true');
 
-        
+    let commonBillFields = {
+        bill_id: req.body.bill_id,
+        token_id: req.body.token_id,
+        user_name: req.body.user_name,
+        customer_name: req.body.customer_name,
+        customer_phone: req.body.customer_phone,
+        customer_alternative_phone: req.body.customer_alternative_phone,
+        customer_address: req.body.customer_address,
+        payment_mode: req.body.payment_mode_1,
+        delivery_mode: req.body.delivery_mode,
+        dual_payment_mode: req.body.dual_payment_mode,
+        total_price: req.body.total_price,
+        printed: 'No',
+        status: 'in-queue',
+        products: req.body.products,
+        date: time.getNormalTime(),
+        createdOn: time.now()
+    };
+
+    if (!isDualPayment) {
+        newBill = new billModel(commonBillFields);
+    } else {
         newBill = new billModel({
-            bill_id: req.body.bill_id,
-            token_id: req.body.token_id,
-            user_name: req.body.user_name,
-            customer_name: req.body.customer_name,
-            customer_phone: req.body.customer_phone,
-            customer_alternative_phone: req.body.customer_alternative_phone,
-            customer_address: req.body.customer_address,
-            payment_mode: req.body.payment_mode_1,
-            delivery_mode: req.body.delivery_mode,
-            dual_payment_mode: req.body.dual_payment_mode,
-            total_price: req.body.total_price,
-            printed: 'No',
-            status: 'in-queue',
-            products: req.body.products,
-            date: time.getNormalTime(),
-            createdOn: time.now()
-        })
-        
-    } else if(req.body.dual_payment_mode === true  || req.body.dual_payment_mode === 'true' ){
-        newBill = new billModel({
-            bill_id: req.body.bill_id,
-            token_id: req.body.token_id,
-            user_name: req.body.user_name,
-            customer_name: req.body.customer_name,
-            customer_phone: req.body.customer_phone,
-            customer_alternative_phone: req.body.customer_alternative_phone,
-            customer_address: req.body.customer_address,
-            payment_mode: req.body.payment_mode_1,
+            ...commonBillFields,
             payment_mode_2: req.body.payment_mode_2,
             split_amount_1: req.body.split_amount_1,
             split_amount_2: req.body.split_amount_2,
-            dual_payment_mode: req.body.dual_payment_mode,
-            delivery_mode: req.body.delivery_mode,
-            total_price: req.body.total_price,
-            printed: 'No',
-            status: 'in-queue',
-            products: req.body.products,
-            date: time.getNormalTime(),
-            createdOn: time.now()
-        })
+        });
     }
-
-
 
     newBill.save((err, result) => {
         if (err) {
-            console.log(err)
-            logger.error(err.message, 'Bill Controller: createBill', 10)
-            let apiResponse = response.generate(true, 'Failed To create new Bill', 500, null)
-            res.send(apiResponse)
+            logger.error(err.message, 'Bill Controller: createBill', 10);
+            let apiResponse = response.generate(true, 'Failed To create new Bill', 500, null);
+            res.send(apiResponse);
         } else {
-            let apiResponse = response.generate(false, 'Bill Successfully created', 200, result)
-            if(req.body.dual_payment_mode === false  || req.body.dual_payment_mode === 'false' ) {
-
-                if(req.body.payment_mode_1 === 'Cash') {
-                    console.log('mode is cash')
-                    sessionModel.findOne({'session_status': 'true'})
+            let apiResponse = response.generate(false, 'Bill Successfully created', 200, result);
+            if (isDualPayment && (req.body.payment_mode_1 === 'Cash' || req.body.payment_mode_2 === 'Cash')) {
+                sessionModel.findOne({'session_status': 'true'})
                     .select('-__v -_id')
                     .lean()
                     .exec((err, result) => {
                         if (err) {
-                             console.log(err)
-                             logger.error(err.message, 'Session Controller: getSingleSessionDetail', 10)
-                             let apiResponse = response.generate(true, 'Failed To Find Details', 500, null)
-                             console.log(apiResponse);
+                            logger.error(err.message, 'Session Controller: getSingleSessionDetail', 10);
+                            let apiResponse = response.generate(true, 'Failed To Find Details', 500, null);
                         } else if (check.isEmpty(result)) {
-                             logger.info('No User Found', 'Session Controller: getSingleSessionDetail')
-                             let apiResponse = response.generate(true, 'No Detail Found', 404, null)
-                             console.log(apiResponse);
+                            logger.info('No User Found', 'Session Controller: getSingleSessionDetail');
+                            let apiResponse = response.generate(true, 'No Detail Found', 404, null);
                         } else {
-                           console.log(result)
-                           let option = {
-                               drawer_balance: Number(result.drawer_balance) + Number(req.body.total_price)
-                           }
-                           sessionModel.updateOne({session_id: result.session_id},option,{multi:true}).exec((err,result) => {
-                               if(err){
-                                   console.log(err)
-                               } else {
-                                   console.log(result)
-                               }
-                           })
-                        
-                        }
-                     })
-                }
-            } else if(req.body.dual_payment_mode === true  || req.body.dual_payment_mode === 'true' ){
-
-                    console.log('dual payment mode')
-                    if(req.body.payment_mode_1 === 'Cash' || req.body.payment_mode_2 === 'Cash') {
-
-                        sessionModel.findOne({'session_status': 'true'})
-                        .select('-__v -_id')
-                        .lean()
-                        .exec((err, result) => {
-                            if (err) {
-                                 console.log(err)
-                                 logger.error(err.message, 'Session Controller: getSingleSessionDetail', 10)
-                                 let apiResponse = response.generate(true, 'Failed To Find Details', 500, null)
-                                 console.log(apiResponse);
-                            } else if (check.isEmpty(result)) {
-                                 logger.info('No User Found', 'Session Controller: getSingleSessionDetail')
-                                 let apiResponse = response.generate(true, 'No Detail Found', 404, null)
-                                 console.log(apiResponse);
-                            } else {
-                               console.log(result)
-                               let option;
-                               if(req.body.payment_mode_1 === 'Cash' && req.body.payment_mode_2 !== 'Cash') {
-                                   option = {
-                                       drawer_balance: Number(result.drawer_balance) + Number(req.body.split_amount_1)
-                                   }
-                                   
-                               } else if(req.body.payment_mode_1 !== 'Cash' && req.body.payment_mode_2 === 'Cash') {
-                                option = {
-                                    drawer_balance: Number(result.drawer_balance) + Number(req.body.split_amount_2)
-                                }
-                               } else if(req.body.payment_mode_1 === 'Cash' && req.body.payment_mode_2 === 'Cash') {
-                                option = {
-                                    drawer_balance: Number(result.drawer_balance) + Number(req.body.total_price)
-                                }
-                               }
-                               sessionModel.updateOne({session_id: result.session_id},option,{multi:true}).exec((err,result) => {
-                                   if(err){
-                                       console.log(err)
-                                   } else {
-                                       console.log(result)
-                                   }
-                               })
-                            
+                            let option = {};
+                            if (req.body.payment_mode_1 === 'Cash' && req.body.payment_mode_2 !== 'Cash') {
+                                option.drawer_balance = Number(result.drawer_balance) + Number(req.body.split_amount_1);
+                            } else if (req.body.payment_mode_1 !== 'Cash' && req.body.payment_mode_2 === 'Cash') {
+                                option.drawer_balance = Number(result.drawer_balance) + Number(req.body.split_amount_2);
+                            } else if (req.body.payment_mode_1 === 'Cash' && req.body.payment_mode_2 === 'Cash') {
+                                option.drawer_balance = Number(result.drawer_balance) + Number(req.body.total_price);
                             }
-                         })
-                    }
-                
-            }
-            for(let item of req.body.products) {
-               salesReportModel.findOne({'date': time.now(),'food_id': item.food_id}).exec((err,result) => {
-                   if(err){
-                       console.log(err)
-                   } else if (check.isEmpty(result)) {
-                       let sales = new salesReportModel({
-                        sales_report_id: shortid.generate(),
-                        date: time.now(),
-                        food_name: item.food_name,
-                        food_id: item.food_id,
-                        quantity: Number(item.quantity)
-                       })
-                       sales.save((err,result) => {
-                           if(err) {
-                               console.log(err)
-                           } else {
-                               console.log(result)
-                           }
-                       })
-                   } else {
-                       let obj = {
-                          quantity: Number(result.quantity) + Number(item.quantity) 
-                       }
-                       salesReportModel.updateOne({'sales_report_id': result.sales_report_id},obj,{multi:true}).exec((err,result) => {
-                           if(err) {
-                               console.log(err)
-                           } else {
-                               console.log('ingredient report will start')
-                               ingredientReportModel.find({'date': time.getNormalTime()}).exec((err, report) => {
+                            sessionModel.updateOne({session_id: result.session_id}, option, {multi: true}).exec((err, result) => {
                                 if (err) {
-                                    let apiResponse = response.generate(true, 'Failed to find the data', 500, null)
-                                    console.log(err)
-                                } else if (check.isEmpty(report)) {
-                                    console.log('ingredient report is empty, will create new')
-                                    let ingArray = []
-                                    let product;
-                                    let i = 0
-                                    for (i = 0; i < req.body.products.length; i++) {
-                                        console.log('inside product')
-                                        product = req.body.products[i]
-                                        console.log(req.body.products[i].quantity)
-                                        foodIngredientModel.find({ 'sub_category_id': req.body.products[i].food_id }, (err, ingredient) => {
-                                            if (err) {
-                                                console.log(err)
-                                            } else if (check.isEmpty(ingredient)) {
-                                                let apiResponse = response.generate(true, 'No Detail Found', 404, null)
-                                                console.log(apiResponse)
-                                            } else {
-                                                console.log('here')
+                                    console.log(err);
+                                } 
+                            });
+                        }
+                    });
+            } else if (!isDualPayment && req.body.payment_mode_1 === 'Cash') {
+                sessionModel.findOne({'session_status': 'true'})
+                    .select('-__v -_id')
+                    .lean()
+                    .exec((err, result) => {
+                        if (err) {
+                            logger.error(err.message, 'Session Controller: getSingleSessionDetail', 10);
+                            let apiResponse = response.generate(true, 'Failed To Find Details', 500, null);
+                        } else if (check.isEmpty(result)) {
+                            logger.info('No User Found', 'Session Controller: getSingleSessionDetail');
+                            let apiResponse = response.generate(true, 'No Detail Found', 404, null);
+                        } else {
+                            let option = {
+                                drawer_balance: Number(result.drawer_balance) + Number(req.body.total_price)
+                            };
+                            sessionModel.updateOne({session_id: result.session_id}, option, {multi: true}).exec((err, result) => {
+                                if (err) {
+                                    console.log(err);
+                                }
+                            });
+                        }
+                    });
+            }
 
-                                                for (let j of ingredient) {
-
-                                                    let quantity = String(product.quantity * Number(j.quantity))
-                                                    let report = new ingredientReportModel({
-                                                        date: time.getNormalTime(),
-                                                        ingredient_id: j.ingredient_id,
-                                                        category: j.category,
-                                                        category_id: j.category_id,
-                                                        ingredient: j.ingredient,
-                                                        unit_id: j.unit_id,
-                                                        unit: j.unit,
-                                                        quantity_by_order: quantity,
-                                                        quantity_by_stock: 0,
-                                                        created_at: time.now()
-                                                    })
-                                                    ingredientModel.find({ ingredient_id: j.ingredient_id }).exec((err, result) => {
-                                                        if (err) {
-                                                            console.log(err)
-                                                        } else {
-                                                            let stock = result[0].stock
-                                                            const option = {
-                                                                stock: stock - Number(quantity)
-                                                            }
-                                                            ingredientModel.updateOne({ ingredient_id: j.ingredient_id }, option, { multi: true }).exec((err, result) => {
-                                                                if (err) {
-                                                                    console.log(err)
-                                                                } else {
-                                                                    console.log('stock updated successfully')
-                                                                    console.log(result)
-                                                                }
-                                                            })
-                                                        }
-                                                    })
-
-
-                                                    report.save((err, result) => {
-                                                        if (err) {
-                                                            console.log(err)
-                                                        } else {
-                                                            console.log('successfully saved thankyou')
-
-                                                        }
-                                                    })
-
-                                                }
-
-                                            }
-
-                                        })
-
-                                    }
-
-                                } else {
-
-                                    for (let item of req.body.products) {
-                                        console.log('item', item)
-                                        foodIngredientModel.find({ 'sub_category_id': item.food_id }, (err, ingredient) => {
-                                            if (err) {
-                                                console.log('Failed to find igredient')
-                                            } else if (check.isEmpty(ingredient)) {
-                                                let apiResponse = response.generate(true, 'No Detail Found', 404, null)
-                                                console.log('No ingredient')
-                                            } else {
-
-                                                for (let i of ingredient) {
-
-                                                    let isThere = report.some((item => item.ingredient_id === i.ingredient_id))
-
-
-                                                    if (isThere) {
-
-                                                        for (let ri of report) {
-                                                            if (ri.ingredient_id === i.ingredient_id) {
-                                                                ri.quantity_by_order = String((item.quantity * Number(i.quantity)) + ri.quantity_by_order)
-                                                                let data = {
-                                                                    quantity_by_order: ri.quantity_by_order
-                                                                }
-                                                                ingredientReportModel.updateOne({ 'date': time.now(), 'ingredient_id': ri.ingredient_id }, data, { multi: true }).exec((err, response) => {
-                                                                    if (err) {
-                                                                        console.log(err)
-                                                                    } else {
-                                                                        console.log(response)
-                                                                        console.log('successfully updated')
-                                                                    }
-                                                                })
-                                                                ingredientModel.find({ ingredient_id: ri.ingredient_id }).exec((err, result) => {
-                                                                    if (err) {
-                                                                        console.log(err)
-                                                                    } else {
-                                                                        let quantity2 = Number(item.quantity) * Number(i.quantity)
-                                                                        let stock = result[0].stock
-                                                                        const option = {
-                                                                            stock: stock - Number(quantity2)
-                                                                        }
-                                                                        ingredientModel.updateOne({ ingredient_id: ri.ingredient_id }, option, { multi: true }).exec((err, result) => {
-                                                                            if (err) {
-                                                                                console.log(err)
-                                                                            } else {
-                                                                                console.log('stock updated successfully')
-                                                                                console.log(result)
-                                                                            }
-                                                                        })
-                                                                    }
-                                                                })
-                                                            }
-                                                        }
-
-                                                    } else {
-                                                        let quantity = String(item.quantity * Number(i.quantity))
+            for (let item of req.body.products) {
+                salesReportModel.findOne({'date': time.now(), 'food_id': item.food_id}).exec((err, result) => {
+                    if (err) {
+                        console.log(err);
+                    } else if (check.isEmpty(result)) {
+                        let sales = new salesReportModel({
+                            sales_report_id: shortid.generate(),
+                            date: time.now(),
+                            food_name: item.food_name,
+                            food_id: item.food_id,
+                            quantity: Number(item.quantity)
+                        });
+                        sales.save((err, result) => {
+                            if (err) {
+                                console.log(err);
+                            }
+                        });
+                    } else {
+                        let obj = {
+                            quantity: Number(result.quantity) + Number(item.quantity)
+                        };
+                        salesReportModel.updateOne({'sales_report_id': result.sales_report_id}, obj, {multi: true}).exec((err, result) => {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                ingredientReportModel.find({'date': time.getNormalTime()}).exec((err, report) => {
+                                    if (err) {
+                                        let apiResponse = response.generate(true, 'Failed to find the data', 500, null);
+                                        console.log(err);
+                                    } else if (check.isEmpty(report)) {
+                                        let ingArray = [];
+                                        let product;
+                                        for (let i = 0; i < req.body.products.length; i++) {
+                                            product = req.body.products[i];
+                                            foodIngredientModel.find({'sub_category_id': req.body.products[i].food_id}, (err, ingredient) => {
+                                                if (err) {
+                                                    console.log(err);
+                                                } else if (check.isEmpty(ingredient)) {
+                                                    let apiResponse = response.generate(true, 'No Detail Found', 404, null);
+                                                } else {
+                                                    for (let j of ingredient) {
+                                                        let quantity = String(product.quantity * Number(j.quantity));
                                                         let report = new ingredientReportModel({
                                                             date: time.getNormalTime(),
-                                                            ingredient_id: i.ingredient_id,
-                                                            category: i.category,
-                                                            category_id: i.category_id,
-                                                            ingredient: i.ingredient,
-                                                            unit_id: i.unit_id,
-                                                            unit: i.unit,
+                                                            ingredient_id: j.ingredient_id,
+                                                            category: j.category,
+                                                            category_id: j.category_id,
+                                                            ingredient: j.ingredient,
+                                                            unit_id: j.unit_id,
+                                                            unit: j.unit,
                                                             quantity_by_order: quantity,
                                                             quantity_by_stock: 0,
-                                                            created_at:time.now()
-                                                        })
-
-
-
+                                                            created_at: time.now()
+                                                        });
+                                                        ingredientModel.find({ingredient_id: j.ingredient_id}).exec((err, result) => {
+                                                            if (err) {
+                                                                console.log(err);
+                                                            } else {
+                                                                let stock = result[0].stock;
+                                                                const option = {
+                                                                    stock: stock - Number(quantity)
+                                                                };
+                                                                ingredientModel.updateOne({ingredient_id: j.ingredient_id}, option, {multi: true}).exec((err, result) => {
+                                                                    if (err) {
+                                                                        console.log(err);
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
 
                                                         report.save((err, result) => {
                                                             if (err) {
-                                                                console.log(err)
-                                                            } else {
-                                                                console.log('successfully saved thankyou')
+                                                                console.log(err);
                                                             }
-                                                        })
+                                                        });
 
-                                                        ingredientModel.find({ ingredient_id: i.ingredient_id }).exec((err, result) => {
-                                                            if (err) {
-                                                                console.log(err)
-                                                            } else {
-                                                                let quantity2 = Number(item.quantity) * Number(i.quantity)
-                                                                let stock = result[0].stock
-                                                                const option = {
-                                                                    stock: stock - Number(quantity2)
-                                                                }
-                                                                ingredientModel.updateOne({ ingredient_id: i.ingredient_id }, option, { multi: true }).exec((err, result) => {
-                                                                    if (err) {
-                                                                        console.log(err)
-                                                                    } else {
-                                                                        console.log('stock updated successfully')
-                                                                        console.log(result)
-                                                                    }
-                                                                })
-                                                            }
-                                                        })
                                                     }
 
                                                 }
-                                            }
-                                        })
+
+                                            });
+
+                                        }
+
+                                    } else {
+
+                                        for (let item of req.body.products) {
+                                            foodIngredientModel.find({'sub_category_id': item.food_id}, (err, ingredient) => {
+                                                if (err) {
+                                                    console.log('Failed to find igredient', err);
+                                                } else if (check.isEmpty(ingredient)) {
+                                                    let apiResponse = response.generate(true, 'No Detail Found', 404, null);
+                                                } else {
+                                                    for (let i of ingredient) {
+                                                        let isThere = report.some((item => item.ingredient_id === i.ingredient_id));
+                                                        if (isThere) {
+                                                            for (let ri of report) {
+                                                                if (ri.ingredient_id === i.ingredient_id) {
+                                                                    ri.quantity_by_order = String((item.quantity * Number(i.quantity)) + ri.quantity_by_order);
+                                                                    let data = {
+                                                                        quantity_by_order: ri.quantity_by_order
+                                                                    };
+                                                                    ingredientReportModel.updateOne({
+                                                                        'date': time.now(),
+                                                                        'ingredient_id': ri.ingredient_id
+                                                                    }, data, {multi: true}).exec((err, response) => {
+                                                                        if (err) {
+                                                                            console.log(err);
+                                                                        }
+                                                                    });
+                                                                    ingredientModel.find({ingredient_id: ri.ingredient_id}).exec((err, result) => {
+                                                                        if (err) {
+                                                                            console.log(err);
+                                                                        } else {
+                                                                            let quantity2 = Number(item.quantity) * Number(i.quantity);
+                                                                            let stock = result[0].stock;
+                                                                            const option = {
+                                                                                stock: stock - Number(quantity2)
+                                                                            };
+                                                                            ingredientModel.updateOne({ingredient_id: ri.ingredient_id}, option, {multi: true}).exec((err, result) => {
+                                                                                if (err) {
+                                                                                    console.log(err);
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                    });
+                                                                }
+                                                            }
+
+                                                        } else {
+                                                            let quantity = String(item.quantity * Number(i.quantity));
+                                                            let report = new ingredientReportModel({
+                                                                date: time.getNormalTime(),
+                                                                ingredient_id: i.ingredient_id,
+                                                                category: i.category,
+                                                                category_id: i.category_id,
+                                                                ingredient: i.ingredient,
+                                                                unit_id: i.unit_id,
+                                                                unit: i.unit,
+                                                                quantity_by_order: quantity,
+                                                                quantity_by_stock: 0,
+                                                                created_at:time.now()
+                                                            });
+
+                                                            report.save((err, result) => {
+                                                                if (err) {
+                                                                    console.log(err);
+                                                                }
+                                                            });
+
+                                                            ingredientModel.find({ingredient_id: i.ingredient_id}).exec((err, result) => {
+                                                                if (err) {
+                                                                    console.log(err);
+                                                                } else {
+                                                                    let quantity2 = Number(item.quantity) * Number(i.quantity);
+                                                                    let stock = result[0].stock;
+                                                                    const option = {
+                                                                        stock: stock - Number(quantity2)
+                                                                    };
+                                                                    ingredientModel.updateOne({ingredient_id: i.ingredient_id}, option, {multi: true}).exec((err, result) => {
+                                                                        if (err) {
+                                                                            console.log(err);
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                        }
+
+                                                    }
+                                                }
+                                            });
+                                        }
                                     }
-                                }
-                            })
-                            console.log('item end')
-
-
-                            let apiResponse = response.generate(false, 'Bill Created', 200, null)
-                            res.send(apiResponse)
-                           }
-                       })
-                   }
-               })
+                                });
+                                let apiResponse = response.generate(false, 'Bill Created', 200, null);
+                                res.send(apiResponse);
+                            }
+                        });
+                    }
+                });
             }
-            // totalModel.find({ 'date': time.getNormalTime(),'payment_mode': req.body.payment_mode,'delivery_mode': req.body.delivery_mode, 'bill_by': req.body.user_name })
-            //     .exec((err, totalS) => {
-            //         if (err) {
-            //             console.log(err)
-            //         } else if (check.isEmpty(totalS)) {
-            //             console.log('date here')
-            //             let total = new totalModel({
-            //                 total_id: shortid.generate(),
-            //                 total: req.body.total_price,
-            //                 payment_mode: req.body.payment_mode,
-            //                 delivery_mode: req.body.delivery_mode,
-            //                 bill_by: req.body.user_name,
-            //                 date: time.getNormalTime(),
-            //                 createdOn: time.now()
-            //             })
-
-            //             total.save((err, result) => {
-            //                 if (err) {
-            //                     console.log(err)
-            //                 } else {
-            //                     console.log('successfully total added')
-                           
-            //                 }
-            //             })
-            //         } else {
-            //             let oldTotal = totalS[0].total
-            //             let newTotal = Number(oldTotal) + Number(req.body.total_price)
-            //             const option = {
-            //                 total: newTotal
-            //             }
-            //             totalModel.updateOne({ 'total_id': totalS[0].total_id }, option, { multi: true })
-            //                 .exec((err, result) => {
-            //                     if (err) {
-            //                         console.log(err)
-            //                     } else {
-            //                         console.log(result)
-            //                         console.log(newTotal)
-            //                         ingredientReportModel.find({ 'date': time.getNormalTime() }).exec((err, report) => {
-            //                             if (err) {
-            //                                 let apiResponse = response.generate(true, 'Failed to find the data', 500, null)
-            //                                 console.log(err)
-            //                             } else if (check.isEmpty(report)) {
-            //                                 let ingArray = []
-            //                                 let product;
-            //                                 let i = 0
-            //                                 for (i = 0; i < req.body.products.length; i++) {
-            //                                     console.log('inside product')
-            //                                     product = req.body.products[i]
-            //                                     console.log(req.body.products[i].quantity)
-            //                                     foodIngredientModel.find({ 'sub_category_id': req.body.products[i].food_id }, (err, ingredient) => {
-            //                                         if (err) {
-            //                                             console.log(err)
-            //                                         } else if (check.isEmpty(ingredient)) {
-            //                                             let apiResponse = response.generate(true, 'No Detail Found', 404, null)
-            //                                             console.log(apiResponse)
-            //                                         } else {
-            //                                             console.log('here')
-
-            //                                             for (let j of ingredient) {
-
-            //                                                 let quantity = String(product.quantity * Number(j.quantity))
-            //                                                 let report = new ingredientReportModel({
-            //                                                     date: time.getNormalTime(),
-            //                                                     ingredient_id: j.ingredient_id,
-            //                                                     category: j.category,
-            //                                                     category_id: j.category_id,
-            //                                                     ingredient: j.ingredient,
-            //                                                     unit_id: j.unit_id,
-            //                                                     unit: j.unit,
-            //                                                     quantity_by_order: quantity,
-            //                                                     quantity_by_stock: 0
-            //                                                 })
-            //                                                 ingredientModel.find({ ingredient_id: j.ingredient_id }).exec((err, result) => {
-            //                                                     if (err) {
-            //                                                         console.log(err)
-            //                                                     } else {
-            //                                                         let stock = result[0].stock
-            //                                                         const option = {
-            //                                                             stock: stock - Number(quantity)
-            //                                                         }
-            //                                                         ingredientModel.update({ ingredient_id: j.ingredient_id }, option, { multi: true }).exec((err, result) => {
-            //                                                             if (err) {
-            //                                                                 console.log(err)
-            //                                                             } else {
-            //                                                                 console.log('stock updated successfully')
-            //                                                                 console.log(result)
-            //                                                             }
-            //                                                         })
-            //                                                     }
-            //                                                 })
-
-
-            //                                                 report.save((err, result) => {
-            //                                                     if (err) {
-            //                                                         console.log(err)
-            //                                                     } else {
-            //                                                         console.log('successfully saved thankyou')
-            //                                                     }
-            //                                                 })
-
-            //                                             }
-
-            //                                         }
-
-            //                                     })
-
-            //                                 }
-
-            //                             } else {
-
-            //                                 for (let item of req.body.products) {
-            //                                     console.log('item', item)
-            //                                     foodIngredientModel.find({ 'sub_category_id': item.food_id }, (err, ingredient) => {
-            //                                         if (err) {
-            //                                             console.log('Failed to find igredient')
-            //                                         } else if (check.isEmpty(ingredient)) {
-            //                                             let apiResponse = response.generate(true, 'No Detail Found', 404, null)
-            //                                             console.log('No ingredient')
-            //                                         } else {
-
-            //                                             for (let i of ingredient) {
-
-            //                                                 let isThere = report.some((item => item.ingredient_id === i.ingredient_id))
-
-
-            //                                                 if (isThere) {
-
-            //                                                     for (let ri of report) {
-            //                                                         if (ri.ingredient_id === i.ingredient_id) {
-            //                                                             ri.quantity_by_order = String((item.quantity * Number(i.quantity)) + ri.quantity_by_order)
-            //                                                             let data = {
-            //                                                                 quantity_by_order: ri.quantity_by_order
-            //                                                             }
-            //                                                             ingredientReportModel.update({ 'date': time.getNormalTime(), 'ingredient_id': ri.ingredient_id }, data, { multi: true }).exec((err, response) => {
-            //                                                                 if (err) {
-            //                                                                     console.log(err)
-            //                                                                 } else {
-            //                                                                     console.log(response)
-            //                                                                     console.log('successfully updated')
-            //                                                                 }
-            //                                                             })
-            //                                                             ingredientModel.find({ ingredient_id: ri.ingredient_id }).exec((err, result) => {
-            //                                                                 if (err) {
-            //                                                                     console.log(err)
-            //                                                                 } else {
-            //                                                                     let quantity2 = Number(item.quantity) * Number(i.quantity)
-            //                                                                     let stock = result[0].stock
-            //                                                                     const option = {
-            //                                                                         stock: stock - Number(quantity2)
-            //                                                                     }
-            //                                                                     ingredientModel.update({ ingredient_id: ri.ingredient_id }, option, { multi: true }).exec((err, result) => {
-            //                                                                         if (err) {
-            //                                                                             console.log(err)
-            //                                                                         } else {
-            //                                                                             console.log('stock updated successfully')
-            //                                                                             console.log(result)
-            //                                                                         }
-            //                                                                     })
-            //                                                                 }
-            //                                                             })
-            //                                                         }
-            //                                                     }
-
-            //                                                 } else {
-            //                                                     let quantity = String(item.quantity * Number(i.quantity))
-            //                                                     let report = new ingredientReportModel({
-            //                                                         date: time.getNormalTime(),
-            //                                                         ingredient_id: i.ingredient_id,
-            //                                                         category: i.category,
-            //                                                         category_id: i.category_id,
-            //                                                         ingredient: i.ingredient,
-            //                                                         unit_id: i.unit_id,
-            //                                                         unit: i.unit,
-            //                                                         quantity_by_order: quantity,
-            //                                                         quantity_by_stock: 0
-            //                                                     })
-
-
-
-
-            //                                                     report.save((err, result) => {
-            //                                                         if (err) {
-            //                                                             console.log(err)
-            //                                                         } else {
-            //                                                             console.log('successfully saved thankyou')
-            //                                                         }
-            //                                                     })
-
-            //                                                     ingredientModel.find({ ingredient_id: i.ingredient_id }).exec((err, result) => {
-            //                                                         if (err) {
-            //                                                             console.log(err)
-            //                                                         } else {
-            //                                                             let quantity2 = Number(item.quantity) * Number(i.quantity)
-            //                                                             let stock = result[0].stock
-            //                                                             const option = {
-            //                                                                 stock: stock - Number(quantity2)
-            //                                                             }
-            //                                                             ingredientModel.update({ ingredient_id: i.ingredient_id }, option, { multi: true }).exec((err, result) => {
-            //                                                                 if (err) {
-            //                                                                     console.log(err)
-            //                                                                 } else {
-            //                                                                     console.log('stock updated successfully')
-            //                                                                     console.log(result)
-            //                                                                 }
-            //                                                             })
-            //                                                         }
-            //                                                     })
-            //                                                 }
-
-            //                                             }
-            //                                         }
-            //                                     })
-            //                                 }
-            //                             }
-            //                         })
-            //                         console.log('item end')
-
-
-            //                         let apiResponse = response.generate(false, 'Bill Created', 200, null)
-            //                         res.send(apiResponse)
-            //                     }
-
-            //                 })
-
-            //         }
-
-
-
-
-
-            //     })
         }
-    })
-
-    // for changing total sale
-
-
-
-
-
-
+    });
 }
 
 
@@ -799,7 +438,6 @@ let getTotalSales = (req, res) => {
     const endDate = req.query.endDate
     delete filters.startDate
     delete filters.endDate
-    console.log('filter', filters)
     if(startDate && endDate) {
 
         totalModel.find({'date':{ $gte:startDate, $lte:endDate}})
@@ -817,11 +455,8 @@ let getTotalSales = (req, res) => {
                     res.send(apiResponse)
                 } else {
                     const filteredUsers = result.filter(user => {
-                        console.log('here', user)
                         let isValid = true;
                         for (key in filters) {
-                            console.log(filters[key])
-                            console.log('here', user[key])
                             if (key === 'createdOn') {
     
                                 isValid = isValid && moment(user[key]).format('YYYY-MM-DD') == filters[key];
@@ -853,11 +488,8 @@ let getTotalSales = (req, res) => {
                     res.send(apiResponse)
                 } else {
                     const filteredUsers = result.filter(user => {
-                        console.log('here', user)
                         let isValid = true;
                         for (key in filters) {
-                            console.log(filters[key])
-                            console.log('here', user[key])
                             if (key === 'createdOn') {
     
                                 isValid = isValid && moment(user[key]).format('YYYY-MM-DD') == filters[key];
@@ -885,7 +517,6 @@ let deleteBill = (req, res) => {
                     console.log(billerr)
                     reject(billerr)
                 } else {
-                    console.log(billresult)
                     bill = billresult
                     resolve(bill)
                 }
@@ -903,15 +534,12 @@ let updateSalesReport = () => {
                 } else if (check.isEmpty(result)) {
                      console.log('no sales report')
                 } else {
-                    console.log(result)
                     let obj = {
                        quantity: Number(result.quantity) - Number(item.quantity) 
                     }
                     salesReportModel.updateOne({'sales_report_id': result.sales_report_id},obj,{multi:true}).exec((err,result) => {
                         if(err) {
                             console.log(err)
-                        } else {
-                            console.log(result)
                         }
                     })
                 }
@@ -969,10 +597,7 @@ let updateDrawerBalance = () => {
                             if(Ierr) {
                                 console.log(Ierr)
                             } else if(check.isEmpty(ingredient)) {
-                                console.log('No ingredient Found for this food')
                             } else {
-                                console.log('Ingredients Found')
-                                console.log(ingredient)
                                 for(let i of ingredient) {
                                     for (let ri of report) {
                                         if (ri.ingredient_id === i.ingredient_id) {
@@ -984,8 +609,6 @@ let updateDrawerBalance = () => {
                                                 if (err) {
                                                     console.log(err)
                                                 } else {
-                                                    console.log(response)
-                                                    console.log('IG Report Successfully updated')
                                                     // Updating Stocks
                                                     ingredientModel.find({ ingredient_id: ri.ingredient_id }).exec((err, result) => {
                                                         if (err) {
@@ -1000,7 +623,6 @@ let updateDrawerBalance = () => {
                                                                 if (err) {
                                                                     console.log(err)
                                                                 } else {
-                                                                    console.log('stock updated successfully')
                                                                     console.log(result)
                                                                 }
                                                             })
@@ -1055,7 +677,6 @@ let updateDrawerBalance = () => {
         res.status(200)
         res.send(apiResponse)
        }).catch((err) => {
-        console.log("errorhandler");
         console.log(err);
         res.status(err.status)
         res.send(err)
@@ -1126,7 +747,6 @@ let updateBill = (req, res) => {
 }
 
 let createDiscount = (req,res) => {
-    console.log(req.body)
     let newDiscount = new discountModel({
         discount_id: 'dine_charges',
         discount: req.body.discount,
@@ -1149,7 +769,6 @@ let createDiscount = (req,res) => {
 
 let updateDiscount = (req,res) => {
     let option = req.body
-    console.log(option)
     option.last_updated = time.now()
     let discount_id = 'dine_charges';
     discountModel.updateOne({ 'discount_id': discount_id }, option, { multi: true })
