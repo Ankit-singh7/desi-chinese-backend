@@ -67,7 +67,6 @@ let createIngredient = (req, res) => {
             res.send('Ingredient Category Not found')
         } else {
             catName = result[0].name
-            console.log('findCat')
             unitModel.find({ 'unit_id': req.body.unit_id }, (err, result) => {
                 if (err) {
                     res.send('Unit Not found')
@@ -78,8 +77,6 @@ let createIngredient = (req, res) => {
                             res.send('Ingredient Not found')
                         } else {
                             ingredientName = result[0].name
-                            console.log(catName)
-                            console.log(unitName)
                             let newCategory = new foodIngredientModel({
                                 food_ingredient_id: shortid.generate(),
                                 sub_category_id: req.body.sub_category_id,
@@ -143,7 +140,6 @@ let updateIngredient = (req, res) => {
             res.send('Ingredient Category Not found')
         } else {
             catName = result[0].name
-            console.log('findCat')
             unitModel.find({ 'unit_id': req.body.unit_id }, (err, result) => {
                 if (err) {
                     res.send('Unit Not found')
@@ -158,9 +154,6 @@ let updateIngredient = (req, res) => {
                             option.category = catName
                             option.unit = unitName
                             option.ingredient = ingredientName
-                            console.log(catName)
-                            console.log(unitName)
-                            console.log(ingredientName)
                             foodIngredientModel.updateOne({ 'food_ingredient_id': req.params.id }, option, { multi: true })
                                 .exec((err, result) => {
                                     if (err) {

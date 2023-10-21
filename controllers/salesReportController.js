@@ -14,11 +14,9 @@ const salesReportModel = mongoose.model('salesReport');
 
 let getAllSalesReport = (req, res) => {
     const filters = req.query;
-    console.log(filters)
     if(Object.keys(filters).length) {
         let formatted_sd = moment(req.query.startDate,'DD-MM-YYYY')
         let formatted_ed = moment(req.query.endDate,'DD-MM-YYYY').add(1,'day')
-        console.log('object')
         salesReportModel.find({'date':{ $gte:formatted_sd.format(), $lte:formatted_ed.format()}}).exec((err,result) => {
             if(err) {
                 res.send(err)
@@ -38,7 +36,6 @@ let getAllSalesReport = (req, res) => {
             }
         })
     } else {
-     console.log('here')
           salesReportModel.find()
             .lean()
             .select('-__v -_id')

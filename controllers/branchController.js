@@ -25,15 +25,9 @@ let getAllBranch = (req,res) => {
             res.send(apiResponse)
         }  else {
             const filteredUsers = result.filter(user => {
-                console.log('here', user)
                 let isValid = true;
-                for (key in filters) {
-                    console.log(filters[key])
-                    console.log('here', user[key])
-           
+                for (key in filters) {           
                         isValid = isValid && user[key] == filters[key];
-                    
-
                 }
                 return isValid;
             });
@@ -74,7 +68,6 @@ let getSingleBranchDetail = (req, res) => {
 
 
 let createBranch = (req,res) => {
-    console.log(req.body)
     let newCategory = new branchModel({
         branch_id: shortid.generate(),
         branch_name: req.body.name,

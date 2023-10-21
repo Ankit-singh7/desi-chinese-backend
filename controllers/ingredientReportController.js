@@ -18,13 +18,9 @@ let getAllIngredientReport = (req, res) => {
     const filters = req.query;
     delete filters.current_page
     delete filters.per_page
-    console.log(filters)
     if(Object.keys(filters).length) {
-        console.log('object')
         let formatted_sd = moment(filters.startDate,'DD-MM-YYYY')
         let formatted_ed = moment(filters.endDate,'DD-MM-YYYY').add(1,'day')
-        console.log(formatted_sd.format())
-        console.log(formatted_ed.format())
 
         ingredientReportModel.find({'date':{ $gte:filters.startDate, $lte:filters.endDate}}).exec((err,result) => {
             if(err) {
@@ -45,7 +41,6 @@ let getAllIngredientReport = (req, res) => {
             }
         })
     } else {
-  console.log('here')
         ingredientReportModel.find()
             .lean()
             .select('-__v -_id')

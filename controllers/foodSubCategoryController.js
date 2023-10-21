@@ -64,13 +64,11 @@ let getSingleSubCategoryDetail = (req, res) => {
 
 
 let createSubCategory = (req, res) => {
-    console.log(req.body)
     let catName;
     foodCategoryModel.find({ 'category_id': req.body.category_id }, (err, result) => {
         if (err) {
             console.log(err)
         } else {
-            console.log(result)
             catName = result[0].name
 
             let newSubCategory = new foodSubCategoryModel({
@@ -149,7 +147,6 @@ let updateSubCategory = (req, res) => {
         if (err) {
             console.log(err)
         } else {
-            console.log(result)
             catName = result[0].name
             let option = req.body
             option.category_name = catName

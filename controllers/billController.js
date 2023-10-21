@@ -525,29 +525,29 @@ let deleteBill = (req, res) => {
     }
 
 
-let updateSalesReport = () => {
-    return new Promise((resolve,reject) => {
-        for(let item of bill.products) {
-            salesReportModel.findOne({'date': moment(bill.createdOn).format('DD-MM-YYYY'),'food_id': item.food_id}).exec((err,result) => {
-                if(err){
-                    console.log(err)
-                } else if (check.isEmpty(result)) {
-                     console.log('no sales report')
-                } else {
-                    let obj = {
-                       quantity: Number(result.quantity) - Number(item.quantity) 
-                    }
-                    salesReportModel.updateOne({'sales_report_id': result.sales_report_id},obj,{multi:true}).exec((err,result) => {
-                        if(err) {
-                            console.log(err)
-                        }
-                    })
-                }
-            })
-         }
-         resolve('sales updated')
-    })
-}
+// let updateSalesReport = () => {
+//     return new Promise((resolve,reject) => {
+//         for(let item of bill.products) {
+//             salesReportModel.findOne({'date': moment(bill.createdOn).format('DD-MM-YYYY'),'food_id': item.food_id}).exec((err,result) => {
+//                 if(err){
+//                     console.log(err)
+//                 } else if (check.isEmpty(result)) {
+//                      console.log('no sales report')
+//                 } else {
+//                     let obj = {
+//                        quantity: Number(result.quantity) - Number(item.quantity) 
+//                     }
+//                     salesReportModel.updateOne({'sales_report_id': result.sales_report_id},obj,{multi:true}).exec((err,result) => {
+//                         if(err) {
+//                             console.log(err)
+//                         }
+//                     })
+//                 }
+//             })
+//          }
+//          resolve('sales updated')
+//     })
+// }
 
 let updateDrawerBalance = () => {
         return new Promise((resolve,reject) => {
@@ -622,8 +622,6 @@ let updateDrawerBalance = () => {
                                                             ingredientModel.updateOne({ ingredient_id: ri.ingredient_id }, option, { multi: true }).exec((err, result) => {
                                                                 if (err) {
                                                                     console.log(err)
-                                                                } else {
-                                                                    console.log(result)
                                                                 }
                                                             })
                                                         }
@@ -668,7 +666,6 @@ let updateDrawerBalance = () => {
     }
 
     getBillDetail(req,res)
-       .then(updateSalesReport)
        .then(updateDrawerBalance)
        .then(updateIGReport_and_stock)
        .then(deleteBill)

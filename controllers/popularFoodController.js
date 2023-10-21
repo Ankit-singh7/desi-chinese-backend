@@ -25,12 +25,8 @@ let getAllPopularFoods = (req,res) => {
             res.send(apiResponse)
         }  else {
             const filteredUsers = result.filter(user => {
-                console.log('here', user)
                 let isValid = true;
-                for (key in filters) {
-                    console.log(filters[key])
-                    console.log('here', user[key])
-           
+                for (key in filters) {           
                         isValid = isValid && user[key] == filters[key];
                     
 
@@ -74,7 +70,6 @@ let getSinglePopularFoodDetail = (req, res) => {
 
 
 let createPopularFood = (req,res) => {
-    console.log(req.body)
     let newCategory = new popularFoodModel({
         food_id: shortid.generate(),
         food_name: req.body.food_name,

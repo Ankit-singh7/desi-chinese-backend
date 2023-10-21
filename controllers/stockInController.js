@@ -74,7 +74,6 @@ let createStockIn = (req, res) => {
             res.send('Ingredient Category Not found')
         } else {
             catName = result[0].name
-            console.log('findCat')
             unitModel.find({ 'unit_id': req.body.unit_id }, (err, result) => {
                 if (err) {
                     res.send('Unit Not found')

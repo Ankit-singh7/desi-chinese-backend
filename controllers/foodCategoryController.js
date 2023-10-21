@@ -65,7 +65,6 @@ let getSingleCategoryDetail = (req, res) => {
 
 
 let createCategory = (req,res) => {
-    console.log(req.body)
     let newCategory = new foodCategoryModel({
         category_id: shortid.generate(),
         name: req.body.name,

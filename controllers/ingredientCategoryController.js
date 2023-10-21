@@ -65,7 +65,6 @@ let getSingleIngredientCatDetail = (req, res) => {
 
 
 let createIngredientCategory = (req,res) => {
-    console.log(req.body)
     let newCategory = new ingredientCategoryModel({
         ingredient_category_id: shortid.generate(),
         name: req.body.name,

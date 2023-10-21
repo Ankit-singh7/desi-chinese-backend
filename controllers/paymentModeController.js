@@ -59,7 +59,6 @@ let getSingleModeDetail = (req, res) => {
 
 
 let createMode = (req,res) => {
-    console.log(req.body)
     let newCategory = new paymentModel({
         payment_mode_id: shortid.generate(),
         payment_mode_name: req.body.name,

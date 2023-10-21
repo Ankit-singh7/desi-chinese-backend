@@ -33,11 +33,8 @@ let getAllSession = (req,res) => {
             res.send(apiResponse)
         }  else {
             const filteredUsers = result.filter(user => {
-                console.log('here',user)
                 let isValid = true;
                 for (key in filters) {
-                    console.log(filters[key])
-                  console.log('here',user[key])
                   if(key === 'createdOn') {
 
                       isValid = isValid && moment(user[key]).format('YYYY-MM-DD') == filters[key];
@@ -137,7 +134,6 @@ let getSessionDetail = (req, res) => {
 
 let updateSession = (req,res) => {
     let option = req.body
-    console.log(option)
     sessionModel.updateOne({'session_id':req.params.id},option,{multi:true})
     .exec((err,result) => {
         if (err) {

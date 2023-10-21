@@ -238,7 +238,6 @@ let signUpFunction = (req, res) => {
                         let apiResponse = response.generate(true, 'Failed To Create User', 500, null)
                         reject(apiResponse)
                     } else if (check.isEmpty(retrievedUserDetails)) {
-                        console.log(req.body)
                         let newUser = new stockManagerModel({
                             stockManagerId: customId({
                                 randomLength: 2
@@ -297,11 +296,8 @@ let signUpFunction = (req, res) => {
 
 let loginFunction = (req, res) => {
     let findUser = () => {
-        //console.log("findUser");
         return new Promise((resolve, reject) => {
             if (req.body.email) {
-                console.log("req body email is there");
-                //console.log(req.body);
                 stockManagerModel.findOne({email: req.body.email}, (err, userDetails) => {
                     /* handle the error here if the User is not found */
                     if (err) {
@@ -331,8 +327,6 @@ let loginFunction = (req, res) => {
     }
 
     let validatePassword = (retrievedUserDetails) => {
-        console.log(retrievedUserDetails)
-        console.log("validatePassword");
         return new Promise((resolve, reject) => {
             if(req.body.password === retrievedUserDetails.password) {
                 resolve(retrievedUserDetails)
@@ -354,7 +348,6 @@ let loginFunction = (req, res) => {
             res.send(apiResponse)
         })
         .catch((err) => {
-            console.log("errorhandler");
             console.log(err);
             res.status(err.status)
             res.send(err)
@@ -796,8 +789,6 @@ let forgotPasswordFunction = (req,res) => {
             let apiResponse = response.generate(true, 'No User Found', 404, null)
             res.send(apiResponse)
         } else {
-            console.log(result)
-            console.log(req.body.oldPassword)
             if(req.body.oldPassword === result[0].password) {
 
                 let options = {
