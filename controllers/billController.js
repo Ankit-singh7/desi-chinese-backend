@@ -498,31 +498,6 @@ let deleteBill = (req, res) => {
         })
     }
 
-
-// let updateSalesReport = () => {
-//     return new Promise((resolve,reject) => {
-//         for(let item of bill.products) {
-//             salesReportModel.findOne({'date': moment(bill.createdOn).format('DD-MM-YYYY'),'food_id': item.food_id}).exec((err,result) => {
-//                 if(err){
-//                     console.log(err)
-//                 } else if (check.isEmpty(result)) {
-//                      console.log('no sales report')
-//                 } else {
-//                     let obj = {
-//                        quantity: Number(result.quantity) - Number(item.quantity) 
-//                     }
-//                     salesReportModel.updateOne({'sales_report_id': result.sales_report_id},obj,{multi:true}).exec((err,result) => {
-//                         if(err) {
-//                             console.log(err)
-//                         }
-//                     })
-//                 }
-//             })
-//          }
-//          resolve('sales updated')
-//     })
-// }
-
 let updateDrawerBalance = () => {
         return new Promise((resolve,reject) => {
             if(bill.payment_mode === 'Cash') {
@@ -535,6 +510,7 @@ let updateDrawerBalance = () => {
                         console.log(err)
                      } else if (check.isEmpty(sResult)) {
                         console.log('no active session')
+                        resolve('not current sessions')
                      } else {
 
                          let newObj = {
