@@ -549,6 +549,7 @@ let updateDrawerBalance = () => {
                 } else if(check.isEmpty(report)) {
                     console.log('inside first stock promise')
                     console.log('No data found')
+                    resolve('no ingredient & stock found');
                 } else {
                     for(let item of bill.products) {
                         foodIngredientModel.find({ 'sub_category_id': item.food_id }, (Ierr, ingredient) => {
