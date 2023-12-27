@@ -20,4 +20,6 @@ module.exports.setRouter = (app) => {
 
     app.get(`${baseUrl}/:id/getSubCatList`, foodCategoryController.getSubCategoryListById)
 
+    app.get(`${baseUrl}/getCatListByName`, foodCategoryController.getCategoryListByName)
+
 }

@@ -171,6 +171,28 @@ let updateSubCategory = (req, res) => {
 
 }
 
+let getSubCategoryListByName = (req, res) => {
+    const searchQuery = { 'name': { $regex: new RegExp(req.query.name, 'i') } };
+
+    foodSubCategoryModel.find(searchQuery)
+        .select('-__v -_id')
+        .exec((err, result) => {
+            if (err) {
+                console.log(err);
+                logger.error(err.message, 'FoodCategory Controller: getSubCategoryListByName', 10);
+                let apiResponse = response.generate(true, 'Failed to get food subcategory', 500, null);
+                res.send(apiResponse);
+            } else if (check.isEmpty(result)) {
+                logger.info('No Category Found', 'FoodCategory Controller: getSubCategoryListByName');
+                let apiResponse = response.generate(true, 'No Detail Found', 404, null);
+                res.send(apiResponse);
+            } else {
+                let apiResponse = response.generate(false, 'Food SubCategory successfully found', 200, result);
+                res.send(apiResponse);
+            }
+        });
+};
+
 
 module.exports = {
     getAllFoodSubCategory: getAllFoodSubCategory,
@@ -178,5 +200,6 @@ module.exports = {
     createSubCategory: createSubCategory,
     deleteSubCategory: deleteSubCategory,
     updateSubCategory: updateSubCategory,
-    getMostlyUsedFood:getMostlyUsedFood
+    getMostlyUsedFood:getMostlyUsedFood,
+    getSubCategoryListByName: getSubCategoryListByName
 }
