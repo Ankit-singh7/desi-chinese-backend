@@ -101,7 +101,7 @@ let deleteMode = (req,res) => {
 
 let updateMode = (req,res) => {
     let option = req.body
-    deliveryModel.updateOne({'delivery_mode_id':req.params.id},option,{multi:true})
+    deliveryModel.updateOne({'delivery_mode_id':req.params.id},option)
     .exec((err,result) => {
         if (err) {
             console.log(err)
