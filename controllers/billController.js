@@ -16,6 +16,14 @@ const sessionModel = mongoose.model('session');
 const salesReportModel = mongoose.model('salesReport')
 const discountModel = mongoose.model('discount')
 
+const trackingNumberSchema = new mongoose.Schema({
+    date: String,
+    lastNumber: Number
+});
+
+// Create a model from the schema
+const TrackingNumber = mongoose.model('TrackingNumber', trackingNumberSchema);
+
 let getAllBill = (req, res) => {
     let total_sales = 0
     let total_bill_count = 0
@@ -153,14 +161,37 @@ let getBillDetail = (req, res) => {
 }// end get single category
 
 
-let createBill = (req, res) => {
+
+
+let createBill = async (req, res) => {
     let formattedDate = moment(this.date).format('YYYY-MM-DD');
     let newBill;
     let isDualPayment = (req.body.dual_payment_mode === true || req.body.dual_payment_mode === 'true');
+    const today = moment().format('YYYY-MM-DD');
+    let billTrackingNumber;
+    let trackingRecord = await TrackingNumber.findOne({ date: today });
+
+    if (!trackingRecord) {
+        // If no record exists for today, start from 1000
+        billTrackingNumber = 1000;
+        // Save this initial record to the database
+        trackingRecord = new TrackingNumber({
+            date: today,
+            lastNumber: billTrackingNumber
+        });
+    } else {
+        // Increment the last number for today
+        billTrackingNumber = trackingRecord.lastNumber + 1;
+        trackingRecord.lastNumber = billTrackingNumber;
+    }
+
+    // Save or update the tracking number in the database
+    await trackingRecord.save();
 
     let commonBillFields = {
         bill_id: req.body.bill_id,
         token_id: req.body.token_id,
+        bill_tracking_number: billTrackingNumber,
         user_name: req.body.user_name,
         customer_name: req.body.customer_name,
         customer_phone: req.body.customer_phone,

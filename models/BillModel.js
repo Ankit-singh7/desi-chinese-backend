@@ -14,6 +14,10 @@ let billSchema = new Schema(
             type:String,
             default:'' 
         },
+        bill_tracking_number: {
+            type: Number,
+            default: null
+        },
         user_name: {
           type:String,
           default:''
@@ -75,6 +79,10 @@ let billSchema = new Schema(
                 food_id: {
                     type:String,
                     default:''
+                },
+                department_id: {
+                    type: String,
+                    default: ''
                 },
                 quantity: {
                     type: Number,

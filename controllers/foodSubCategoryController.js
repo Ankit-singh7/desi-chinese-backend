@@ -80,6 +80,7 @@ let createSubCategory = (req, res) => {
                 type: req.body.type,
                 status: req.body.status,
                 mostly_used: req.body.mostly_used,
+                department_id: req.body.department_id,
                 createdOn: time.now()
             })
 

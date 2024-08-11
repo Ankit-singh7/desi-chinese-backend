@@ -18,6 +18,10 @@ let foodSubCategorySchema = new Schema(
             type:String,
             default: ''
         },
+        department_id: {
+            type:String,
+            default: ''
+        },
         name: {
             type:String,
             default:''
