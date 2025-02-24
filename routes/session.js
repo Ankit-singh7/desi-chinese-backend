@@ -14,7 +14,7 @@ module.exports.setRouter = (app) => {
 
     app.get(`${baseUrl}/:id/delete`, sessionController.deleteSession);
 
-    app.post(`${baseUrl}/:id/update`, sessionController.updateSession);
+    app.put(`${baseUrl}/:id/update`, sessionController.updateSession);
 
     app.get(`${baseUrl}/:id/getById`,sessionController.getSessionDetail);
 
