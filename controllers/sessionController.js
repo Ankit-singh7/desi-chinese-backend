@@ -64,6 +64,7 @@ let createSession = (req,res) => {
        session_status: req.body.session_status,
        session_amount: req.body.session_amount,
        drawer_balance: req.body.drawer_balance,
+       expense_drawer_balance: req.body.expense_drawer_balance,
        user_name: req.body.user_name,
        withdrawn: req.body.withdrawn,
        isWithdrawn: 'false',

@@ -26,8 +26,20 @@ let employeeExpenseSchema = new Schema(
     expense_amount: {
       type: String,
       default: ''
-    }
+    },
+    in_amount: {
+      type: String,
+      default: ''
+    },
+    drawer_balance: {
+      type: Number,
+      default: null
+    },
+    closing_balance: {
+      type: Number,
+      default: null
   }
+}
 ],
  createdOn :{
    type:Date,
