@@ -30,6 +30,18 @@ let billSchema = new Schema(
             type:Number,
             default:null
         },
+        dob: {
+            type:String,
+            default:''
+        },
+        feedback: {
+            type:String,
+            default:''
+        },
+        anniversary: {
+            type:String,
+            default:''
+        },
         customer_alternative_phone:{
             type:Number,
             default:null

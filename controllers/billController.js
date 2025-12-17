@@ -205,6 +205,9 @@ let createBill = async (req, res) => {
         status: 'in-queue',
         products: req.body.products,
         date: time.getNormalTime(),
+        dob: req.body.dob,
+        anniversary: req.body.anniversary,
+        feedback: req.body.feedback,
         createdOn: time.now()
     };
 
