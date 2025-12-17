@@ -33,7 +33,9 @@
     "nodemailer-smtp-transport": "^2.7.4",
     "nodemon": "^2.0.7",
     "pino": "^6.11.2",
-    "shortid": "^2.2.16"
+    "redis": "^4.7.0",
+    "shortid": "^2.2.16",
+    "util": "^0.12.5"
   },
   "engines": {
     "node": "10.x",
