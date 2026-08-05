@@ -58,6 +58,14 @@ let branchSchema = new Schema(
    type:Date,
    default:""
  }, 
+  latitude: {
+  type: Number,
+  default: 0
+ },
+ longitude: {
+  type: Number,
+  default: 0
+ },
 })
 
 

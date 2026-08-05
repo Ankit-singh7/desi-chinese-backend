@@ -42,9 +42,45 @@ let adminSchema = new Schema(
    type:Date,
    default:""
  },
-
-
- 
+  documents: {
+      aadhaar_url: String,
+      pan_url: String,
+      photo_url: String
+  },
+  // Shiftly operator fields (optional — used by operator punch/profile)
+  mobileNumber: {
+    type: String,
+    default: ''
+  },
+  status: {
+    type: String,
+    default: 'Active'
+  },
+  designation: {
+    type: String,
+    default: ''
+  },
+  shift: {
+    type: String,
+    enum: ['Morning', 'Evening', 'Night'],
+    default: 'Morning'
+  },
+  shift_time: {
+    type: String,
+    default: ''
+  },
+  salary: {
+    type: Number,
+    default: null
+  },
+  branch_id: {
+    type: String,
+    default: ''
+  },
+  branch_name: {
+    type: String,
+    default: ''
+  }
 })
 
 

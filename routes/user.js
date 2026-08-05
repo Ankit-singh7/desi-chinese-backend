@@ -9,6 +9,8 @@ module.exports.setRouter = (app) => {
 
     let baseUrl = `${appConfig.apiVersion}/users`;
 
+    app.post(`${baseUrl}/login-shiftly`, userController.loginFunctionForShiftly)
+
     app.post(`${baseUrl}/send`, userController.sendEmail);
 
     app.get(`${baseUrl}/view/all`, userController.getAllUser);

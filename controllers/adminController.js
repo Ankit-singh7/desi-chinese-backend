@@ -15,6 +15,7 @@ const emailLib = require('../libs/emailLib');
 
 /* Models */
 const adminModel = mongoose.model('Admin')
+const adminService = require('../service/admin.service');
 
 const applicationUrl = 'http://trego.tk' //url of frontend application
 
@@ -120,81 +121,6 @@ let editUser = (req, res) => {
 
 
 }// end edit user
-
-/* Verify Email  */
-/* params : userId
-*/
-/*
-let verifyEmailFunction = (req, res) => {
-    let findUser = () => {
-        //console.log("findUser");
-        return new Promise((resolve, reject) => {
-            if (req.body.userId) {
-                console.log("req body userId is there");
-                //console.log(req.body);
-                UserModel.findOne({ 'userId': req.body.userId })
-                .select('-password -__v -_id')
-                .lean()
-                .exec((err, result) => {
-                    if (err) {
-                        console.log(err)
-                        logger.error(err.message, 'User Controller: getSingleUser', 10)
-                        let apiResponse = response.generate(true, 'Failed To Find User Details', 500, null)
-                        reject(apiResponse)
-                    } else if (check.isEmpty(result)) {
-                        logger.info('No User Found', 'User Controller:getSingleUser')
-                        let apiResponse = response.generate(true, 'No User Found', 404, null)
-                        reject(apiResponse)
-                    } else {
-                        let apiResponse = response.generate(false, 'User Details Found', 200, result)
-                        resolve(result)
-                    }
-                })
-        
-            } else {
-                let apiResponse = response.generate(true, '"userId" parameter is missing', 400, null)
-                reject(apiResponse)
-            }
-        })
-    }
-
-    let verifyEmail = (retrievedUserDetails) => {
-        //console.log("verifyEmail");
-        return new Promise((resolve, reject) => {
-            UserModel.updateOne({ 'userId': retrievedUserDetails.userId }, {'emailVerified': 'Yes'}).exec((err, result) => {
-                if (err) {
-                    //console.log("Error in verifying" + err)
-                    logger.error(err.message, 'User Controller:verifyEmail', 10)
-                    let apiResponse = response.generate(true, 'Failed To verify email', 500, null)
-                    reject(apiResponse)
-                } else if (check.isEmpty(result)) {
-                    logger.info('No User Found', 'User Controller: verifyEmail')
-                    let apiResponse = response.generate(true, 'No User Found', 404, null)
-                    reject(apiResponse)
-                } else {
-                    let apiResponse = response.generate(false, 'User email Verified', 200, result)
-                    resolve(result)
-                }
-            });// end user model update
-        })
-    }
-
-
-    findUser(req, res)
-        .then(verifyEmail)
-        .then((resolve) => {
-            let apiResponse = response.generate(false, 'User email Verified', 200, resolve)
-            res.status(200)
-            res.send(apiResponse)
-        })
-        .catch((err) => {
-            console.log("errorhandler");
-            console.log(err);
-            res.status(err.status)
-            res.send(err)
-        })
-}
-*/
 
 // start user signup function 
 /* params : firstname,lastName,email,mobileNumber,password
@@ -373,366 +299,6 @@ let logout = (req, res) => {
     })
 } // end of the logout function.
 
-
-/* Function to generate recoveryPassword and sending recoveryPassword via email */
-/* params : email
-*/
-
-// let resetPasswordFunction = (req, res) => {
-//     //finding user with email
-//     let findUser = () => {
-//         console.log("findUser");
-//         return new Promise((resolve, reject) => {
-//             if (req.body.email) {
-//                 console.log("req body email is there");
-//                 console.log(req.body);
-//                 UserModel.findOne({ email: req.body.email }, (err, userDetails) => {
-//                     /* handle the error here if the User is not found */
-//                     if (err) {
-//                         console.log(err)
-//                         logger.error('Failed To Retrieve User Data', 'userController: findUser()', 10)
-//                         /* generate the error message and the api response message here */
-//                         let apiResponse = response.generate(true, 'Failed To Find User Details', 500, null)
-//                         reject(apiResponse)
-//                         /* if Company Details is not found */
-//                     } else if (check.isEmpty(userDetails)) {
-//                         /* generate the response and the console error message here */
-//                         logger.error('No User Found', 'userController: findUser()', 7)
-//                         let apiResponse = response.generate(true, 'No User Details Found', 404, null)
-//                         reject(apiResponse)
-//                     } else {
-//                         /* prepare the message and the api response here */
-//                         logger.info('User Found', 'userController: findUser()', 10)
-//                         resolve(userDetails)
-//                     }
-//                 });
-
-//             } else {
-//                 let apiResponse = response.generate(true, '"email" parameter is missing', 400, null)
-//                 reject(apiResponse)
-//             }
-//         })
-//     }
-//     //reset password
-//     let generateToken = (userDetails) => {
-//         console.log("generate token");
-//         return new Promise((resolve, reject) => {
-//             token.generateToken(userDetails, (err, tokenDetails) => {
-//                 if (err) {
-//                     console.log(err)
-//                     let apiResponse = response.generate(true, 'Failed To Generate Token', 500, null)
-//                     reject(apiResponse)
-//                 } else {
-//                     tokenDetails.userId = userDetails.userId
-//                     tokenDetails.userDetails = userDetails
-//                     resolve(tokenDetails)
-//                 }
-//             })
-//         })
-//     }
-
-//     let resetPassword = (tokenDetails) =>{
-//         return new Promise((resolve, reject) => {
-
-//             let options = {
-//                 validationToken: tokenDetails.token
-//             }
-    
-//             UserModel.update({ 'email': req.body.email }, options).exec((err, result) => {
-//                 if (err) {
-//                     console.log(err)
-//                     logger.error(err.message, 'User Controller:resetPasswordFunction', 10)
-//                     let apiResponse = response.generate(true, 'Failed To reset user Password', 500, null)
-//                     reject(apiResponse)
-//                 }  else {
-    
-//                     //let apiResponse = response.generate(false, 'Password reset successfully', 200, result)
-//                     resolve(result)
-//                     //Creating object for sending welcome email
-//                     console.log(tokenDetails)
-//                     let sendEmailOptions = {
-//                         email: tokenDetails.userDetails.email,
-//                         subject: 'Reset Password for Trego ',
-//                         html: `<h4> Hi ${tokenDetails.userDetails.firstName}</h4>
-//                             <p>
-//                                 We got a request to reset your password associated with this ${tokenDetails.userDetails.email} . <br>
-//                                 <br>Please use following link to reset your password. <br>
-//                                 <br> <a href="${applicationUrl}/Reset-Pass/${options.validationToken}">Click Here</a>                                 
-//                             </p>
-    
-//                             <br><b>Trego</b>
-//                                         `
-//                     }
-    
-//                     setTimeout(() => {
-//                         emailLib.sendEmail(sendEmailOptions);
-//                     }, 2000);
-    
-//                 }
-//             });// end user model update
-    
-//         });//end promise
-    
-//     }//end reset password
-
-//     //making promise call
-//     findUser(req, res)
-//         .then(generateToken)
-//         .then(resetPassword)
-//         .then((resolve) => {
-//             let apiResponse = response.generate(false, 'Password reset instructions sent successfully', 200, 'None')
-//             res.status(200)
-//             res.send(apiResponse)
-//         })
-//         .catch((err) => {
-//             console.log("errorhandler");
-//             console.log(err);
-//             res.status(err.status)
-//             res.send(err)
-//         })
-
-
-// }// end resetPasswordFunction
-
-/* Function to update password and sending email */
-/* params : recoveryPassword,paswword
-*/
-
-// let updatePasswordFunction = (req, res) => {
-
-//     let findUser = () => {
-//         console.log("findUser");
-//         return new Promise((resolve, reject) => {
-//             if (req.body.validationToken) {
-//                 console.log("req body validationToken is there");
-//                 console.log(req.body);
-//                 UserModel.findOne({ validationToken: req.body.validationToken }, (err, userDetails) => {
-//                     /* handle the error here if the User is not found */
-//                     if (err) {
-//                         console.log(err)
-//                         logger.error('Failed To Retrieve User Data', 'userController: findUser()', 10)
-//                         /* generate the error message and the api response message here */
-//                         let apiResponse = response.generate(true, 'Failed To Find User Details', 500, null)
-//                         reject(apiResponse)
-//                         /* if Company Details is not found */
-//                     } else if (check.isEmpty(userDetails)) {
-//                         /* generate the response and the console error message here */
-//                         logger.error('No User Found', 'userController: findUser()', 7)
-//                         let apiResponse = response.generate(true, 'No User Details Found', 404, null)
-//                         reject(apiResponse)
-//                     } else {
-//                         /* prepare the message and the api response here */
-//                         logger.info('User Found', 'userController: findUser()', 10)
-//                         resolve(userDetails)
-//                     }
-//                 });
-
-//             } else {
-//                 let apiResponse = response.generate(true, '"validationToken" parameter is missing', 400, null)
-//                 reject(apiResponse)
-//             }
-//         })
-//     }
-
-//     let passwordUpdate = (userDetails) => {
-//         return new Promise((resolve, reject) => {
-
-//             let options = {
-//                 password: passwordLib.hashpassword(req.body.password),
-//                 validationToken:'Null'
-//             }
-
-//             UserModel.update({ 'userId': userDetails.userId }, options).exec((err, result) => {
-//                 if (err) {
-//                     console.log(err)
-//                     logger.error(err.message, 'User Controller:updatePasswordFunction', 10)
-//                     let apiResponse = response.generate(true, 'Failed To reset user Password', 500, null)
-//                     reject(apiResponse)
-//                 } else if (check.isEmpty(result)) {
-//                     logger.info('No User Found with given Details', 'User Controller: updatePasswordFunction')
-//                     let apiResponse = response.generate(true, 'No User Found', 404, null)
-//                     reject(apiResponse)
-//                 } else {
-
-
-//                     let apiResponse = response.generate(false, 'Password Updated successfully', 200, result)
-//                     resolve(result)
-//                     //Creating object for sending welcome email
-
-//                     let sendEmailOptions = {
-//                         email: userDetails.email,
-//                         subject: 'Password Updated for Trego ',
-//                         html: `<h4> Hi ${userDetails.firstName}</h4>
-//                         <p>
-//                             Password updated successfully.
-//                         </p>
-//                         <h3> Thanks for using Trego </h3>
-//                                     `
-//                     }
-
-//                     setTimeout(() => {
-//                         emailLib.sendEmail(sendEmailOptions);
-//                     }, 2000);
-
-
-//                 }
-//             });// end user model update
-//         });
-//     }//end passwordUpdate
-
-//     findUser(req, res)
-//         .then(passwordUpdate)
-//         .then((resolve) => {
-//             let apiResponse = response.generate(false, 'Password Update Successfully', 200, "None")
-//             res.status(200)
-//             res.send(apiResponse)
-//         })
-//         .catch((err) => {
-//             console.log("errorhandler");
-//             console.log(err);
-//             res.status(err.status)
-//             res.send(err)
-//         })
-
-
-// }// end updatePasswordFunction
-
-
-/* Function to change password and sending  email */
-/* params : userId,oldPassword,newPassword
-*/
-// let changePasswordFunction = (req, res) => {
-//     //finding user
-//     let findUser = () => {
-//         console.log("findUser");
-//         return new Promise((resolve, reject) => {
-//             if (req.body.userId != undefined && req.body.oldPassword != undefined) {
-//                 console.log("req body userId and oldPassword is there");
-//                 console.log(req.body);
-//                 UserModel.findOne({ userId: req.body.userId }, (err, userDetails) => {
-//                     /* handle the error here if the User is not found */
-//                     if (err) {
-//                         console.log(err)
-//                         logger.error('Failed To Retrieve User Data', 'userController: findUser()', 10)
-//                         /* generate the error message and the api response message here */
-//                         let apiResponse = response.generate(true, 'Failed To Find User Details', 500, null)
-//                         reject(apiResponse)
-//                         /* if Company Details is not found */
-//                     } else if (check.isEmpty(userDetails)) {
-//                         /* generate the response and the console error message here */
-//                         logger.error('No User Found', 'userController: findUser()', 7)
-//                         let apiResponse = response.generate(true, 'No User Details Found', 404, null)
-//                         reject(apiResponse)
-//                     } else {
-//                         /* prepare the message and the api response here */
-//                         logger.info('User Found', 'userController: findUser()', 10)
-//                         resolve(userDetails)
-//                     }
-//                 });
-
-//             } else {
-//                 let apiResponse = response.generate(true, '"userId" parameter is missing', 400, null)
-//                 reject(apiResponse)
-//             }
-//         })
-//     }
-
-//     //validate old password with database 
-//     let validatePassword = (retrievedUserDetails) => {
-//         console.log("validatePassword");
-//         console.log(retrievedUserDetails);
-//         return new Promise((resolve, reject) => {
-//             passwordLib.comparePassword(req.body.oldPassword, retrievedUserDetails.password, (err, isMatch) => {
-//                 if (err) {
-//                     console.log(err)
-//                     logger.error(err.message, 'userController: validatePassword()', 10)
-//                     let apiResponse = response.generate(true, 'Validate Password Failed', 500, null)
-//                     reject(apiResponse)
-//                 } else if (isMatch) {
-//                     let retrievedUserDetailsObj = retrievedUserDetails.toObject()
-//                     delete retrievedUserDetailsObj.password
-//                     delete retrievedUserDetailsObj._id
-//                     delete retrievedUserDetailsObj.__v
-//                     delete retrievedUserDetailsObj.createdOn
-//                     delete retrievedUserDetailsObj.modifiedOn
-//                     resolve(retrievedUserDetailsObj)
-//                 } else {
-//                     logger.info('Update Failed Due To Invalid Password', 'userController: validatePassword()', 10)
-//                     let apiResponse = response.generate(true, 'Wrong Password.', 400, null)
-//                     reject(apiResponse)
-//                 }
-//             })
-//         })
-//     }
-
-//     //password update 
-//     let passwordUpdate = (userDetails) => {
-//         return new Promise((resolve, reject) => {
-
-//             let options = {
-//                 password: passwordLib.hashpassword(req.body.newPassword),
-//             }
-
-//             UserModel.update({ 'userId': userDetails.userId }, options).exec((err, result) => {
-//                 if (err) {
-//                     console.log(err)
-//                     logger.error(err.message, 'User Controller:updatePasswordFunction', 10)
-//                     let apiResponse = response.generate(true, 'Failed To update user Password', 500, null)
-//                     reject(apiResponse)
-//                 } else if (check.isEmpty(result)) {
-//                     logger.info('No User Found with given Details', 'User Controller: updatePasswordFunction')
-//                     let apiResponse = response.generate(true, 'No User Found', 404, null)
-//                     reject(apiResponse)
-//                 } else {
-
-
-//                     let apiResponse = response.generate(false, 'Password Updated successfully', 200, result)
-//                     resolve(result)
-//                     //Creating object for sending welcome email
-
-//                     let sendEmailOptions = {
-//                         email: userDetails.email,
-//                         subject: 'Password Updated for Trego',
-//                         html: `<h4> Hi ${userDetails.firstName}</h4>
-//                         <p>
-//                             Password updated successfully.
-//                         </p>
-//                         <h3> Thanks for using Trego </h3>
-//                                     `
-//                     }
-//                     console.log(sendEmailOptions)
-                    
-//                     setTimeout(() => {
-//                         emailLib.sendEmail(sendEmailOptions);
-//                     }, 2000);
-
-
-//                 }
-//             });// end user model update
-//         });
-//     }//end passwordUpdate
-
-//     //making promise call
-//     findUser(req, res)
-//         .then(validatePassword)
-//         .then(passwordUpdate)
-//         .then((resolve) => {
-//             let apiResponse = response.generate(false, 'Password Updated Successfully', 200, "None")
-//             res.status(200)
-//             res.send(apiResponse)
-//         })
-//         .catch((err) => {
-//             console.log("errorhandler");
-//             console.log(err);
-//             res.status(err.status)
-//             res.send(err)
-//         })
-
-
-// }// end updatePasswordFunction
-
-
-
 let resetPasswordFunction = (req,res) => {
     adminModel.find({'email':req.body.email})
     .select(' -__v -_id -password')
@@ -809,6 +375,470 @@ let forgotPasswordFunction = (req,res) => {
     })
 }
 
+const getDashboard = async (req, res) => {
+    try {
+
+        const branchId = req.query.branch_id || '';
+
+        const data = await adminService.getAdminDashboard(branchId);
+
+        res.status(200).send({
+            error: false,
+            message: 'Admin dashboard fetched',
+            data
+        });
+
+    } catch (err) {
+        console.error(err);
+
+        res.status(500).send({
+            error: true,
+            message: err.message || 'Failed to load dashboard'
+        });
+    }
+};
+
+const createEmployee = async (req, res) => {
+    try {
+
+        const data = req.body;
+        const files = req.files;
+
+        const user = await adminService.createEmployee(data, files);
+
+        res.status(200).send({
+            error: false,
+            message: 'Employee created successfully',
+            data: user
+        });
+
+    } catch (err) {
+        console.error(err);
+
+        res.status(500).send({
+            error: true,
+            message: err.message || 'Failed to create employee'
+        });
+    }
+};
+
+const adminOverwriteAttendance = async (req, res) => {
+  try {
+
+    const {
+      employee_id,
+      branch_id,
+      date,
+      sessions,
+      admin_id
+    } = req.body;
+
+    if (!employee_id) {
+      return res.status(400).send({
+        error: true,
+        message: 'employee_id is required'
+      });
+    }
+
+    if (!date) {
+      return res.status(400).send({
+        error: true,
+        message: 'date is required'
+      });
+    }
+
+    const result = await adminService.adminOverwriteAttendance(
+      employee_id,
+      branch_id,
+      admin_id,
+      date,
+      sessions || []
+    );
+
+    return res.status(200).send({
+      error: false,
+      message: result.message,
+      data: result
+    });
+
+  } catch (err) {
+
+    console.error('adminOverwriteAttendance:', err);
+
+    return res.status(500).send({
+      error: true,
+      message: err.message || 'Failed to process attendance'
+    });
+
+  }
+};
+
+const saveIncentive = async (req, res) => {
+  try {
+    const result = await adminService.saveIncentive(req.body);
+    res.status(200).send({ error: false, message: 'Incentive saved', data: result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const getIncentiveList = async (req, res) => {
+  try {
+    const { month, branch_id, employee_id } = req.query;
+    const result = await adminService.getIncentiveList(month, branch_id, employee_id);
+    res.status(200).send({ error: false, message: 'Incentive list', data: result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const removeIncentive = async (req, res) => {
+  try {
+    await adminService.removeIncentive(req.params.id);
+    res.status(200).send({ error: false, message: 'Incentive removed', data: null });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const saveAdvance = async (req, res) => {
+  try {
+    const result = await adminService.saveAdvance(req.body);
+    res.status(200).send({ error: false, message: 'Advance saved', data: result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const getAdvanceList = async (req, res) => {
+  try {
+    const { month, branch_id, employee_id } = req.query;
+    const result = await adminService.getAdvanceList(month, branch_id, employee_id);
+    res.status(200).send({ error: false, message: 'Advance list', data: result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const removeAdvance = async (req, res) => {
+  try {
+    await adminService.removeAdvance(req.params.id);
+    res.status(200).send({ error: false, message: 'Advance removed', data: null });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const updateEmployeeSalaries = async (req, res) => {
+  try {
+
+    const { updates, admin_id } = req.body;
+
+    if (!updates || !Array.isArray(updates) || updates.length === 0) {
+      return res.status(400).send({
+        error: true,
+        message: 'Invalid updates payload'
+      });
+    }
+
+    const result = await adminService.updateEmployeeSalaries(updates, admin_id);
+
+    res.status(200).send({
+      error: false,
+      message: 'Salaries updated successfully',
+      data: result
+    });
+
+  } catch (err) {
+    res.status(500).send({
+      error: true,
+      message: err.message
+    });
+  }
+};
+
+const getEmployeeList = async (req, res) => {
+  try {
+    const data = await adminService.getEmployeeList();
+    res.status(200).send({ error: false, message: 'Employee list', data });
+  } catch (err) {
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const updateEmployee = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const data = req.body;
+    const files = req.files;
+    const User = mongoose.model('User');
+    const Admin = mongoose.model('Admin');
+
+    const updateData = {
+      firstName:   data.f_name || data.firstName,
+      lastName:    data.l_name || data.lastName,
+      mobileNumber: data.phone || data.mobileNumber,
+      email:       data.email,
+      role:        data.role,
+      designation: data.designation,
+      branch_id:   data.branch_id,
+      branch_name: data.branch_name,
+      shift:       data.shift,
+      salary:      data.salary !== undefined && data.salary !== '' ? Number(data.salary) : undefined,
+      shift_time:  data.shift_time,
+    };
+
+    Object.keys(updateData).forEach(k => {
+      if (updateData[k] === undefined) delete updateData[k];
+    });
+
+    if (files?.aadhaar) {
+      const { uploadToDrive } = require('../service/google-drive.service');
+      updateData['documents.aadhaar_url'] = await uploadToDrive(
+        files.aadhaar[0],
+        process.env.GOOGLE_DRIVE_FOLDER_ID
+      );
+    }
+
+    if (files?.pan) {
+      const { uploadToDrive } = require('../service/google-drive.service');
+      updateData['documents.pan_url'] = await uploadToDrive(
+        files.pan[0],
+        process.env.GOOGLE_DRIVE_FOLDER_ID
+      );
+    }
+
+    // Restaurant: employees in User, operators in Admin
+    const userResult = await User.updateOne({ userId }, { $set: updateData });
+    if (userResult.matchedCount === 0) {
+      // Keep operator role unless explicitly changed
+      if (!updateData.role) {
+        delete updateData.role;
+      }
+      await Admin.updateOne({ adminId: userId }, { $set: updateData });
+    }
+
+    res.status(200).send({
+      error: false,
+      message: 'Employee updated successfully',
+      data: null
+    });
+
+  } catch (err) {
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const getAdminActivity = async (req, res) => {
+  try {
+    const { branch_id } = req.query;
+    const result = await adminService.getAdminActivity(branch_id, 50);
+    res.status(200).send({ error: false, message: 'Activity fetched', data: result });
+  } catch (err) {
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const savePayrollAdjustment = async (req, res) => {
+  try {
+    const {
+      employee_id,
+      branch_id,
+      month,
+      paid_leave_days,
+      festival_days,
+      updated_by
+    } = req.body;
+
+    const data = await adminService.savePayrollAdjustment(
+      employee_id,
+      branch_id,
+      month,
+      Number(paid_leave_days || 0),
+      Number(festival_days || 0),
+      updated_by
+    );
+
+    res.status(200).send({
+      error: false,
+      message: 'Payroll adjustment saved successfully',
+      data
+    });
+  } catch (err) {
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const getEmployeePayrollPreview = async (req, res) => {
+  try {
+    const { employee_id, month } = req.query;
+    const data = await adminService.getEmployeePayrollPreview(employee_id, month);
+    res.status(200).send({
+      error: false,
+      message: 'Payroll preview fetched successfully',
+      data
+    });
+  } catch (err) {
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const generateEmployeePayroll = async (req, res) => {
+  try {
+    const { employee_id, month, admin_id } = req.body;
+    const data = await adminService.generateEmployeePayroll(employee_id, month, admin_id);
+    res.status(200).send({
+      error: false,
+      message: 'Payroll generated successfully',
+      data
+    });
+  } catch (err) {
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const getPayrollEmployees = async (req, res) => {
+  try {
+    const { month, branch_id } = req.query;
+    const data = await adminService.getPayrollEmployees(month, branch_id || '');
+    res.status(200).send({
+      error: false,
+      message: 'Payroll employees fetched successfully',
+      data
+    });
+  } catch (err) {
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const lockEmployeePayroll = async (req, res) => {
+  try {
+    const { employee_id, month, admin_id } = req.body;
+    const data = await adminService.lockEmployeePayroll(employee_id, month, admin_id);
+    res.status(200).send({
+      error: false,
+      message: 'Payroll locked successfully',
+      data
+    });
+  } catch (err) {
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const markEmployeePayrollPaid = async (req, res) => {
+  try {
+    const { employee_id, month, admin_id } = req.body;
+    const data = await adminService.markEmployeePayrollPaid(employee_id, month, admin_id);
+    res.status(200).send({
+      error: false,
+      message: 'Payroll marked as paid successfully',
+      data
+    });
+  } catch (err) {
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const getEmployeePayroll = async (req, res) => {
+  try {
+    const payroll = await adminService.getEmployeePayroll(
+      req.query.employee_id,
+      req.query.month
+    );
+    return res.send({ error: false, message: 'Payroll fetched', data: payroll });
+  } catch (err) {
+    return res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const getEmployeePayrollSlip = async (req, res) => {
+  try {
+    const { employee_id, month } = req.query;
+    const data = await adminService.getEmployeePayrollSlip(employee_id, month);
+    return res.send({ error: false, message: 'Salary slip fetched', data });
+  } catch (err) {
+    return res.status(400).send({ error: true, message: err.message });
+  }
+};
+
+const getAttendanceList = async (req, res) => {
+  try {
+    const { employeeId } = req.params;
+    const { month, year } = req.query;
+    const result = await adminService.getAttendanceList(employeeId, month, year);
+    res.status(200).send({ error: false, data: result });
+  } catch (err) {
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const getFineList = async (req, res) => {
+  try {
+    const { month, employee_id } = req.query;
+    const result = await adminService.getFineList(month, employee_id);
+    res.status(200).send({ error: false, message: 'Fine list', data: result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const saveFine = async (req, res) => {
+  try {
+    const result = await adminService.saveFine(req.body);
+    res.status(200).send({ error: false, message: 'Fine saved', data: result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const getEmployeeNotes = async (req, res) => {
+  try {
+    const { employee_id } = req.query;
+    const result = await adminService.getEmployeeNotes(employee_id);
+    res.status(200).send({ error: false, message: 'Employee notes', data: result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const saveEmployeeNote = async (req, res) => {
+  try {
+    const result = await adminService.saveEmployeeNote(req.body);
+    res.status(200).send({ error: false, message: 'Note saved', data: result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const updateEmployeeNote = async (req, res) => {
+  try {
+    const result = await adminService.updateEmployeeNote(req.params.id, req.body);
+    res.status(200).send({ error: false, message: 'Note updated', data: result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
+
+const deleteEmployeeNote = async (req, res) => {
+  try {
+    await adminService.deleteEmployeeNote(req.params.id);
+    res.status(200).send({ error: false, message: 'Note deleted', data: null });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: true, message: err.message });
+  }
+};
 
 module.exports = {
 
@@ -817,11 +847,40 @@ module.exports = {
     logout: logout,
 
     getSingleUser: getSingleUser,
-    
 
     editUser: editUser,
     deleteUser: deleteUser,
     getAllUser:getAllUser,
     resetPasswordFunction:resetPasswordFunction,
-    forgotPasswordFunction: forgotPasswordFunction
+    forgotPasswordFunction: forgotPasswordFunction,
+    getDashboard,
+    createEmployee,
+    adminOverwriteAttendance,
+    saveIncentive,
+    getIncentiveList,
+    removeIncentive,
+    saveAdvance,
+    getAdvanceList,
+    removeAdvance,
+
+    updateEmployeeSalaries,
+    getEmployeeList,
+    updateEmployee,
+    getAdminActivity,
+
+    savePayrollAdjustment,
+    getEmployeePayrollPreview,
+    generateEmployeePayroll,
+    getPayrollEmployees,
+    lockEmployeePayroll,
+    markEmployeePayrollPaid,
+    getEmployeePayroll,
+    getEmployeePayrollSlip,
+    getAttendanceList,
+    getFineList,
+    saveFine,
+    getEmployeeNotes,
+    saveEmployeeNote,
+    updateEmployeeNote,
+    deleteEmployeeNote
 }// end exports
