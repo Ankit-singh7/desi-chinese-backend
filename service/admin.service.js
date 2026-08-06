@@ -50,7 +50,7 @@ const normalizeEmployeeForFrontend = (doc) => {
     role: doc.role || (isAdmin ? 'operator' : 'employee'),
     designation: doc.designation || '',
     shift: doc.shift || '',
-    salary: doc.salary ?? null,
+    salary: (doc.salary != null ? doc.salary : null),
     status: doc.status || 'Active',
     documents: doc.documents || {},
     shift_time: doc.shift_time || ''
@@ -192,19 +192,19 @@ const getAdminDashboard = async (branch_id) => {
 };
 
 const createEmployee = async (data, files) => {
-  const fullName = `${data?.f_name || ''} ${data?.l_name || ''}`.trim();
-  const role = String(data?.role || 'employee').toLowerCase();
+  const fullName = `${(data && data.f_name) || ''} ${(data && data.l_name) || ''}`.trim();
+  const role = String((data && data.role) || 'employee').toLowerCase();
 
   const employeeFolderId = await createEmployeeFolder(fullName, ROOT_FOLDER_ID);
 
   let aadhaarUrl = null;
   let panUrl = null;
 
-  if (files?.aadhaar) {
+  if (files && files.aadhaar) {
     aadhaarUrl = await uploadToDrive(files.aadhaar[0], employeeFolderId);
   }
 
-  if (files?.pan) {
+  if (files && files.pan) {
     panUrl = await uploadToDrive(files.pan[0], employeeFolderId);
   }
 
@@ -322,8 +322,9 @@ const adminOverwriteAttendance = async (
     };
   });
 
+  const firstPunchSession = attendanceSessions.find((s) => s.punch_in);
   const firstPunchIn =
-    attendanceSessions.find((s) => s.punch_in)?.punch_in || null;
+    (firstPunchSession && firstPunchSession.punch_in) || null;
 
   const activeSession = attendanceSessions.find(
     (s) => s.punch_in && !s.punch_out
@@ -338,7 +339,8 @@ const adminOverwriteAttendance = async (
 
   if (
     firstPunchIn &&
-    employee?.shift_time &&
+    employee &&
+    employee.shift_time &&
     employee.shift_time.trim() !== ''
   ) {
     const [hours, minutes] = employee.shift_time.split(':').map(Number);
@@ -357,11 +359,11 @@ const adminOverwriteAttendance = async (
 
   let deductionAmount = 0;
 
-  if (employee?.shift_time) {
+  if (employee && employee.shift_time) {
     const deductionConfig = await Deduction.findOne({});
     deductionAmount = calculateDeduction(
       lateMinutes,
-      deductionConfig?.rules || []
+      (deductionConfig && deductionConfig.rules) || []
     );
   }
 
@@ -382,7 +384,7 @@ const adminOverwriteAttendance = async (
       employee_id,
       branch_id,
       attendance_date,
-      shift_time: employee?.shift_time || null,
+      shift_time: (employee && employee.shift_time) || null,
       sessions: attendanceSessions,
       total_hours: totalHours,
       status,
@@ -411,7 +413,7 @@ const adminOverwriteAttendance = async (
     };
   }
 
-  record.shift_time = employee?.shift_time || null;
+  record.shift_time = (employee && employee.shift_time) || null;
   record.sessions = attendanceSessions;
   record.total_hours = totalHours;
   record.status = status;
@@ -611,8 +613,8 @@ const getEmployeePayrollPreview = async (employee_id, month) => {
     month
   });
 
-  const paidLeaveDays = adjustment?.paid_leave_days || 0;
-  const festivalDays = adjustment?.festival_days || 0;
+  const paidLeaveDays = (adjustment && adjustment.paid_leave_days) || 0;
+  const festivalDays = (adjustment && adjustment.festival_days) || 0;
 
   const paidLeaveMinutes = paidLeaveDays * 600;
   const festivalMinutes = festivalDays * 600;
@@ -684,8 +686,8 @@ const getEmployeePayrollPreview = async (employee_id, month) => {
     net_salary: Math.round(netSalary),
     salary_formula: formula,
     fine_ids: fines.map((item) => item._id),
-    payroll_id: existingPayroll?.payroll_id || null,
-    status: existingPayroll?.status || 'DRAFT',
+    payroll_id: (existingPayroll && existingPayroll.payroll_id) || null,
+    status: (existingPayroll && existingPayroll.status) || 'DRAFT',
     generated: !!existingPayroll
   };
 };
@@ -795,9 +797,9 @@ const getPayrollEmployees = async (month, branch_id = '') => {
       payroll_generated: !!payroll,
       payroll_status: payroll ? payroll.status : 'NOT_GENERATED',
       net_salary: payroll ? payroll.net_salary : 0,
-      generated_at: payroll?.generated_at || null,
-      paid_at: payroll?.paid_at || null,
-      locked_at: payroll?.locked_at || null
+      generated_at: (payroll && payroll.generated_at) || null,
+      paid_at: (payroll && payroll.paid_at) || null,
+      locked_at: (payroll && payroll.locked_at) || null
     };
   });
 };
@@ -1058,7 +1060,7 @@ const formatActivityMessage = (
         : `${op} recorded your punch out`;
 
     case 'PUNCH':
-      if (metadata?.type === 'PUNCH_IN') {
+      if (metadata && metadata.type === 'PUNCH_IN') {
         return viewMode === 'admin'
           ? `${op} punched in ${emp}`
           : `${op} recorded your punch in`;
@@ -1069,44 +1071,44 @@ const formatActivityMessage = (
 
     case 'FINE':
       return viewMode === 'admin'
-        ? `${op} added fine of ₹${metadata?.amount} for ${emp} — ${metadata?.reason || ''}`
-        : `Fine of ₹${metadata?.amount} added by ${op} — ${metadata?.reason || ''}`;
+        ? `${op} added fine of ₹${metadata && metadata.amount} for ${emp} — ${(metadata && metadata.reason) || ''}`
+        : `Fine of ₹${metadata && metadata.amount} added by ${op} — ${(metadata && metadata.reason) || ''}`;
 
     case 'INCENTIVE':
       return viewMode === 'admin'
-        ? `Incentive of ₹${metadata?.amount} added for ${emp} (${metadata?.month})`
-        : `Incentive of ₹${metadata?.amount} added for ${metadata?.month}`;
+        ? `Incentive of ₹${metadata && metadata.amount} added for ${emp} (${metadata && metadata.month})`
+        : `Incentive of ₹${metadata && metadata.amount} added for ${metadata && metadata.month}`;
 
     case 'ADVANCE':
       return viewMode === 'admin'
-        ? `Advance of ₹${metadata?.amount} added for ${emp} (${metadata?.month})`
-        : `Advance of ₹${metadata?.amount} added for ${metadata?.month}`;
+        ? `Advance of ₹${metadata && metadata.amount} added for ${emp} (${metadata && metadata.month})`
+        : `Advance of ₹${metadata && metadata.amount} added for ${metadata && metadata.month}`;
 
     case 'SHIFT_CHANGE':
       return viewMode === 'admin'
-        ? `${op} changed shift of ${emp} from ${metadata?.old_shift || '?'} → ${metadata?.new_shift || '?'}`
-        : `Your shift changed from ${metadata?.old_shift || '?'} → ${metadata?.new_shift || '?'} by ${op}`;
+        ? `${op} changed shift of ${emp} from ${(metadata && metadata.old_shift) || '?'} → ${(metadata && metadata.new_shift) || '?'}`
+        : `Your shift changed from ${(metadata && metadata.old_shift) || '?'} → ${(metadata && metadata.new_shift) || '?'} by ${op}`;
 
   case 'BRANCH_CHANGE': {
-      const oldBranch = metadata?.old_branch || 'previous branch';
-      const newBranch = metadata?.new_branch || 'new branch';
+      const oldBranch = (metadata && metadata.old_branch) || 'previous branch';
+      const newBranch = (metadata && metadata.new_branch) || 'new branch';
       return viewMode === 'admin'
         ? `${op} moved ${emp} from ${oldBranch} → ${newBranch}`
         : `Your branch changed from ${oldBranch} → ${newBranch} by ${op}`;
     }
 
     case 'SALARY_PAID':
-      return `Salary paid for ${metadata?.month}`;
+      return `Salary paid for ${metadata && metadata.month}`;
 
     case 'OVERWRITE':
       return viewMode === 'admin'
-        ? `${op} updated attendance of ${emp} for ${metadata?.date}`
-        : `Your attendance was updated by ${op} for ${metadata?.date}`;
+        ? `${op} updated attendance of ${emp} for ${metadata && metadata.date}`
+        : `Your attendance was updated by ${op} for ${metadata && metadata.date}`;
 
     case 'ADMIN_PUNCH':
       return viewMode === 'admin'
-        ? `${op} recorded attendance of ${emp} for ${metadata?.date}`
-        : `Attendance recorded by ${op} for ${metadata?.date}`;
+        ? `${op} recorded attendance of ${emp} for ${metadata && metadata.date}`
+        : `Attendance recorded by ${op} for ${metadata && metadata.date}`;
 
     default:
       return `${op} performed ${actionType} for ${emp}`;

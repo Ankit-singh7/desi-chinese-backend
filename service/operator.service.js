@@ -128,7 +128,7 @@ const getOperatorDashboard = async (operatorId) => {
   }
 
   const sessions =
-    operatorTodayAttendance?.sessions || [];
+    (operatorTodayAttendance && operatorTodayAttendance.sessions) || [];
 
   const lastSession =
     sessions[sessions.length - 1] || null;
@@ -141,10 +141,10 @@ const getOperatorDashboard = async (operatorId) => {
     today: operatorTodayAttendance
       ? {
           punch_in:
-            lastSession?.punch_in || null,
+            (lastSession && lastSession.punch_in) || null,
 
           punch_out:
-            lastSession?.punch_out || null,
+            (lastSession && lastSession.punch_out) || null,
 
           total_hours:
             operatorTodayAttendance.total_hours || 0,
@@ -354,7 +354,7 @@ const operatorPunch = async (
       deductionAmount =
         calculateDeduction(
           lateMinutes,
-          deductionConfig?.rules || []
+          (deductionConfig && deductionConfig.rules) || []
         );
     }
 
@@ -618,7 +618,7 @@ const punch = async (employee_id, branch_id, photoUrl = null) => {
 
       deductionAmount = calculateDeduction(
         lateMinutes,
-        deductionConfig?.rules || []
+        (deductionConfig && deductionConfig.rules) || []
       );
     }
 
@@ -628,7 +628,7 @@ const punch = async (employee_id, branch_id, photoUrl = null) => {
       employee_id,
       branch_id,
       attendance_date,
-      shift_time: operator?.shift_time || null,
+      shift_time: (operator && operator.shift_time) || null,
 
       sessions: [{
         punch_in: now,

@@ -598,7 +598,7 @@ const updateEmployee = async (req, res) => {
       if (updateData[k] === undefined) delete updateData[k];
     });
 
-    if (files?.aadhaar) {
+    if (files && files.aadhaar) {
       const { uploadToDrive } = require('../service/google-drive.service');
       updateData['documents.aadhaar_url'] = await uploadToDrive(
         files.aadhaar[0],
@@ -606,7 +606,7 @@ const updateEmployee = async (req, res) => {
       );
     }
 
-    if (files?.pan) {
+    if (files && files.pan) {
       const { uploadToDrive } = require('../service/google-drive.service');
       updateData['documents.pan_url'] = await uploadToDrive(
         files.pan[0],

@@ -72,7 +72,7 @@ const punch = async (employee_id, branch_id, photoUrl = null) => {
 
       deductionAmount = calculateDeduction(
         lateMinutes,
-        deductionConfig?.rules || []
+        (deductionConfig && deductionConfig.rules) || []
       );
     }
 
@@ -82,7 +82,7 @@ const punch = async (employee_id, branch_id, photoUrl = null) => {
       employee_id,
       branch_id,
       attendance_date,
-      shift_time: employee?.shift_time || null,
+      shift_time: (employee && employee.shift_time) || null,
 
       sessions: [{
         punch_in: now,
@@ -356,7 +356,7 @@ const getEmployeePayrollList = async (employee_id) => {
       item.fine || 0,
 
     branch_name:
-      item.branch_name || item.payroll_snapshot?.branch_name || '',
+      item.branch_name || (item.payroll_snapshot && item.payroll_snapshot.branch_name) || '',
 
     generated_at:
       item.generated_at
@@ -424,7 +424,7 @@ const formatActivityMessage = (actionType, metadata, operatorName, employeeName,
         : `${op} recorded your punch out`;
 
     case 'PUNCH':
-      if (metadata?.type === 'PUNCH_IN') {
+      if (metadata && metadata.type === 'PUNCH_IN') {
         return viewMode === 'admin'
           ? `${op} punched in ${emp}`
           : `${op} recorded your punch in`;
@@ -435,44 +435,44 @@ const formatActivityMessage = (actionType, metadata, operatorName, employeeName,
 
     case 'FINE':
       return viewMode === 'admin'
-        ? `${op} added fine of ₹${metadata?.amount} for ${emp} — ${metadata?.reason || ''}`
-        : `Fine of ₹${metadata?.amount} added by ${op} — ${metadata?.reason || ''}`;
+        ? `${op} added fine of ₹${metadata && metadata.amount} for ${emp} — ${(metadata && metadata.reason) || ''}`
+        : `Fine of ₹${metadata && metadata.amount} added by ${op} — ${(metadata && metadata.reason) || ''}`;
 
     case 'INCENTIVE':
       return viewMode === 'admin'
-        ? `Incentive of ₹${metadata?.amount} added for ${emp} (${metadata?.month})`
-        : `Incentive of ₹${metadata?.amount} added for ${metadata?.month}`;
+        ? `Incentive of ₹${metadata && metadata.amount} added for ${emp} (${metadata && metadata.month})`
+        : `Incentive of ₹${metadata && metadata.amount} added for ${metadata && metadata.month}`;
 
     case 'ADVANCE':
       return viewMode === 'admin'
-        ? `Advance of ₹${metadata?.amount} added for ${emp} (${metadata?.month})`
-        : `Advance of ₹${metadata?.amount} added for ${metadata?.month}`;
+        ? `Advance of ₹${metadata && metadata.amount} added for ${emp} (${metadata && metadata.month})`
+        : `Advance of ₹${metadata && metadata.amount} added for ${metadata && metadata.month}`;
 
     case 'SHIFT_CHANGE':
       return viewMode === 'admin'
-        ? `${op} changed shift of ${emp} from ${metadata?.old_shift || '?'} → ${metadata?.new_shift || '?'}`
-        : `Your shift changed from ${metadata?.old_shift || '?'} → ${metadata?.new_shift || '?'} by ${op}`;
+        ? `${op} changed shift of ${emp} from ${(metadata && metadata.old_shift) || '?'} → ${(metadata && metadata.new_shift) || '?'}`
+        : `Your shift changed from ${(metadata && metadata.old_shift) || '?'} → ${(metadata && metadata.new_shift) || '?'} by ${op}`;
 
     case 'BRANCH_CHANGE': {
-      const oldBranch = metadata?.old_branch || 'previous branch';
-      const newBranch = metadata?.new_branch || 'new branch';
+      const oldBranch = (metadata && metadata.old_branch) || 'previous branch';
+      const newBranch = (metadata && metadata.new_branch) || 'new branch';
       return viewMode === 'admin'
         ? `${op} moved ${emp} from ${oldBranch} → ${newBranch}`
         : `Your branch changed from ${oldBranch} → ${newBranch} by ${op}`;
     }
 
     case 'SALARY_PAID':
-      return `Salary paid for ${metadata?.month}`;
+      return `Salary paid for ${metadata && metadata.month}`;
 
     case 'OVERWRITE':
       return viewMode === 'admin'
-        ? `${op} updated attendance of ${emp} for ${metadata?.date}`
-        : `Your attendance was updated by ${op} for ${metadata?.date}`;
+        ? `${op} updated attendance of ${emp} for ${metadata && metadata.date}`
+        : `Your attendance was updated by ${op} for ${metadata && metadata.date}`;
 
     case 'ADMIN_PUNCH':
       return viewMode === 'admin'
-        ? `${op} recorded attendance of ${emp} for ${metadata?.date}`
-        : `Attendance recorded by ${op} for ${metadata?.date}`;
+        ? `${op} recorded attendance of ${emp} for ${metadata && metadata.date}`
+        : `Attendance recorded by ${op} for ${metadata && metadata.date}`;
 
     default:
       return `${op} performed ${actionType} for ${emp}`;
